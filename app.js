@@ -436,6 +436,26 @@
     return true;
   }
 
+  // ---------- Intro ----------
+  function initIntro(saltar) {
+    const entrar = (animar) => {
+      const fin = () => {
+        document.body.classList.remove("intro-on", "intro-saliendo");
+        window.scrollTo(0, 0);
+        map.invalidateSize();
+        dibujar();
+        if (!tramos.some((t) => t.ruta)) map.fitBounds(L.latLngBounds(CAT.puertos.map((p) => [p.lat, p.lng])).pad(0.1));
+        if (animar) $("#carga").focus({ preventScroll: true });
+      };
+      const quieto = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (!animar || quieto) return fin();
+      document.body.classList.add("intro-saliendo");
+      setTimeout(fin, 340);
+    };
+    if (saltar) return entrar(false);
+    $("#btn-empezar").onclick = () => { history.replaceState(null, "", "#calcular"); entrar(true); };
+  }
+
   // ---------- Inicio ----------
   async function init() {
     CAT = await H.cargarCatalogos();
@@ -459,6 +479,7 @@
 
     const id = new URLSearchParams(location.search).get("id");
     if (!(id && (await cargarEnvio(id)))) nuevoTramo();
+    initIntro(Boolean(id) || location.hash === "#calcular");
   }
 
   init().catch((e) => {

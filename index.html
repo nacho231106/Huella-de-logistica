@@ -11,7 +11,29 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
+<body class="intro-on">
+  <section class="intro" id="intro" aria-labelledby="intro-t">
+    <svg class="intro-bg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <path class="intro-river" d="M250 -20 C 210 90, 300 160, 240 260 S 150 420, 220 520 S 300 690, 190 820" />
+      <path class="intro-route" d="M250 -20 C 210 90, 300 160, 240 260 S 150 420, 220 520 S 300 690, 190 820" />
+      <circle cx="243" cy="255" r="6" /><circle cx="196" cy="400" r="6" /><circle cx="222" cy="522" r="6" /><circle cx="262" cy="640" r="6" />
+    </svg>
+    <div class="intro-in">
+      <span class="intro-brand"><span class="brand-logo" aria-hidden="true">[Logo]</span><span data-naviera>Naviera Barge</span> <span class="x">×</span> Coralia</span>
+      <h1 id="intro-t">Huella<span class="dot">.</span></h1>
+      <p class="intro-lead">Medí la huella de carbono de cada envío que hacés con <span data-naviera>Naviera Barge</span>, por la hidrovía o por el carril costero, en un par de minutos.</p>
+      <ol class="intro-steps">
+        <li><b>1</b><span><strong>Cargá tu viaje</strong> Puertos, modo de transporte y cantidad de carga, tramo por tramo.</span></li>
+        <li><b>2</b><span><strong>Mirá tu CO₂e</strong> Calculado con metodología GLEC y revisado por Coralia.</span></li>
+        <li><b>3</b><span><strong>Validá y compensá</strong> Sylvera valida, recibís tu certificado y, si querés, compensás con créditos.</span></li>
+      </ol>
+      <div class="intro-cta">
+        <button class="btn intro-btn" id="btn-empezar" type="button">Quiero usar Huella <span aria-hidden="true">→</span></button>
+        <a class="intro-link" href="panel.html">Ya tengo cuenta · Ingresar</a>
+      </div>
+    </div>
+  </section>
+
   <header class="topbar">
     <a class="brand" href="index.html">
       <span class="brand-logo" aria-hidden="true">[Logo]</span>
