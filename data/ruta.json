@@ -1,0 +1,31 @@
+{
+  "_ayuda": "Puntos del carril marítimo en el mar, de norte a sur y en orden. El buque va por estos puntos; la distancia se calcula sumando los tramos. Si el recorrido real es otro, mové o agregá puntos (siempre en orden).",
+  "carril": [
+    { "id": "c0",  "lat": -34.750, "lng": -57.900 },
+    { "id": "c1",  "lat": -35.300, "lng": -56.600 },
+    { "id": "c2",  "lat": -36.800, "lng": -56.300 },
+    { "id": "c3",  "lat": -38.250, "lng": -57.250 },
+    { "id": "c4",  "lat": -39.300, "lng": -59.800 },
+    { "id": "c5",  "lat": -39.450, "lng": -61.700 },
+    { "id": "c6",  "lat": -41.300, "lng": -63.300 },
+    { "id": "c7",  "lat": -42.600, "lng": -62.900 },
+    { "id": "c8",  "lat": -43.300, "lng": -63.900 },
+    { "id": "c9",  "lat": -45.150, "lng": -65.200 },
+    { "id": "c10", "lat": -47.300, "lng": -65.300 },
+    { "id": "c11", "lat": -48.300, "lng": -65.700 },
+    { "id": "c12", "lat": -49.400, "lng": -67.100 },
+    { "id": "c13", "lat": -50.150, "lng": -67.900 },
+    { "id": "c14", "lat": -51.650, "lng": -68.600 },
+    { "id": "c15", "lat": -52.450, "lng": -68.050 },
+    { "id": "c16", "lat": -53.600, "lng": -67.100 },
+    { "id": "c17", "lat": -54.600, "lng": -65.300 },
+    { "id": "c18", "lat": -55.050, "lng": -66.600 },
+    { "id": "c19", "lat": -54.900, "lng": -67.600 }
+  ],
+  "_ayuda_accesos": "Puntos intermedios para entrar a puertos dentro de golfos/bahías (opcional). Se dibujan entre el punto del carril y el puerto.",
+  "accesos": {
+    "pmy": [ { "lat": -42.950, "lng": -64.150 } ],
+    "sae": [ { "lat": -41.000, "lng": -64.300 } ],
+    "ush": [ { "lat": -54.870, "lng": -68.000 } ]
+  }
+}

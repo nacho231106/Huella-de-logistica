@@ -1,0 +1,16 @@
+{
+  "_ayuda": "Puertos del carril costero. 'acceso' = id del punto del carril (ver ruta.json) por donde el buque entra/sale del puerto. Coordenadas aproximadas: revisarlas. Para agregar un puerto, copiá un bloque y cambiá los datos.",
+  "puertos": [
+    { "id": "bue", "nombre": "Puerto de Buenos Aires", "provincia": "CABA", "lat": -34.600, "lng": -58.370, "acceso": "c0" },
+    { "id": "mdp", "nombre": "Puerto de Mar del Plata", "provincia": "Buenos Aires", "lat": -38.040, "lng": -57.535, "acceso": "c3" },
+    { "id": "bbl", "nombre": "Puerto de Bahía Blanca (Ing. White)", "provincia": "Buenos Aires", "lat": -38.790, "lng": -62.270, "acceso": "c5" },
+    { "id": "sae", "nombre": "Puerto San Antonio Este", "provincia": "Río Negro", "lat": -40.800, "lng": -64.880, "acceso": "c6" },
+    { "id": "pmy", "nombre": "Puerto Madryn", "provincia": "Chubut", "lat": -42.740, "lng": -65.035, "acceso": "c8" },
+    { "id": "crd", "nombre": "Puerto de Comodoro Rivadavia", "provincia": "Chubut", "lat": -45.860, "lng": -67.465, "acceso": "c9" },
+    { "id": "pde", "nombre": "Puerto Deseado", "provincia": "Santa Cruz", "lat": -47.750, "lng": -65.900, "acceso": "c10" },
+    { "id": "psj", "nombre": "Puerto San Julián", "provincia": "Santa Cruz", "lat": -49.300, "lng": -67.720, "acceso": "c12" },
+    { "id": "pqu", "nombre": "Punta Quilla", "provincia": "Santa Cruz", "lat": -50.120, "lng": -68.400, "acceso": "c13" },
+    { "id": "rgl", "nombre": "Puerto de Río Gallegos", "provincia": "Santa Cruz", "lat": -51.620, "lng": -69.210, "acceso": "c14" },
+    { "id": "ush", "nombre": "Puerto de Ushuaia", "provincia": "Tierra del Fuego", "lat": -54.810, "lng": -68.300, "acceso": "c19" }
+  ]
+}

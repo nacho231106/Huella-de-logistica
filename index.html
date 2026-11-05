@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora de huella · Transporte</title>
+  <meta name="description" content="Calculá la huella de carbono del transporte de tu carga por el carril costero patagónico." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">[Logo Vergara]</div>
+      <div>
+        <div class="brand-name">Calculadora de huella de carbono</div>
+        <div class="brand-sub">Transporte de cargas · Carril costero patagónico</div>
+      </div>
+    </div>
+    <div class="powered">Metodología y cálculo: <strong>Coralia Environmental</strong></div>
+  </header>
+
+  <main class="shell">
+    <section class="card">
+      <div class="card-head">
+        <div class="title-row">
+          <h1>Transporte de <input id="carga" class="inline-input" placeholder="tu carga (ej.: contenedores de pescado congelado)" /></h1>
+        </div>
+        <p class="sub">Cargá cada tramo del viaje desde el origen hasta el destino. Por ejemplo: camión de tu depósito al Puerto de Buenos Aires y buque de Buenos Aires a Ushuaia.</p>
+        <div id="aviso-factores" class="notice" hidden>
+          <strong>Versión de prueba.</strong> Algunos factores de emisión son valores de ejemplo y todavía no están verificados.
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="col-left">
+          <div id="tramos"></div>
+          <button id="agregar" class="link-btn" type="button">+ Agregar tramo</button>
+        </div>
+
+        <div class="col-right">
+          <div id="map" class="map" role="img" aria-label="Mapa del recorrido"></div>
+          <div id="map-hint" class="map-hint">Elegí los lugares de Desde y Hasta en las sugerencias y el recorrido aparece acá.</div>
+
+          <div class="summary">
+            <div>
+              <div class="summary-label">Huella total del transporte</div>
+              <div class="summary-value"><span id="total">0</span> kg CO<sub>2</sub>e</div>
+            </div>
+            <div class="summary-meta">
+              <div><span id="km-total">0</span> km en total · <span id="n-tramos">1 tramo</span></div>
+              <div><span id="tkm-total">0</span> t·km</div>
+            </div>
+          </div>
+
+          <ul id="desglose" class="breakdown"></ul>
+        </div>
+      </div>
+
+      <div class="card-foot">
+        <button id="limpiar" class="btn btn-ghost" type="button">Limpiar</button>
+        <button id="imprimir" class="btn btn-primary" type="button">Descargar resumen</button>
+      </div>
+    </section>
+
+    <p class="footnote">Las distancias son estimadas y se pueden corregir a mano. Fórmula: distancia (km) × carga (t) × factor de emisión del modo (kg CO<sub>2</sub>e / t·km).</p>
+  </main>
+
+  <template id="tpl-tramo">
+    <article class="tramo">
+      <div class="tramo-head">
+        <span class="tramo-tag"><span class="tramo-icon">🚚</span> TRAMO <span class="tramo-n">1</span></span>
+        <button class="tramo-del" type="button" aria-label="Quitar tramo">✕</button>
+      </div>
+      <div class="grid-2">
+        <label class="field">
+          <span>Desde</span>
+          <div class="ac">
+            <input class="in-desde" autocomplete="off" placeholder="Buscá un puerto o lugar" />
+            <ul class="ac-list" hidden></ul>
+          </div>
+        </label>
+        <label class="field">
+          <span>Hasta</span>
+          <div class="ac">
+            <input class="in-hasta" autocomplete="off" placeholder="Buscá un puerto o lugar" />
+            <ul class="ac-list" hidden></ul>
+          </div>
+        </label>
+      </div>
+      <label class="field">
+        <span>Modo de transporte</span>
+        <select class="in-modo"></select>
+      </label>
+      <p class="tramo-msg" hidden></p>
+      <div class="grid-3">
+        <label class="field">
+          <span>Distancia (km)</span>
+          <input class="in-dist" type="number" min="0" step="any" inputmode="decimal" />
+        </label>
+        <label class="field">
+          <span>Peso transportado (kg)</span>
+          <input class="in-peso" type="number" min="0" step="any" inputmode="decimal" />
+        </label>
+        <label class="field">
+          <span>Volumen transportado (m³)</span>
+          <input class="in-vol" type="number" min="0" step="any" inputmode="decimal" />
+        </label>
+      </div>
+      <p class="hint">Completá al menos uno: peso o volumen. <span class="tramo-res"></span></p>
+    </article>
+  </template>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

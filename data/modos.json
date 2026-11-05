@@ -1,0 +1,43 @@
+{
+  "_ayuda": "Modos de transporte y factores de emisión. factor = kg CO2e por tonelada por km (kg CO2e / t·km). tipo 'maritimo' usa el carril de puertos; 'terrestre' busca la ruta por calle/ruta. IMPORTANTE: los valores con verificar=true son de EJEMPLO y hay que reemplazarlos por los reales (con su fuente).",
+  "toneladas_por_m3": 1.0,
+  "_ayuda_m3": "Si se carga solo volumen, se pasa a toneladas con este valor (regla peso/medida 1 m3 = 1 t). Ajustar si Vergara usa otra.",
+  "modos": [
+    {
+      "id": "buque-vergara",
+      "nombre": "Buque Vergara · carril costero",
+      "icono": "🚢",
+      "tipo": "maritimo",
+      "factor": 0.016,
+      "fuente": "[Completar: dato propio de Vergara (consumo de combustible / carga transportada)]",
+      "verificar": true
+    },
+    {
+      "id": "camion-articulado",
+      "nombre": "Camión articulado (semirremolque)",
+      "icono": "🚚",
+      "tipo": "terrestre",
+      "factor": 0.08,
+      "fuente": "[Completar fuente]",
+      "verificar": true
+    },
+    {
+      "id": "camion-rigido",
+      "nombre": "Camión rígido",
+      "icono": "🚛",
+      "tipo": "terrestre",
+      "factor": 0.2,
+      "fuente": "[Completar fuente]",
+      "verificar": true
+    },
+    {
+      "id": "ferrocarril",
+      "nombre": "Ferrocarril de carga",
+      "icono": "🚆",
+      "tipo": "terrestre",
+      "factor": 0.03,
+      "fuente": "[Completar fuente]",
+      "verificar": true
+    }
+  ]
+}
