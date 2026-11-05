@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Certificado de huella</title>
+  <meta name="description" content="Verificá un certificado de huella de carbono del transporte con su código." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar no-print">
+    <a class="brand" href="index.html">
+      <span class="brand-logo" aria-hidden="true">[Logo]</span>
+      <span>
+        <span class="brand-name" data-naviera>Naviera Barge</span>
+        <span class="brand-sub">Huella de carbono del transporte</span>
+      </span>
+    </a>
+    <nav class="nav"><a class="nav-link" href="index.html">Calculadora</a><span id="cuenta" class="nav"></span></nav>
+  </header>
+
+  <main class="wrap">
+    <section class="card pad no-print">
+      <div class="otp">
+        <label class="field"><span>Código del certificado</span><input id="codigo" placeholder="HC-2026-XXXXXXXX" /></label>
+        <button class="btn" id="verificar" type="button">Verificar</button>
+      </div>
+    </section>
+    <article class="card certificado" id="cert" hidden></article>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="lib.js"></script>
+  <script src="certificado.js"></script>
+</body>
+</html>

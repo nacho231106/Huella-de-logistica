@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Huella Fluvial Naviera Barge</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: una columna de formulario + panel de resultado; abajo compensación y supuestos. Paleta: río del Paraná (barro/limo) + verde Coralia */
+:root{
+  --bg:#f3f4ef; --surface:#ffffff; --fg:#1d2420; --muted:#5e6862; --line:#d9ddd3;
+  --river:#8a6a3f; --river-soft:#efe6d6; --green:#1f5a43; --green-ink:#ffffff; --green-soft:#e1efe7;
+  --up:#a14a2a; --down:#2b6a8f;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141916; --surface:#1c2320; --fg:#e7ebe5; --muted:#9aa49d; --line:#2f3934;
+  --river:#cfa874; --river-soft:#2c261c; --green:#5fb38c; --green-ink:#0f1a14; --green-soft:#1d3229;
+  --up:#e58a68; --down:#79b5d9; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141916; --surface:#1c2320; --fg:#e7ebe5; --muted:#9aa49d; --line:#2f3934;
+  --river:#cfa874; --river-soft:#2c261c; --green:#5fb38c; --green-ink:#0f1a14; --green-soft:#1d3229;
+  --up:#e58a68; --down:#79b5d9; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+header{display:grid;gap:8px}
+.proto{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--river);background:var(--river-soft);padding:4px 10px;border-radius:4px;justify-self:start}
+h1{font-family:var(--display);font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-size:22px;margin:0;text-wrap:balance}
+.lead{color:var(--muted);max-width:65ch;margin:0}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px;display:grid;gap:18px;min-width:0}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+label{display:grid;gap:6px;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+select,input{font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;width:100%;text-transform:none;letter-spacing:0}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.qty{display:grid;grid-template-columns:1fr 130px;gap:8px}
+.river{position:relative;height:56px;margin-top:4px}
+.river svg{width:100%;height:100%;display:block;overflow:visible}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:3px 10px;border-radius:999px;border:1px solid currentColor}
+.chip.up{color:var(--up)} .chip.down{color:var(--down)}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.result{background:var(--green);color:var(--green-ink);border-color:transparent}
+.result .eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8;font-weight:600}
+.big{font-family:var(--display);font-size:clamp(40px,7vw,56px);line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:.38em;font-family:var(--body);font-weight:500}
+.calc{font-family:var(--mono);font-size:13px;display:grid;gap:6px;border-top:1px solid color-mix(in srgb,var(--green-ink) 25%,transparent);padding-top:14px}
+.calc div{display:flex;justify-content:space-between;gap:12px;font-variant-numeric:tabular-nums}
+.calc span:first-child{opacity:.8}
+.scope{font-size:13px;opacity:.85;margin:0}
+.projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.projects{grid-template-columns:1fr}}
+.proj{display:grid;gap:8px;text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;cursor:pointer}
+.proj[aria-pressed="true"]{border-color:var(--green);box-shadow:0 0 0 2px var(--green) inset}
+.proj .tag{font-family:var(--mono);font-size:11px;color:var(--river);text-transform:uppercase;letter-spacing:.06em}
+.proj strong{font-size:16px}
+.proj .meta{font-size:13px;color:var(--muted)}
+.proj .price{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--line);padding-top:8px;font-variant-numeric:tabular-nums}
+.proj .price b{font-family:var(--display);font-size:20px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:12px 18px;cursor:pointer;background:var(--green);color:var(--green-ink)}
+.btn.ghost{background:transparent;color:var(--green);border:1px solid var(--green)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.checkout{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.checkout p{margin:0}
+.steps{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.steps li{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.steps li.done{background:var(--green-soft);color:var(--green);border-color:transparent;font-weight:600}
+.steps li.now{border-color:var(--green);color:var(--fg);font-weight:600}
+.otp{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end}
+@media (max-width:480px){.otp{grid-template-columns:1fr}}
+.cert{border:1px dashed var(--green);border-radius:10px;padding:18px;display:grid;gap:6px;font-size:14px}
+.cert code{font-family:var(--mono)}
+.cta{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;background:var(--river-soft);border-radius:10px;padding:20px 22px}
+.cta p{margin:0;max-width:60ch}
+.cta a{color:var(--river);font-weight:600}
+.roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.roles{grid-template-columns:1fr}}
+.role{border-top:3px solid var(--river);padding-top:10px;display:grid;gap:4px;font-size:14px}
+.role b{font-size:15px}
+.role span{color:var(--muted)}
+details{font-size:14px;color:var(--muted)}
+summary{cursor:pointer;font-weight:600;color:var(--fg)}
+details ul{padding-left:18px;display:grid;gap:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="proto">Prototipo interno · Coralia</span>
+    <h1>Huella de carbono de tu envío por la hidrovía</h1>
+    <p class="lead">Calculá las emisiones del tramo fluvial que Naviera Barge realiza para tu carga y, si querés, compensalas con créditos de carbono de proyectos de Coralia.</p>
+  </header>
+
+  <div class="grid">
+    <section class="panel" aria-labelledby="t-envio">
+      <h2 id="t-envio">Datos del envío</h2>
+      <div class="row">
+        <label for="origen">Puerto de origen<select id="origen"></select></label>
+        <label for="destino">Puerto de destino<select id="destino"></select></label>
+      </div>
+      <div>
+        <div class="river" aria-hidden="true"><svg id="riverSvg" viewBox="0 0 600 56" preserveAspectRatio="none"></svg></div>
+        <p class="hint" id="sentidoTxt"></p>
+      </div>
+      <div class="row">
+        <label for="convoy">Tipo de convoy<select id="convoy">
+          <option value="0.017">Empujador + 2 barcazas</option>
+          <option value="0.010" selected>Empujador + 4/5 barcazas</option>
+          <option value="0.0074">Empujador + 6 o más barcazas</option>
+        </select></label>
+        <label for="carga">Tipo de carga<select id="carga">
+          <option value="solido">Granel sólido (granos, minerales)</option>
+          <option value="liquido">Granel líquido (aceites, combustibles)</option>
+          <option value="contenedor">Contenedores</option>
+        </select></label>
+      </div>
+      <label for="cantidad">Cantidad transportada
+        <div class="qty">
+          <input id="cantidad" type="number" min="0" step="any" value="1500" inputmode="decimal">
+          <select id="unidad" aria-label="Unidad"></select>
+        </div>
+      </label>
+      <p class="hint" id="convHint"></p>
+    </section>
+
+    <section class="panel result" aria-live="polite" aria-labelledby="t-res">
+      <span class="eyebrow" id="t-res">Huella del tramo fluvial</span>
+      <div class="big" id="total">–</div>
+      <div class="calc">
+        <div><span>Distancia por río</span><span id="r-km"></span></div>
+        <div><span>Carga en toneladas</span><span id="r-t"></span></div>
+        <div><span>Toneladas-km</span><span id="r-tkm"></span></div>
+        <div><span>Factor base (GLEC, WTW)</span><span id="r-ef"></span></div>
+        <div><span>Ajuste por sentido</span><span id="r-adj"></span></div>
+        <div><span>Factor aplicado</span><span id="r-efa"></span></div>
+      </div>
+      <p class="scope">Alcance: tramo fluvial puerto a puerto operado por Naviera Barge. No incluye fletes terrestres ni operaciones portuarias.</p>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="t-comp">
+    <div style="display:grid;gap:6px">
+      <h2 id="t-comp">Compensá tu huella</h2>
+      <p class="hint">Cada crédito equivale a 1 t CO₂e, por eso se redondea hacia arriba. Los créditos se retiran en el registro a nombre de tu empresa.</p>
+    </div>
+    <div class="projects" id="projects"></div>
+    <div class="checkout">
+      <p id="checkoutTxt"></p>
+      <button class="btn" id="goComp" type="button">Compensar</button>
+    </div>
+
+    <div id="flow" hidden style="display:grid;gap:16px">
+      <ol class="steps" id="steps"></ol>
+      <div id="stepEmail" class="otp">
+        <label for="email">Email de tu empresa<input id="email" type="email" placeholder="logistica@tuempresa.com"></label>
+        <button class="btn" id="sendCode" type="button">Enviarme un código</button>
+      </div>
+      <div id="stepCode" class="otp" hidden>
+        <label for="code">Código de 6 dígitos que te enviamos<input id="code" inputmode="numeric" maxlength="6" placeholder="123456"></label>
+        <button class="btn" id="verify" type="button">Confirmar</button>
+      </div>
+      <div id="stepCert" class="cert" hidden></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <p><b>¿Querés conocer la huella completa de tu cadena logística?</b> Sumá los fletes en camión, el acopio y las operaciones en puerto. El equipo de Coralia te ayuda a medirla.</p>
+    <a class="btn ghost" href="https://coraliae.com" target="_blank" rel="noopener">Hablar con Coralia</a>
+  </section>
+
+  <section class="panel" aria-labelledby="t-acc">
+    <h2 id="t-acc">Quién accede y cómo</h2>
+    <div class="roles">
+      <div class="role"><b>Cliente de Naviera</b><span>Sin usuario ni contraseña: entra con su email y un código de un solo uso. Ve solo sus cálculos y certificados.</span></div>
+      <div class="role"><b>Coralia</b><span>Ingreso con cuenta corporativa @coraliae.com. Revisa los datos cargados y gestiona los retiros de créditos.</span></div>
+      <div class="role"><b>Sylvera</b><span>Lista cerrada de emails autorizados. Ve los cálculos enviados a validación y deja su conformidad.</span></div>
+    </div>
+  </section>
+
+  <details>
+    <summary>Supuestos de este prototipo</summary>
+    <ul>
+      <li>Factores de emisión: GLEC Framework v2.0, convoyes de empuje en vías navegables interiores, gasóleo, well-to-wheel (TTW + WTT). 2 barcazas: 0,017; 4/5 barcazas: 0,010; 6 barcazas: 0,0074 kg CO₂e/t·km. En la versión final se reemplazan por el factor propio de la flota, calculado con el inventario de Naviera Barge.</li>
+      <li>Distancias por río: aproximadas a partir de la extensión total de la hidrovía (3.442 km, Cáceres–Nueva Palmira) y la Confluencia en el km 1.238 del Paraná. Se reemplazan por la tabla de distancias de Naviera.</li>
+      <li>Ajuste por sentido (+25 % aguas arriba, −15 % aguas abajo): valor ilustrativo, sin respaldo todavía. Se define con los datos de consumo por sentido del inventario.</li>
+      <li>Conversiones: m³ a toneladas con densidad típica (granel sólido 0,75 t/m³; líquido 0,88 t/m³); 1 TEU = 10 t promedio.</li>
+      <li>Proyectos y precios de créditos: de ejemplo. Se reemplazan por los proyectos reales de Coralia.</li>
+      <li>El envío de código por email y el certificado son simulados.</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+// Posición aproximada de cada puerto en km de río, medidos desde Nueva Palmira hacia aguas arriba
+const PUERTOS=[
+  {id:"np",n:"Nueva Palmira (UY)",km:0},
+  {id:"ros",n:"Rosario (AR)",km:300},
+  {id:"slo",n:"San Lorenzo (AR)",km:325},
+  {id:"sfe",n:"Santa Fe (AR)",km:470},
+  {id:"bar",n:"Barranqueras (AR)",km:1070},
+  {id:"pil",n:"Pilar (PY)",km:1230},
+  {id:"vil",n:"Villeta (PY)",km:1460},
+  {id:"asu",n:"Asunción (PY)",km:1500},
+  {id:"con",n:"Concepción (PY)",km:1810},
+  {id:"cor",n:"Corumbá (BR)",km:2760}
+];
+const DENS={solido:0.75,liquido:0.88};
+const ADJ={up:1.25,down:0.85};
+const PROY=[
+  {id:"p1",tag:"Forestación nativa",n:"Restauración de bosque chaqueño",lugar:"Chaco, Argentina",std:"Verra VCS · 2024",usd:18},
+  {id:"p2",tag:"Metano evitado",n:"Biodigestores en tambos",lugar:"Santa Fe, Argentina",std:"Gold Standard · 2023",usd:12},
+  {id:"p3",tag:"Conservación",n:"Humedales del Delta del Paraná",lugar:"Entre Ríos, Argentina",std:"Verra VCS · 2024",usd:15}
+];
+const $=id=>document.getElementById(id);
+const fmt=(n,d=0)=>n.toLocaleString("es-AR",{minimumFractionDigits:d,maximumFractionDigits:d});
+let proySel="p1", last={};
+
+function fillPorts(){
+  for(const s of [$("origen"),$("destino")]) s.innerHTML=PUERTOS.map(p=>`<option value="${p.id}">${p.n}</option>`).join("");
+  $("origen").value="asu"; $("destino").value="ros";
+}
+function fillUnits(){
+  const c=$("carga").value, u=$("unidad"), prev=u.value;
+  const opts=c==="contenedor"?[["teu","TEU"],["t","toneladas"]]:[["t","toneladas"],["m3","m³"]];
+  u.innerHTML=opts.map(o=>`<option value="${o[0]}">${o[1]}</option>`).join("");
+  if(opts.some(o=>o[0]===prev)) u.value=prev;
+}
+function drawRiver(a,b){
+  const W=600,max=2760,x=k=>20+(k/max)*(W-40);
+  const xa=x(a.km),xb=x(b.km),lo=Math.min(xa,xb),hi=Math.max(xa,xb);
+  let s=`<line x1="20" y1="22" x2="${W-20}" y2="22" stroke="var(--river)" stroke-width="6" stroke-linecap="round" opacity=".25"/>`;
+  s+=`<line x1="${lo}" y1="22" x2="${hi}" y2="22" stroke="var(--river)" stroke-width="6" stroke-linecap="round"/>`;
+  for(const p of PUERTOS){const on=p.id===a.id||p.id===b.id;s+=`<circle cx="${x(p.km)}" cy="22" r="${on?6:3}" fill="${on?'var(--green)':'var(--muted)'}"/>`;}
+  s+=`<text x="20" y="50" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">Nueva Palmira</text>`;
+  s+=`<text x="${W-20}" y="50" font-size="11" fill="var(--muted)" text-anchor="end" font-family="IBM Plex Mono,monospace">Corumbá</text>`;
+  $("riverSvg").innerHTML=s;
+}
+function calc(){
+  const a=PUERTOS.find(p=>p.id===$("origen").value), b=PUERTOS.find(p=>p.id===$("destino").value);
+  drawRiver(a,b);
+  const km=Math.abs(b.km-a.km);
+  const carga=$("carga").value, unidad=$("unidad").value, q=Math.max(0,parseFloat($("cantidad").value)||0);
+  let t=q, conv="";
+  if(unidad==="m3"){t=q*DENS[carga];conv=`${fmt(q)} m³ × ${fmt(DENS[carga],2)} t/m³ = ${fmt(t)} t`;}
+  if(unidad==="teu"){t=q*10;conv=`${fmt(q)} TEU × 10 t/TEU = ${fmt(t)} t`;}
+  $("convHint").textContent=conv?`Conversión: ${conv}`:"Ingresá toneladas, m³ o TEU según cómo factures el envío.";
+  if(km===0){
+    $("sentidoTxt").innerHTML="Elegí puertos distintos de origen y destino.";
+    $("total").innerHTML="–";["r-km","r-t","r-tkm","r-ef","r-adj","r-efa"].forEach(i=>$(i).textContent="–");
+    last={kg:0};renderCheckout();return;
+  }
+  const up=b.km>a.km, adj=up?ADJ.up:ADJ.down;
+  $("sentidoTxt").innerHTML=up?`<span class="chip up">↑ Aguas arriba</span> navegando contra la corriente: el convoy consume más combustible.`:`<span class="chip down">↓ Aguas abajo</span> navegando a favor de la corriente: menor consumo.`;
+  const ef=parseFloat($("convoy").value), tkm=t*km, kg=tkm*ef*adj;
+  $("total").innerHTML=kg>=1000?`${fmt(kg/1000,2)} <small>t CO₂e</small>`:`${fmt(kg,0)} <small>kg CO₂e</small>`;
+  $("r-km").textContent=`${fmt(km)} km`;
+  $("r-t").textContent=`${fmt(t)} t`;
+  $("r-tkm").textContent=fmt(tkm);
+  $("r-ef").textContent=`${fmt(ef,4)} kg/t·km`;
+  $("r-adj").textContent=`× ${fmt(adj,2)}`;
+  $("r-efa").textContent=`${fmt(ef*adj,4)} kg/t·km`;
+  last={kg,km,t,a,b};
+  renderCheckout();
+}
+function renderProjects(){
+  $("projects").innerHTML=PROY.map(p=>`<button type="button" class="proj" data-id="${p.id}" aria-pressed="${p.id===proySel}">
+    <span class="tag">${p.tag} · ejemplo</span><strong>${p.n}</strong>
+    <span class="meta">${p.lugar}<br>${p.std}</span>
+    <span class="price"><span class="meta">por t CO₂e</span><b>USD ${p.usd}</b></span></button>`).join("");
+  document.querySelectorAll(".proj").forEach(el=>el.onclick=()=>{proySel=el.dataset.id;renderProjects();renderCheckout();});
+}
+function renderCheckout(){
+  const p=PROY.find(x=>x.id===proySel), cred=Math.ceil((last.kg||0)/1000);
+  last.cred=cred; last.p=p;
+  $("checkoutTxt").innerHTML=cred?`<b>${cred} créditos</b> de “${p.n}” · total <b>USD ${fmt(cred*p.usd)}</b>`:"Completá los datos del envío para ver el costo.";
+  $("goComp").disabled=!cred;
+}
+const STEPS=["Verificá tu email","Revisión Coralia","Validación Sylvera","Créditos retirados"];
+function setStep(i){ $("steps").innerHTML=STEPS.map((s,k)=>`<li class="${k<i?'done':k===i?'now':''}">${s}</li>`).join(""); }
+
+$("goComp").onclick=()=>{ $("flow").hidden=false; setStep(0); $("stepEmail").hidden=false; $("stepCode").hidden=true; $("stepCert").hidden=true; $("email").focus(); };
+$("sendCode").onclick=()=>{ if(!$("email").value.includes("@")){$("email").focus();return;} $("stepCode").hidden=false; $("code").focus(); };
+$("verify").onclick=()=>{
+  if(($("code").value||"").replace(/\D/g,"").length!==6){$("code").focus();return;}
+  $("stepEmail").hidden=true;$("stepCode").hidden=true;setStep(1);
+  const id="NB-"+new Date().getFullYear()+"-"+String(Math.floor(Math.random()*9000)+1000);
+  $("stepCert").hidden=false;
+  $("stepCert").innerHTML=`<b>Solicitud enviada · <code>${id}</code></b>
+    <span>${last.a.n} → ${last.b.n} · ${fmt(last.t)} t · ${fmt(last.km)} km</span>
+    <span>Huella: ${fmt(last.kg/1000,2)} t CO₂e · ${last.cred} créditos de “${last.p.n}” (USD ${fmt(last.cred*last.p.usd)})</span>
+    <span class="hint">Te avisamos a ${$("email").value} cuando Coralia revise los datos y Sylvera valide el cálculo. Después se retiran los créditos y recibís el certificado.</span>`;
+};
+
+["origen","destino","convoy","cantidad","unidad"].forEach(id=>$(id).addEventListener("input",calc));
+$("carga").addEventListener("input",()=>{fillUnits();calc();});
+fillPorts();fillUnits();renderProjects();calc();
+</script>
+
+</body>
+</html>

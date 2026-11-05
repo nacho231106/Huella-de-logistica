@@ -1,41 +1,66 @@
-# Huella de logística — Calculadora de transporte
+# Huella de logística · Naviera Barge
 
-App web para calcular la huella de carbono del transporte de cargas por el carril costero patagónico. Cada viaje se carga por tramos (camión, buque, ferrocarril) y la app calcula:
+App web para calcular la huella de carbono del transporte de cargas de Naviera Barge, con metodología de Coralia Environmental. Junta dos versiones: la calculadora por tramos con mapa y el prototipo fluvial (`prototipos/huella-fluvial-naviera.html`).
 
-```
-huella del tramo (kg CO2e) = distancia (km) × carga (t) × factor del modo (kg CO2e / t·km)
-```
+- **Vías:** hidrovía Paraná-Paraguay (convoyes de barcazas, con ajuste por sentido de la corriente), carril costero patagónico (buque) y terrestre (camión, tren). Un envío puede combinar varios tramos.
+- **Fórmula:** `huella del tramo = distancia (km) × carga (t) × factor (kg CO2e/t·km) × ajuste por sentido (solo hidrovía)`. El cálculo que se guarda se rehace en el servidor con los factores vigentes.
+- **Compensación** opcional con créditos de carbono (1 crédito = 1 t CO2e, se redondea hacia arriba).
+- **Flujo:** borrador → enviado (revisión Coralia) → en validación (Sylvera) → validado (certificado) → créditos retirados. Cualquier revisión puede dejar observaciones.
 
-Es HTML/CSS/JS puro, sin compilar. Se puede subir tal cual a Vercel (proyecto estático) o abrir en VS Code con **Go Live**. Si se abre con doble clic no anda, porque los datos se leen con `fetch`.
+## Páginas
+
+| Página | Para qué |
+|---|---|
+| `index.html` | Calculadora: tramos, mapa, compensación y envío con código por email |
+| `panel.html` | Ingreso y panel según perfil (ver abajo) |
+| `certificado.html?c=CODIGO` | Certificado público y verificable, imprimible a PDF |
+
+## Perfiles
+
+| Perfil | Cómo entra | Qué ve |
+|---|---|---|
+| Cliente | Email + código de 6 dígitos o link mágico. N° de booking opcional | Solo sus cálculos y certificados |
+| Coralia | Google o Microsoft, solo emails `@coraliae.com` | Todo: cálculos, factores, estados, exportes CSV y lista de Sylvera |
+| Sylvera | Google o Microsoft, solo emails de la lista `sylvera_autorizados` | Solo los cálculos enviados a validación |
+
+Los permisos los aplica la base (RLS en Supabase), no la página, así que nadie ve datos ajenos aunque modifique el código.
 
 ## Archivos
 
-| Archivo | Qué tiene | Quién lo toca |
-|---|---|---|
-| `index.html`, `styles.css` | Diseño y estructura | Diseño |
-| `app.js` | Lógica: rutas, mapa, cálculo | Diseño/código |
-| `data/modos.json` | Modos de transporte y **factores de emisión** | Datos |
-| `data/puertos.json` | Puertos del carril (nombre, coordenadas, punto de acceso) | Datos |
-| `data/ruta.json` | Puntos del carril en el mar, de norte a sur | Datos |
+| Archivo | Qué tiene |
+|---|---|
+| `index.html`, `panel.html`, `certificado.html`, `styles.css` | Diseño |
+| `app.js`, `panel.js`, `certificado.js`, `lib.js` | Lógica |
+| `config.js` | URL y clave pública de Supabase, nombre de la naviera. **Para mudar a otro Supabase se cambia solo esto.** |
+| `data/puertos.json` | Puertos de cada vía (coordenadas; km de río en la hidrovía) |
+| `data/ruta.json` | Geometría del carril costero y del río |
+| `data/modos.json` | Respaldo local de factores y proyectos (se usa solo sin conexión con la base) |
+| `supabase/*.sql` | Estructura de la base, en orden |
 
-## Para cargar datos (`data/`)
+## Datos que se editan en Supabase (proyecto `vergara-huella`)
 
-- **Factores** (`modos.json`): `factor` va en kg CO2e por tonelada·km. Completá `fuente` y poné `"verificar": false` cuando el valor ya esté confirmado. Mientras quede alguno con `verificar: true`, la app muestra el aviso "Versión de prueba". **Los valores que hay ahora son de ejemplo.**
-- **Volumen → toneladas**: `toneladas_por_m3` (por ahora 1 m³ = 1 t). Ajustarlo al criterio de Vergara.
-- **Puertos** (`puertos.json`): cada puerto tiene `acceso`, que es el id del punto del carril donde se engancha a la ruta del buque.
-- **Carril** (`ruta.json`): la distancia marítima es la suma de los tramos entre puntos. Si Vergara tiene las distancias reales entre puertos, conviene usarlas; hoy son estimaciones geométricas.
+- `modos`: factores de emisión. Coralia también los edita desde el panel.
+- `proyectos`: proyectos de compensación y precio por t.
+- `config`: densidades (m³ → t), toneladas por TEU y ajuste por sentido.
+- `sylvera_autorizados`: emails de Sylvera. También se edita desde el panel de Coralia.
 
-## Servicios externos (gratis, sin clave)
+## Puesta en marcha (pendiente)
 
-- Mapa: OpenStreetMap + Leaflet.
-- Buscador de lugares: Nominatim (OSM).
-- Ruta en camión: OSRM demo. Si no responde, se usa la línea recta × 1,3 y se avisa.
+1. **Correr `supabase/02_v2_hidrovia_compensacion.sql`:** supabase.com → proyecto `vergara-huella` → SQL Editor → pegar todo → Run. Hasta que se corra, la calculadora funciona con los datos locales pero no se puede guardar.
+2. **Emails con código:** en Authentication → Email Templates, en "Magic Link" y en "Confirm signup", agregar `Tu código: {{ .Token }}` para que el mail traiga el código además del link.
+3. **URLs:** en Authentication → URL Configuration, poner la URL de Vercel como Site URL y agregar `https://TU-URL/**` en Redirect URLs.
+4. **Google y Microsoft (Coralia/Sylvera):** en Authentication → Providers, activar Google y Azure con sus credenciales. En Azure conviene restringir al tenant de Coralia.
+5. **Vercel:** importar el repo (Framework: Other, sin build). Cada push a `main` se publica solo.
 
-Para producción con mucho tráfico conviene pasar a un proveedor con clave (MapTiler, Mapbox o Google).
+## Pendiente de datos
 
-## Pendiente
+- [ ] Logo de Naviera Barge (hoy dice `[Logo]`)
+- [ ] Factor propio de la flota (hidrovía y buque costero) con su fuente
+- [ ] Tabla real de distancias entre puertos
+- [ ] Ajuste por sentido con datos de consumo (hoy es ilustrativo)
+- [ ] Proyectos y precios reales de Coralia
+- [ ] Factores terrestres con fuente
+- [ ] Validar el N° de booking contra datos de Naviera Barge (hoy es opcional y no se valida)
+- [ ] Pago de los créditos: hoy se registra la intención y Coralia gestiona el retiro
 
-- [ ] Logo y colores de Vergara (hoy: `[Logo Vergara]`)
-- [ ] Factores de emisión reales con su fuente
-- [ ] Confirmar puertos y recorrido real del carril (¿hasta dónde llega?)
-- [ ] Distancias reales entre puertos, si las tienen
+Para probar en local: VS Code → **Go Live**. Con doble clic no anda.

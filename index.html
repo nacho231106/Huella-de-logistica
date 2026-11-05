@@ -2,37 +2,58 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculadora de huella · Transporte</title>
-  <meta name="description" content="Calculá la huella de carbono del transporte de tu carga por el carril costero patagónico." />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Huella de carbono · Naviera Barge</title>
+  <meta name="description" content="Calculá la huella de carbono del transporte de tu carga por la hidrovía y el carril costero, y compensala con créditos de carbono." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="brand">
-      <div class="brand-logo" aria-hidden="true">[Logo Vergara]</div>
-      <div>
-        <div class="brand-name">Calculadora de huella de carbono</div>
-        <div class="brand-sub">Transporte de cargas · Carril costero patagónico</div>
-      </div>
-    </div>
-    <div class="powered">Metodología y cálculo: <strong>Coralia Environmental</strong></div>
+    <a class="brand" href="index.html">
+      <span class="brand-logo" aria-hidden="true">[Logo]</span>
+      <span>
+        <span class="brand-name" data-naviera>Naviera Barge</span>
+        <span class="brand-sub">Huella de carbono del transporte</span>
+      </span>
+    </a>
+    <nav class="nav" id="cuenta"></nav>
   </header>
 
-  <main class="shell">
-    <section class="card">
+  <main class="wrap">
+    <section class="hero">
+      <span class="proto">Prototipo · Metodología Coralia</span>
+      <h1>Huella de carbono de tu envío</h1>
+      <p class="lead">Calculá las emisiones de cada tramo que <span data-naviera>Naviera Barge</span> realiza para tu carga, por la hidrovía Paraná-Paraguay o por el carril costero patagónico. Sumá los fletes en camión o tren y, si querés, compensá la huella con créditos de carbono.</p>
+    </section>
+
+    <section class="card" aria-labelledby="t-calc">
       <div class="card-head">
-        <div class="title-row">
-          <h1>Transporte de <input id="carga" class="inline-input" placeholder="tu carga (ej.: contenedores de pescado congelado)" /></h1>
+        <h2 id="t-calc" class="sr-only">Datos del envío</h2>
+        <div class="grid-4">
+          <label class="field span-2">
+            <span>Carga</span>
+            <input id="carga" placeholder="Ej.: soja a granel, contenedores refrigerados" />
+          </label>
+          <label class="field">
+            <span>Tipo de carga</span>
+            <select id="tipo-carga">
+              <option value="solido">Granel sólido (granos, minerales)</option>
+              <option value="liquido">Granel líquido (aceites, combustibles)</option>
+              <option value="contenedor">Contenedores</option>
+              <option value="general">Carga general</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>N° de booking <em>(opcional)</em></span>
+            <input id="booking" placeholder="Ej.: NB-123456" />
+          </label>
         </div>
-        <p class="sub">Cargá cada tramo del viaje desde el origen hasta el destino. Por ejemplo: camión de tu depósito al Puerto de Buenos Aires y buque de Buenos Aires a Ushuaia.</p>
-        <div id="aviso-factores" class="notice" hidden>
-          <strong>Versión de prueba.</strong> Algunos factores de emisión son valores de ejemplo y todavía no están verificados.
-        </div>
+        <div id="aviso-factores" class="notice" hidden></div>
+        <div id="aviso-edicion" class="notice notice-info" hidden></div>
       </div>
 
       <div class="card-body">
@@ -42,32 +63,101 @@
         </div>
 
         <div class="col-right">
-          <div id="map" class="map" role="img" aria-label="Mapa del recorrido"></div>
-          <div id="map-hint" class="map-hint">Elegí los lugares de Desde y Hasta en las sugerencias y el recorrido aparece acá.</div>
-
-          <div class="summary">
-            <div>
-              <div class="summary-label">Huella total del transporte</div>
-              <div class="summary-value"><span id="total">0</span> kg CO<sub>2</sub>e</div>
-            </div>
-            <div class="summary-meta">
-              <div><span id="km-total">0</span> km en total · <span id="n-tramos">1 tramo</span></div>
-              <div><span id="tkm-total">0</span> t·km</div>
-            </div>
+          <div class="map-wrap">
+            <div id="map" class="map" role="img" aria-label="Mapa del recorrido"></div>
+            <div class="map-legend"><span class="lg lg-river"></span>Hidrovía <span class="lg lg-sea"></span>Carril costero <span class="lg lg-road"></span>Terrestre</div>
           </div>
+          <p id="map-hint" class="hint">Elegí origen y destino en las sugerencias y el recorrido aparece en el mapa.</p>
 
-          <ul id="desglose" class="breakdown"></ul>
+          <div class="result" aria-live="polite">
+            <span class="eyebrow">Huella total del envío</span>
+            <div class="big" id="total">–</div>
+            <div class="calc">
+              <div><span>Distancia total</span><span id="r-km">–</span></div>
+              <div><span>Toneladas-km</span><span id="r-tkm">–</span></div>
+              <div><span>Tramos</span><span id="r-n">–</span></div>
+              <div><span>Intensidad</span><span id="r-int">–</span></div>
+            </div>
+            <ul id="desglose" class="breakdown"></ul>
+          </div>
         </div>
-      </div>
-
-      <div class="card-foot">
-        <button id="limpiar" class="btn btn-ghost" type="button">Limpiar</button>
-        <button id="imprimir" class="btn btn-primary" type="button">Descargar resumen</button>
       </div>
     </section>
 
-    <p class="footnote">Las distancias son estimadas y se pueden corregir a mano. Fórmula: distancia (km) × carga (t) × factor de emisión del modo (kg CO<sub>2</sub>e / t·km).</p>
+    <section class="card pad" aria-labelledby="t-comp">
+      <div class="sec-head">
+        <h2 id="t-comp">Compensá tu huella <em class="opt">(opcional)</em></h2>
+        <p class="hint">Cada crédito equivale a 1 t CO₂e, por eso se redondea hacia arriba. Los créditos se retiran en el registro a nombre de tu empresa, después de que Coralia revise y Sylvera valide el cálculo.</p>
+      </div>
+      <div class="projects" id="projects"></div>
+      <p class="checkout" id="checkoutTxt"></p>
+    </section>
+
+    <section class="card pad" aria-labelledby="t-env" id="sec-enviar">
+      <div class="sec-head">
+        <h2 id="t-env">Enviá el cálculo</h2>
+        <p class="hint">Coralia revisa los datos, Sylvera valida el cálculo y recibís el certificado. Podés guardarlo como borrador y seguir después.</p>
+      </div>
+      <ol class="steps" id="steps"></ol>
+
+      <div class="grid-2">
+        <label class="field">
+          <span>Empresa</span>
+          <input id="empresa" placeholder="Razón social" autocomplete="organization" />
+        </label>
+        <div class="actions">
+          <button id="btn-borrador" class="btn ghost" type="button">Guardar borrador</button>
+          <button id="btn-enviar" class="btn" type="button">Enviar a revisión</button>
+        </div>
+      </div>
+
+      <div id="login" class="login" hidden>
+        <p class="hint"><b>Ingresá con tu email.</b> Sin usuario ni contraseña: te mandamos un código de 6 dígitos (o un link) para confirmar que sos vos.</p>
+        <div class="otp" id="stepEmail">
+          <label class="field"><span>Email de tu empresa</span><input id="email" type="email" placeholder="logistica@tuempresa.com" autocomplete="email" /></label>
+          <button class="btn" id="sendCode" type="button">Enviarme el código</button>
+        </div>
+        <div class="otp" id="stepCode" hidden>
+          <label class="field"><span>Código de 6 dígitos</span><input id="code" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" /></label>
+          <button class="btn" id="verify" type="button">Confirmar y enviar</button>
+        </div>
+      </div>
+
+      <p id="msg" class="msg" hidden></p>
+      <div id="ok" class="cert" hidden></div>
+    </section>
+
+    <section class="cta">
+      <p><b>¿Querés conocer la huella completa de tu cadena logística?</b> Sumá el acopio y las operaciones en puerto. El equipo de Coralia te ayuda a medirla.</p>
+      <a class="btn ghost" id="cta-coralia" href="https://coraliae.com" target="_blank" rel="noopener">Hablar con Coralia</a>
+    </section>
+
+    <section class="card pad" aria-labelledby="t-acc">
+      <h2 id="t-acc">Quién accede y cómo</h2>
+      <div class="roles">
+        <div class="role"><b>Cliente de <span data-naviera>Naviera Barge</span></b><span>Entra con su email y un código de un solo uso (o link). Opcional: N° de booking. Ve solo sus cálculos y certificados.</span></div>
+        <div class="role"><b>Coralia</b><span>Ingreso con cuenta Google o Microsoft @coraliae.com. Ve todo: cálculos, datos cargados, estados y exportes.</span></div>
+        <div class="role"><b>Sylvera</b><span>Mismo ingreso, con una lista cerrada de emails autorizados. Ve solo los cálculos enviados a validación.</span></div>
+      </div>
+    </section>
+
+    <details class="supuestos">
+      <summary>Supuestos y metodología</summary>
+      <ul>
+        <li><b>Fórmula:</b> huella del tramo = distancia (km) × carga (t) × factor del modo (kg CO₂e/t·km) × ajuste por sentido (solo hidrovía). El cálculo guardado se rehace en el servidor con los factores vigentes.</li>
+        <li><b>Hidrovía:</b> factores GLEC Framework v2.0 para convoyes de empuje en vías navegables interiores, gasóleo, well-to-wheel: 2 barcazas 0,017; 4/5 barcazas 0,010; 6 o más 0,0074 kg CO₂e/t·km. En la versión final se reemplazan por el factor propio de la flota.</li>
+        <li><b>Distancias por río:</b> aproximadas a partir de la extensión de la hidrovía (3.442 km, Cáceres–Nueva Palmira). Se reemplazan por la tabla de distancias de Naviera Barge.</li>
+        <li><b>Ajuste por sentido</b> (+25 % aguas arriba, −15 % aguas abajo): valor ilustrativo, sin respaldo todavía. Se define con los datos de consumo por sentido.</li>
+        <li><b>Carril costero y modos terrestres:</b> factores de ejemplo, a verificar. Distancia marítima estimada sobre el carril; terrestre por ruta (OSRM) o línea recta × 1,3 si no hay servicio.</li>
+        <li><b>Conversiones:</b> m³ a toneladas con densidad típica (granel sólido 0,75 t/m³; líquido 0,88 t/m³; general 1 t/m³); 1 TEU = 10 t promedio.</li>
+        <li><b>Proyectos y precios de créditos:</b> de ejemplo. Se reemplazan por los proyectos reales de Coralia.</li>
+      </ul>
+    </details>
   </main>
+
+  <footer class="foot">
+    Metodología y cálculo: <b>Coralia Environmental</b> · <a href="certificado.html">Verificar un certificado</a>
+  </footer>
 
   <template id="tpl-tramo">
     <article class="tramo">
@@ -75,6 +165,10 @@
         <span class="tramo-tag"><span class="tramo-icon">🚚</span> TRAMO <span class="tramo-n">1</span></span>
         <button class="tramo-del" type="button" aria-label="Quitar tramo">✕</button>
       </div>
+      <label class="field">
+        <span>Modo de transporte</span>
+        <select class="in-modo"></select>
+      </label>
       <div class="grid-2">
         <label class="field">
           <span>Desde</span>
@@ -91,30 +185,29 @@
           </div>
         </label>
       </div>
-      <label class="field">
-        <span>Modo de transporte</span>
-        <select class="in-modo"></select>
-      </label>
+      <p class="sentido hint" hidden></p>
       <p class="tramo-msg" hidden></p>
-      <div class="grid-3">
+      <div class="grid-qty">
         <label class="field">
           <span>Distancia (km)</span>
           <input class="in-dist" type="number" min="0" step="any" inputmode="decimal" />
         </label>
         <label class="field">
-          <span>Peso transportado (kg)</span>
-          <input class="in-peso" type="number" min="0" step="any" inputmode="decimal" />
-        </label>
-        <label class="field">
-          <span>Volumen transportado (m³)</span>
-          <input class="in-vol" type="number" min="0" step="any" inputmode="decimal" />
+          <span>Cantidad transportada</span>
+          <span class="qty">
+            <input class="in-cant" type="number" min="0" step="any" inputmode="decimal" />
+            <select class="in-unidad" aria-label="Unidad"></select>
+          </span>
         </label>
       </div>
-      <p class="hint">Completá al menos uno: peso o volumen. <span class="tramo-res"></span></p>
+      <p class="hint conv"></p>
     </article>
   </template>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="lib.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

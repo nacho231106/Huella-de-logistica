@@ -1,43 +1,22 @@
 {
-  "_ayuda": "Modos de transporte y factores de emisión. factor = kg CO2e por tonelada por km (kg CO2e / t·km). tipo 'maritimo' usa el carril de puertos; 'terrestre' busca la ruta por calle/ruta. IMPORTANTE: los valores con verificar=true son de EJEMPLO y hay que reemplazarlos por los reales (con su fuente).",
-  "toneladas_por_m3": 1.0,
-  "_ayuda_m3": "Si se carga solo volumen, se pasa a toneladas con este valor (regla peso/medida 1 m3 = 1 t). Ajustar si Vergara usa otra.",
+  "_ayuda": "RESPALDO LOCAL. Los datos oficiales están en Supabase (tablas modos, proyectos y config) y son los que usa el cálculo guardado. Este archivo solo se usa si no hay conexión con Supabase (por ejemplo, probando con Go Live sin internet). Si cambiás un factor en Supabase, actualizalo también acá.",
+  "config": {
+    "densidades": { "solido": 0.75, "liquido": 0.88, "general": 1 },
+    "toneladas_por_teu": 10,
+    "ajuste_sentido": { "arriba": 1.25, "abajo": 0.85, "ilustrativo": true }
+  },
   "modos": [
-    {
-      "id": "buque-vergara",
-      "nombre": "Buque Vergara · carril costero",
-      "icono": "🚢",
-      "tipo": "maritimo",
-      "factor": 0.016,
-      "fuente": "[Completar: dato propio de Vergara (consumo de combustible / carga transportada)]",
-      "verificar": true
-    },
-    {
-      "id": "camion-articulado",
-      "nombre": "Camión articulado (semirremolque)",
-      "icono": "🚚",
-      "tipo": "terrestre",
-      "factor": 0.08,
-      "fuente": "[Completar fuente]",
-      "verificar": true
-    },
-    {
-      "id": "camion-rigido",
-      "nombre": "Camión rígido",
-      "icono": "🚛",
-      "tipo": "terrestre",
-      "factor": 0.2,
-      "fuente": "[Completar fuente]",
-      "verificar": true
-    },
-    {
-      "id": "ferrocarril",
-      "nombre": "Ferrocarril de carga",
-      "icono": "🚆",
-      "tipo": "terrestre",
-      "factor": 0.03,
-      "fuente": "[Completar fuente]",
-      "verificar": true
-    }
+    { "id": "convoy-2",   "nombre": "Convoy · empujador + 2 barcazas",       "icono": "⛴️", "via": "hidrovia",  "factor": 0.017,  "fuente": "GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW", "verificar": true, "orden": 1 },
+    { "id": "convoy-4-5", "nombre": "Convoy · empujador + 4/5 barcazas",     "icono": "⛴️", "via": "hidrovia",  "factor": 0.010,  "fuente": "GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW", "verificar": true, "orden": 2 },
+    { "id": "convoy-6",   "nombre": "Convoy · empujador + 6 o más barcazas", "icono": "⛴️", "via": "hidrovia",  "factor": 0.0074, "fuente": "GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW", "verificar": true, "orden": 3 },
+    { "id": "buque-vergara", "nombre": "Buque Naviera Barge · carril costero", "icono": "🚢", "via": "costero", "factor": 0.016, "fuente": "[Completar: dato propio de Naviera Barge]", "verificar": true, "orden": 11 },
+    { "id": "camion-articulado", "nombre": "Camión articulado (semirremolque)", "icono": "🚚", "via": "terrestre", "factor": 0.08, "fuente": "[Completar fuente]", "verificar": true, "orden": 12 },
+    { "id": "camion-rigido", "nombre": "Camión rígido", "icono": "🚛", "via": "terrestre", "factor": 0.2, "fuente": "[Completar fuente]", "verificar": true, "orden": 13 },
+    { "id": "ferrocarril", "nombre": "Ferrocarril de carga", "icono": "🚆", "via": "terrestre", "factor": 0.03, "fuente": "[Completar fuente]", "verificar": true, "orden": 14 }
+  ],
+  "proyectos": [
+    { "id": "p1", "tag": "Forestación nativa", "nombre": "Restauración de bosque chaqueño", "lugar": "Chaco, Argentina", "estandar": "Verra VCS · 2024", "usd_por_t": 18, "ejemplo": true },
+    { "id": "p2", "tag": "Metano evitado", "nombre": "Biodigestores en tambos", "lugar": "Santa Fe, Argentina", "estandar": "Gold Standard · 2023", "usd_por_t": 12, "ejemplo": true },
+    { "id": "p3", "tag": "Conservación", "nombre": "Humedales del Delta del Paraná", "lugar": "Entre Ríos, Argentina", "estandar": "Verra VCS · 2024", "usd_por_t": 15, "ejemplo": true }
   ]
 }

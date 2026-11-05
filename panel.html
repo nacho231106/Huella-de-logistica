@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Panel · Huella de carbono</title>
+  <meta name="description" content="Cálculos de huella de carbono: seguimiento, revisión y validación." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-logo" aria-hidden="true">[Logo]</span>
+      <span>
+        <span class="brand-name" data-naviera>Naviera Barge</span>
+        <span class="brand-sub">Huella de carbono del transporte</span>
+      </span>
+    </a>
+    <nav class="nav"><a class="nav-link" href="index.html">Calculadora</a><span id="cuenta" class="nav"></span></nav>
+  </header>
+
+  <main class="wrap">
+    <!-- Ingreso -->
+    <section id="v-login" class="card pad" hidden>
+      <div class="sec-head">
+        <h1>Ingresar</h1>
+        <p class="hint">Sin usuario ni contraseña.</p>
+      </div>
+      <div class="two">
+        <div class="login">
+          <b>Clientes de <span data-naviera>Naviera Barge</span></b>
+          <p class="hint">Te mandamos un código de 6 dígitos (o un link) a tu email.</p>
+          <div class="otp" id="l-stepEmail">
+            <label class="field"><span>Email</span><input id="l-email" type="email" placeholder="logistica@tuempresa.com" autocomplete="email" /></label>
+            <button class="btn" id="l-send" type="button">Enviarme el código</button>
+          </div>
+          <div class="otp" id="l-stepCode" hidden>
+            <label class="field"><span>Código de 6 dígitos</span><input id="l-code" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" /></label>
+            <button class="btn" id="l-verify" type="button">Ingresar</button>
+          </div>
+        </div>
+        <div class="login">
+          <b>Equipo Coralia y Sylvera</b>
+          <p class="hint">Con tu cuenta corporativa. Coralia: solo emails @coraliae.com. Sylvera: emails autorizados.</p>
+          <div class="sso">
+            <button class="btn ghost" id="l-google" type="button">Ingresar con Google</button>
+            <button class="btn ghost" id="l-ms" type="button">Ingresar con Microsoft</button>
+          </div>
+        </div>
+      </div>
+      <p id="l-msg" class="msg" hidden></p>
+    </section>
+
+    <!-- Panel -->
+    <section id="v-panel" hidden>
+      <div class="sec-head" style="margin-bottom:16px">
+        <h1 id="p-title">Mis cálculos</h1>
+        <p class="hint" id="p-sub"></p>
+      </div>
+      <div class="two">
+        <div class="card pad">
+          <div class="toolbar">
+            <div class="filters" id="filtros"></div>
+            <div class="sso">
+              <a class="btn small" href="index.html" id="b-nuevo">+ Nuevo cálculo</a>
+              <button class="btn small ghost" id="b-csv" type="button" hidden>Exportar CSV</button>
+            </div>
+          </div>
+          <input id="buscar" type="search" placeholder="Buscar por empresa, carga, email o booking" />
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Fecha</th><th>Envío</th><th class="num">Huella</th><th>Estado</th></tr></thead>
+              <tbody id="lista"></tbody>
+            </table>
+          </div>
+        </div>
+        <aside class="card pad" id="detalle"><p class="hint">Elegí un cálculo para ver el detalle.</p></aside>
+      </div>
+
+      <!-- Solo Coralia -->
+      <div id="admin" class="two" style="margin-top:24px" hidden>
+        <section class="card pad">
+          <div class="sec-head">
+            <h2>Factores de emisión</h2>
+            <p class="hint">Se aplican a los cálculos nuevos y a los que se editen. Al confirmar un valor con su fuente, destildá “a verificar”.</p>
+          </div>
+          <div class="table-wrap">
+            <table class="mini">
+              <thead><tr><th>Modo</th><th>Factor (kg/t·km)</th><th>Fuente</th><th>A verificar</th><th></th></tr></thead>
+              <tbody id="modos"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="card pad">
+          <div class="sec-head">
+            <h2>Sylvera · emails autorizados</h2>
+            <p class="hint">Solo estos emails ven los cálculos enviados a validación.</p>
+          </div>
+          <div class="otp">
+            <label class="field"><span>Email</span><input id="sy-email" type="email" placeholder="nombre@sylvera.com" /></label>
+            <button class="btn" id="sy-add" type="button">Agregar</button>
+          </div>
+          <div class="table-wrap"><table class="mini"><tbody id="sy-lista"></tbody></table></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">Metodología y cálculo: <b>Coralia Environmental</b> · <a href="certificado.html">Verificar un certificado</a></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="lib.js"></script>
+  <script src="panel.js"></script>
+</body>
+</html>
