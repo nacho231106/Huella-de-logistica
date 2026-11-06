@@ -14,6 +14,8 @@ update public.modos set orden = orden + 10,
   nombre = replace(nombre, 'Buque Vergara', 'Buque Interbarge'),
   fuente = replace(fuente, 'Vergara', 'Interbarge')
   where id in ('buque-vergara','camion-articulado','camion-rigido','ferrocarril') and orden < 10;
+-- Interbarge opera solo en la hidrovía: el buque del carril costero queda desactivado
+update public.modos set activo = false where id = 'buque-vergara';
 insert into public.modos (id, nombre, icono, tipo, via, factor, fuente, verificar, orden) values
   ('convoy-2',   'Convoy · empujador + 2 barcazas',       '⛴️', 'maritimo', 'hidrovia', 0.017,  'GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW. Reemplazar por factor propio de la flota.', true, 1),
   ('convoy-4-5', 'Convoy · empujador + 4/5 barcazas',     '⛴️', 'maritimo', 'hidrovia', 0.010,  'GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW. Reemplazar por factor propio de la flota.', true, 2),

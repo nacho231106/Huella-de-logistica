@@ -1,4 +1,4 @@
-/* Calculadora de huella por tramos: hidrovía, carril costero y terrestre.
+/* Calculadora de huella por tramos: hidrovía Paraná-Paraguay y tramos terrestres.
  * Huella del tramo = distancia (km) × carga (t) × factor (kg CO2e/t·km) × ajuste por sentido (solo hidrovía)
  */
 (() => {
@@ -13,8 +13,8 @@
   let editId = null;          // id de envío que se está editando
   let envioActual = null;
 
-  const VIAS = { hidrovia: "Hidrovía Paraná-Paraguay", costero: "Carril costero patagónico", terrestre: "Terrestre" };
-  const COLOR = { hidrovia: "#8a6a3f", costero: "#2b6a8f", terrestre: "#c4620a" };
+  const VIAS = { hidrovia: "Hidrovía Paraná-Paraguay", terrestre: "Terrestre" };
+  const COLOR = { hidrovia: "#1a7f4b", terrestre: "#c4620a" };
   const modoDe = (t) => CAT.modos.find((m) => m.id === t.modo);
   const tipoCarga = () => $("#tipo-carga").value;
 
@@ -26,15 +26,6 @@
     return 2 * R * Math.asin(Math.sqrt(h));
   }
   const largo = (pts) => pts.slice(1).reduce((s, p, i) => s + km(pts[i], p), 0);
-
-  function rutaCostera(pA, pB) {
-    const { carril, accesos = {} } = CAT.ruta.costero;
-    const iA = carril.findIndex((c) => c.id === pA.acceso), iB = carril.findIndex((c) => c.id === pB.acceso);
-    if (iA < 0 || iB < 0) return null;
-    const medio = iA <= iB ? carril.slice(iA, iB + 1) : carril.slice(iB, iA + 1).reverse();
-    const pts = [pA, ...(accesos[pA.id] || []), ...medio, ...(accesos[pB.id] || []).slice().reverse(), pB];
-    return { pts, km: largo(pts) };
-  }
 
   function rutaHidrovia(pA, pB) {
     const puntos = CAT.ruta.hidrovia.puntos;
@@ -64,7 +55,6 @@
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 18,
     }).addTo(map);
-    L.polyline(CAT.ruta.costero.carril.map((c) => [c.lat, c.lng]), { color: COLOR.costero, weight: 2, opacity: 0.35, dashArray: "4 6" }).addTo(map);
     L.polyline(CAT.ruta.hidrovia.puntos.map((c) => [c.lat, c.lng]), { color: COLOR.hidrovia, weight: 3, opacity: 0.35 }).addTo(map);
     CAT.puertos.forEach((p) => {
       L.marker([p.lat, p.lng], { icon: L.divIcon({ className: "port-dot", iconSize: [10, 10] }) })
@@ -140,9 +130,9 @@
       const seq = ++t.seq;
       let ruta = null;
       const pA = CAT.puertos.find((p) => p.id === t.desde.puerto), pB = CAT.puertos.find((p) => p.id === t.hasta.puerto);
-      if (modo.via === "costero" || modo.via === "hidrovia") {
+      if (modo.via === "hidrovia") {
         if (pA && pB && pA.via === modo.via && pB.via === modo.via) {
-          ruta = modo.via === "costero" ? rutaCostera(pA, pB) : rutaHidrovia(pA, pB);
+          ruta = rutaHidrovia(pA, pB);
         } else {
           msg.textContent = `Para este modo elegí puertos de la ${VIAS[modo.via].toLowerCase()} en Desde y Hasta.`;
           msg.hidden = false;
@@ -189,7 +179,7 @@
         li.addEventListener("mousedown", (e) => { e.preventDefault(); elegir(item); });
         items.push({ li, item }); list.appendChild(li);
       };
-      ["hidrovia", "costero"].forEach((via) => {
+      ["hidrovia"].forEach((via) => {
         const ps = puertos.filter((p) => p.via === via);
         if (!ps.length) return;
         sec(VIAS[via]);
@@ -204,7 +194,9 @@
       onPick(null, true);
       const q = norm(input.value), modo = getModo();
       const via = modo && modo.via !== "terrestre" ? modo.via : null;
-      const puertos = CAT.puertos.filter((p) => (!via || p.via === via) && (!q || norm(`${p.nombre} ${p.provincia} ${p.pais}`).includes(q)));
+      const puertos = CAT.puertos
+        .filter((p) => (!via || p.via === via) && (!q || norm(`${p.nombre} ${p.provincia} ${p.pais}`).includes(q)))
+        .sort((a, b) => (q && norm(b.nombre).includes(q)) - (q && norm(a.nombre).includes(q)));
       render(puertos, []);
       clearTimeout(geoTimer);
       if (via || q.length < 3) return;
@@ -249,8 +241,8 @@
     $("#tramos").appendChild(el);
 
     const sel = $(".in-modo", el);
-    sel.innerHTML = `<option value="">Elegí un modo (convoy, buque, camión, tren…)</option>` +
-      ["hidrovia", "costero", "terrestre"].map((via) => {
+    sel.innerHTML = `<option value="">Elegí un modo (convoy de barcazas, camión, tren…)</option>` +
+      ["hidrovia", "terrestre"].map((via) => {
         const ms = CAT.modos.filter((m) => m.via === via);
         return ms.length ? `<optgroup label="${VIAS[via]}">${ms.map((m) => `<option value="${m.id}">${m.icono} ${esc(m.nombre)}</option>`).join("")}</optgroup>` : "";
       }).join("");

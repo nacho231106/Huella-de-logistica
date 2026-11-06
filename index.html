@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ffffff" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Huella de carbono · Interbarge</title>
-  <meta name="description" content="Calculá la huella de carbono del transporte de tu carga por la hidrovía y el carril costero, y compensala con créditos de carbono." />
+  <meta name="description" content="Calculá la huella de carbono del transporte de tu carga por la hidrovía Paraná-Paraguay, y compensala con créditos de carbono." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
@@ -23,7 +23,7 @@
     <div class="intro-in">
       <span class="intro-brand"><span class="brand-logo" aria-hidden="true">[Logo]</span><span data-naviera>Interbarge</span> <span class="x">×</span> Coralia</span>
       <h1 id="intro-t">Huella<span class="dot">.</span></h1>
-      <p class="intro-lead">Medí la huella de carbono de cada envío que hacés con <span data-naviera>Interbarge</span>, por la hidrovía o por el carril costero, en un par de minutos.</p>
+      <p class="intro-lead">Medí la huella de carbono de cada envío que hacés con <span data-naviera>Interbarge</span> por la hidrovía Paraná-Paraguay, en un par de minutos.</p>
       <ol class="intro-steps">
         <li><b>1</b><span><strong>Cargá tu viaje</strong> Puertos, modo de transporte y cantidad de carga, tramo por tramo.</span></li>
         <li><b>2</b><span><strong>Mirá tu CO₂e</strong> Calculado con metodología GLEC y revisado por Coralia.</span></li>
@@ -51,7 +51,7 @@
     <section class="hero">
       <span class="proto">Prototipo · Metodología Coralia</span>
       <h1>Huella de carbono de tu envío</h1>
-      <p class="lead">Calculá las emisiones de cada tramo que <span data-naviera>Interbarge</span> realiza para tu carga, por la hidrovía Paraná-Paraguay o por el carril costero patagónico. Sumá los fletes en camión o tren y, si querés, compensá la huella con créditos de carbono.</p>
+      <p class="lead">Calculá las emisiones de cada tramo que <span data-naviera>Interbarge</span> realiza para tu carga, por la hidrovía Paraná-Paraguay. Sumá los fletes en camión o tren y, si querés, compensá la huella con créditos de carbono.</p>
     </section>
 
     <section class="card" aria-labelledby="t-calc">
@@ -89,7 +89,7 @@
         <div class="col-right">
           <div class="map-wrap">
             <div id="map" class="map" role="img" aria-label="Mapa del recorrido"></div>
-            <div class="map-legend"><span class="lg lg-river"></span>Hidrovía <span class="lg lg-sea"></span>Carril costero <span class="lg lg-road"></span>Terrestre</div>
+            <div class="map-legend"><span class="lg lg-river"></span>Hidrovía <span class="lg lg-road"></span>Terrestre</div>
           </div>
           <p id="map-hint" class="hint">Elegí origen y destino en las sugerencias y el recorrido aparece en el mapa.</p>
 
@@ -172,7 +172,7 @@
         <li><b>Hidrovía:</b> factores GLEC Framework v2.0 para convoyes de empuje en vías navegables interiores, gasóleo, well-to-wheel: 2 barcazas 0,017; 4/5 barcazas 0,010; 6 o más 0,0074 kg CO₂e/t·km. En la versión final se reemplazan por el factor propio de la flota.</li>
         <li><b>Distancias por río:</b> aproximadas a partir de la extensión de la hidrovía (3.442 km, Cáceres–Nueva Palmira). Se reemplazan por la tabla de distancias de Interbarge.</li>
         <li><b>Ajuste por sentido</b> (+25 % aguas arriba, −15 % aguas abajo): valor ilustrativo, sin respaldo todavía. Se define con los datos de consumo por sentido.</li>
-        <li><b>Carril costero y modos terrestres:</b> factores de ejemplo, a verificar. Distancia marítima estimada sobre el carril; terrestre por ruta (OSRM) o línea recta × 1,3 si no hay servicio.</li>
+        <li><b>Modos terrestres:</b> factores de ejemplo, a verificar. Distancia por ruta (OSRM) o línea recta × 1,3 si no hay servicio.</li>
         <li><b>Conversiones:</b> m³ a toneladas con densidad típica (granel sólido 0,75 t/m³; líquido 0,88 t/m³; general 1 t/m³); 1 TEU = 10 t promedio.</li>
         <li><b>Proyectos y precios de créditos:</b> de ejemplo. Se reemplazan por los proyectos reales de Coralia.</li>
       </ul>

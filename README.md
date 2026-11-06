@@ -2,7 +2,7 @@
 
 App web para calcular la huella de carbono del transporte de cargas de Interbarge, con metodología de Coralia Environmental. Junta dos versiones: la calculadora por tramos con mapa y el prototipo fluvial (`prototipos/huella-fluvial-naviera.html`).
 
-- **Vías:** hidrovía Paraná-Paraguay (convoyes de barcazas, con ajuste por sentido de la corriente), carril costero patagónico (buque) y terrestre (camión, tren). Un envío puede combinar varios tramos.
+- **Vías:** hidrovía Paraná-Paraguay (convoyes de barcazas, con ajuste por sentido de la corriente) y tramos terrestres (camión, tren) hasta o desde el puerto. Un envío puede combinar varios tramos.
 - **Fórmula:** `huella del tramo = distancia (km) × carga (t) × factor (kg CO2e/t·km) × ajuste por sentido (solo hidrovía)`. El cálculo que se guarda se rehace en el servidor con los factores vigentes.
 - **Compensación** opcional con créditos de carbono (1 crédito = 1 t CO2e, se redondea hacia arriba).
 - **Flujo:** borrador → enviado (revisión Coralia) → en validación (Sylvera) → validado (certificado) → créditos retirados. Cualquier revisión puede dejar observaciones.
@@ -32,8 +32,8 @@ Los permisos los aplica la base (RLS en Supabase), no la página, así que nadie
 | `index.html`, `panel.html`, `certificado.html`, `styles.css` | Diseño |
 | `app.js`, `panel.js`, `certificado.js`, `lib.js` | Lógica |
 | `config.js` | URL y clave pública de Supabase, nombre de la naviera. **Para mudar a otro Supabase se cambia solo esto.** |
-| `data/puertos.json` | Puertos de cada vía (coordenadas; km de río en la hidrovía) |
-| `data/ruta.json` | Geometría del carril costero y del río |
+| `data/puertos.json` | Puertos de la hidrovía (coordenadas y km de río) |
+| `data/ruta.json` | Geometría del río |
 | `data/modos.json` | Respaldo local de factores y proyectos (se usa solo sin conexión con la base) |
 | `supabase/*.sql` | Estructura de la base, en orden |
 
@@ -55,7 +55,7 @@ Los permisos los aplica la base (RLS en Supabase), no la página, así que nadie
 ## Pendiente de datos
 
 - [ ] Logo de Interbarge (hoy dice `[Logo]`)
-- [ ] Factor propio de la flota (hidrovía y buque costero) con su fuente
+- [ ] Factor propio de la flota de los convoyes con su fuente
 - [ ] Tabla real de distancias entre puertos
 - [ ] Ajuste por sentido con datos de consumo (hoy es ilustrativo)
 - [ ] Proyectos y precios reales de Coralia
