@@ -1,5 +1,5 @@
 {
-  "_ayuda": "Puertos de la hidrovía Paraná-Paraguay. 'km' = km de río desde Nueva Palmira hacia aguas arriba. Coordenadas y km APROXIMADOS: reemplazar por la tabla de distancias de Interbarge.",
+  "_ayuda": "Puertos de la hidrovía Paraná-Paraguay. 'km' = km de río desde Nueva Palmira hacia aguas arriba. Coordenadas y km APROXIMADOS: reemplazar por la tabla de distancias de InterBarge.",
   "puertos": [
     {
       "id": "np",

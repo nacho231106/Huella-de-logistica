@@ -14,7 +14,7 @@
   let envioActual = null;
 
   const VIAS = { hidrovia: "Hidrovía Paraná-Paraguay", terrestre: "Terrestre" };
-  const COLOR = { hidrovia: "#1a7f4b", terrestre: "#c4620a" };
+  const COLOR = { hidrovia: "#2f8475", terrestre: "#b32317" };
   const modoDe = (t) => CAT.modos.find((m) => m.id === t.modo);
   const tipoCarga = () => $("#tipo-carga").value;
 
@@ -70,7 +70,7 @@
       if (!t.ruta) return;
       const via = modoDe(t)?.via || "terrestre";
       const ll = t.ruta.pts.map((p) => [p.lat, p.lng]);
-      const punto = (p, txt) => L.circleMarker(p, { radius: 6, color: "#fff", weight: 2, fillColor: "#1f5a43", fillOpacity: 1 }).bindTooltip(txt);
+      const punto = (p, txt) => L.circleMarker(p, { radius: 6, color: "#fff", weight: 2, fillColor: "#002d62", fillOpacity: 1 }).bindTooltip(txt);
       t.layer = L.layerGroup([
         L.polyline(ll, { color: COLOR[via], weight: 4, opacity: 0.95, dashArray: t.ruta.estimada ? "6 6" : null }),
         punto(ll[0], t.desde.label), punto(ll[ll.length - 1], t.hasta.label),

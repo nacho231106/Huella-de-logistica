@@ -18,6 +18,7 @@
     cert.innerHTML = `
       <div class="cert-top">
         <div>
+          <div class="cert-logos"><img src="assets/interbarge.png" alt="InterBarge" /><img src="assets/coralia.png" alt="Coralia Environmental" /></div>
           <span class="proto">Certificado de huella de carbono</span>
           <h1 style="margin-top:10px">${esc(c.empresa || "Envío")}</h1>
           <p class="hint">${esc(c.carga || "")}</p>

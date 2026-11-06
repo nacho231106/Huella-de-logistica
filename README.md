@@ -1,6 +1,6 @@
-# Huella de logística · Interbarge
+# Huella de logística · InterBarge
 
-App web para calcular la huella de carbono del transporte de cargas de Interbarge, con metodología de Coralia Environmental. Junta dos versiones: la calculadora por tramos con mapa y el prototipo fluvial (`prototipos/huella-fluvial-naviera.html`).
+App web para calcular la huella de carbono del transporte de cargas de InterBarge, con metodología de Coralia Environmental. Junta dos versiones: la calculadora por tramos con mapa y el prototipo fluvial (`prototipos/huella-fluvial-naviera.html`).
 
 - **Vías:** hidrovía Paraná-Paraguay (convoyes de barcazas, con ajuste por sentido de la corriente) y tramos terrestres (camión, tren) hasta o desde el puerto. Un envío puede combinar varios tramos.
 - **Fórmula:** `huella del tramo = distancia (km) × carga (t) × factor (kg CO2e/t·km) × ajuste por sentido (solo hidrovía)`. El cálculo que se guarda se rehace en el servidor con los factores vigentes.
@@ -55,13 +55,13 @@ Los permisos los aplica la base (RLS en Supabase), no la página, así que nadie
 
 ## Pendiente de datos
 
-- [ ] Logo de Interbarge (hoy dice `[Logo]`)
+- [ ] Confirmar con InterBarge el uso de su logo (hoy `assets/interbarge.png`, tomado de interbarge.com) y pedir versión en alta calidad (SVG)
 - [ ] Factor propio de la flota de los convoyes con su fuente
 - [ ] Tabla real de distancias entre puertos
 - [ ] Ajuste por sentido con datos de consumo (hoy es ilustrativo)
 - [ ] Proyectos y precios reales de Coralia
 - [ ] Factores terrestres con fuente
-- [ ] Validar el N° de booking contra datos de Interbarge (hoy es opcional y no se valida)
+- [ ] Validar el N° de booking contra datos de InterBarge (hoy es opcional y no se valida)
 - [ ] Pago de los créditos: hoy se registra la intención y Coralia gestiona el retiro
 
 Para probar en local: VS Code → **Go Live**. Con doble clic no anda.
