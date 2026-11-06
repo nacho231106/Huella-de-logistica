@@ -384,3 +384,23 @@ body::before {
 body { position: relative; isolation: isolate; }
 body.intro-on::before { opacity: .9; }
 @media print { body::before { display: none; } }
+
+/* ---------- Huella terrestre ---------- */
+.pregunta { gap: 12px; }
+.segmento { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg {
+  font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+}
+.seg:hover { border-color: var(--green); color: var(--fg); }
+.seg[aria-checked="true"] { background: var(--green); border-color: var(--green); color: var(--green-ink); }
+.terrestre { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
+.terr-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.terr-head h3 { font-size: 17px; }
+.subir-remito { position: relative; overflow: hidden; }
+.subir-remito input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.pierna { display: grid; gap: 6px; }
+.pierna > b { font-size: 14px; }
+.grid-terr { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr) minmax(0, .8fr); gap: 0 12px; }
+@media (max-width: 720px) { .grid-terr { grid-template-columns: 1fr 1fr; } .grid-terr .field:first-child { grid-column: 1 / -1; } }
+@media (max-width: 520px) { .grid-terr { grid-template-columns: 1fr; } .seg { flex: 1 1 100%; } }

@@ -1,11 +1,13 @@
-/* Presupuesto a partir de la orden de compra: tramo fluvial con el factor propio de la flota.
- * Huella = distancia por río (km) × carga (t) × factor de la flota (kg CO2e/t·km)
+/* Presupuesto a partir de la orden de compra: tramo fluvial con el factor propio de la flota
+ * y, si el cliente quiere, tramos terrestres (camión o tren) antes y después del puerto.
+ * Huella de cada tramo = distancia (km) × carga (t) × factor (kg CO2e/t·km)
  */
 (() => {
   "use strict";
   const { fmt, esc, kgTxt } = H;
   const $ = (sel, el = document) => el.querySelector(sel);
   const MODO = "flota-interbarge";
+  const CAMION = "camion-articulado";   // medio terrestre por defecto
 
   let CAT;
   let archivo = null;      // File de la OC elegido por el cliente
@@ -13,6 +15,7 @@
   let proySel = "";        // "" = sin compensación
   let editId = null;
   let calc = { kg: 0 };    // último cálculo
+  let terrestre = false;   // ¿incluye tramos en camión?
 
   const usd = (n) => `USD ${fmt(n, 0)}`;
   const puerto = (id) => CAT.puertos.find((p) => p.id === id);
@@ -31,7 +34,7 @@
     if (opts.some(([v]) => v === prev)) sel.value = prev;
   }
 
-  function tramo() {
+  function tramoFluvial() {
     const a = puerto($("#origen").value), b = puerto($("#destino").value);
     return {
       modo: MODO,
@@ -45,21 +48,133 @@
     };
   }
 
+  // Tramos en camión: retiro (lugar → puerto de carga) y entrega (puerto de descarga → lugar)
+  function tramos() {
+    const fl = tramoFluvial();
+    if (!terrestre) return [fl];
+    const base = { cantidad: fl.cantidad, unidad: fl.unidad, tipo_carga: fl.tipo_carga, sentido: null };
+    const pierna = (etapa) => {
+      const lugar = $(`#${etapa}-lugar`).value.trim(), km = +$(`#${etapa}-km`).value || 0;
+      if (!lugar && !km) return null;
+      const sitio = { label: lugar || (etapa === "retiro" ? "Lugar de retiro" : "Lugar de entrega") };
+      return { ...base, modo: $(`#${etapa}-modo`).value || CAMION, etapa, dist: km, desde: etapa === "retiro" ? sitio : fl.hasta, hasta: etapa === "retiro" ? fl.desde : sitio };
+    };
+    return [pierna("retiro"), fl, pierna("entrega")].filter(Boolean);
+  }
+  const esFluvial = (t) => t.modo === MODO || t.via === "hidrovia";
+
+  function pintarModosTerrestres() {
+    const ms = CAT.modos.filter((m) => m.via === "terrestre");
+    const ops = ms.map((m) => `<option value="${esc(m.id)}">${m.icono} ${esc(m.nombre)}</option>`).join("");
+    ["#retiro-modo", "#entrega-modo"].forEach((sel) => { $(sel).innerHTML = ops; if (ms.some((m) => m.id === CAMION)) $(sel).value = CAMION; });
+  }
+
   // ---------- Cálculo y presupuesto ----------
   function recalcular() {
-    const t = tramo();
-    const r = H.calcularTramo(t, CAT);
-    calc = { ...r, t };
+    const lista = tramos();
+    const rs = lista.map((t) => ({ t, ...H.calcularTramo(t, CAT) }));
+    const fl = rs.find((r) => esFluvial(r.t));
+    const camion = rs.filter((r) => !esFluvial(r.t));
+    const kgCamion = camion.reduce((a, r) => a + r.kg, 0);
+    calc = { kg: fl.kg > 0 ? fl.kg + kgCamion : 0, fl, camion, tramos: lista };
+
+    const t = fl.t;
     const conv = $("#conv");
-    if (t.unidad === "m3" && t.cantidad) conv.textContent = `Conversión: ${fmt(t.cantidad)} m³ × ${fmt((CAT.config.densidades || {})[t.tipo_carga] ?? 1, 2)} t/m³ = ${fmt(r.ton, 1)} t`;
-    else if (t.unidad === "teu" && t.cantidad) conv.textContent = `Conversión: ${fmt(t.cantidad)} TEU × ${fmt(CAT.config.toneladas_por_teu ?? 10)} t/TEU = ${fmt(r.ton, 1)} t`;
+    if (t.unidad === "m3" && t.cantidad) conv.textContent = `Conversión: ${fmt(t.cantidad)} m³ × ${fmt((CAT.config.densidades || {})[t.tipo_carga] ?? 1, 2)} t/m³ = ${fmt(fl.ton, 1)} t`;
+    else if (t.unidad === "teu" && t.cantidad) conv.textContent = `Conversión: ${fmt(t.cantidad)} TEU × ${fmt(CAT.config.toneladas_por_teu ?? 10)} t/TEU = ${fmt(fl.ton, 1)} t`;
     else conv.textContent = "";
 
     const mismo = t.desde && t.hasta && t.desde.puerto === t.hasta.puerto;
-    $("#huella-txt").innerHTML = mismo ? "El puerto de carga y el de descarga son el mismo. Revisalos."
-      : r.kg > 0 ? `Huella del envío: <b>${kgTxt(r.kg)}</b> · ${esc(t.desde.label)} → ${esc(t.hasta.label)}, ${fmt(r.dist, 0)} km por río × ${fmt(r.ton, 1)} t × ${fmt(r.modo.factor, 4)} kg CO₂e/t·km (factor propio de la flota).`
-      : "Completá los puertos y la cantidad para ver el presupuesto.";
+    let txt = "Completá los puertos y la cantidad para ver el presupuesto.";
+    if (mismo) txt = "El puerto de carga y el de descarga son el mismo. Revisalos.";
+    else if (fl.kg > 0) {
+      const linea = (r, nombre) => `${nombre}${esFluvial(r.t) ? "" : ` (${esc(r.modo?.nombre || "sin medio")})`}: ${esc(r.t.desde?.label)} → ${esc(r.t.hasta?.label)}, ${fmt(r.dist, 0)} km × ${fmt(r.ton, 1)} t × ${fmt(r.modo?.factor ?? 0, 5)} kg CO₂e/t·km = <b>${kgTxt(r.kg)}</b>`;
+      txt = `Huella del envío: <b>${kgTxt(calc.kg)}</b>${camion.length ? ` (fluvial ${kgTxt(fl.kg)} + terrestre ${kgTxt(kgCamion)})` : ""}.<br>` +
+        [...camion.filter((r) => r.t.etapa === "retiro"), fl, ...camion.filter((r) => r.t.etapa === "entrega")]
+          .map((r) => linea(r, esFluvial(r.t) ? "Fluvial (factor propio de la flota)" : r.t.etapa === "retiro" ? "Planta → puerto" : "Puerto → planta")).join("<br>");
+    }
+    $("#huella-txt").innerHTML = txt;
+    if (terrestre && !CAT.modos.some((m) => m.via === "terrestre")) $("#terr-hint").textContent = "Faltan los factores terrestres en la base: corré la migración 04.";
     pintarOpciones();
+  }
+
+  // ---------- Distancia por ruta (OpenStreetMap) ----------
+  const rutaSeq = { retiro: 0, entrega: 0 };
+  async function rutaCamion(etapa) {
+    const lugar = $(`#${etapa}-lugar`).value.trim(), inKm = $(`#${etapa}-km`);
+    const p = puerto($(etapa === "retiro" ? "#origen" : "#destino").value);
+    const hint = $("#terr-hint");
+    if (!lugar || (inKm.value && !inKm.classList.contains("auto"))) return;
+    if (!p) { hint.textContent = `Elegí el puerto de ${etapa === "retiro" ? "carga" : "descarga"} para calcular la distancia.`; return; }
+    const seq = ++rutaSeq[etapa];
+    hint.textContent = "Calculando la distancia por ruta…";
+    try {
+      const g = await (await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=es&countrycodes=ar,uy,py,br,bo,cl&q=${encodeURIComponent(lugar)}`)).json();
+      if (!g.length) throw new Error(`no encontramos “${lugar}”`);
+      const a = { lat: +g[0].lat, lng: +g[0].lon }, b = { lat: p.lat, lng: p.lng };
+      const [o, d] = etapa === "retiro" ? [a, b] : [b, a];
+      const r = await (await fetch(`https://router.project-osrm.org/route/v1/driving/${o.lng},${o.lat};${d.lng},${d.lat}?overview=false`)).json();
+      const km = r.routes?.[0]?.distance / 1000;
+      if (!km) throw new Error("no hay ruta");
+      if (seq !== rutaSeq[etapa]) return;
+      inKm.value = Math.round(km); inKm.classList.add("auto");
+      const sitio = g[0].display_name.split(",").slice(0, 3).join(",");
+      hint.textContent = `${etapa === "retiro" ? `${sitio} → ${p.nombre}` : `${p.nombre} → ${sitio}`}: ${fmt(km, 0)} km por ruta. Podés corregirlo.`;
+    } catch (e) {
+      if (seq === rutaSeq[etapa]) hint.textContent = `No pudimos calcular la distancia (${e.message}). Cargá los km a mano.`;
+    }
+    recalcular();
+  }
+
+  function setTerrestre(v) {
+    terrestre = v;
+    $("#terr-si").setAttribute("aria-checked", v); $("#terr-no").setAttribute("aria-checked", !v);
+    $("#terrestre").hidden = !v;
+    if (v) { rutaCamion("retiro"); rutaCamion("entrega"); }
+    recalcular();
+  }
+
+  function initTerrestre() {
+    $("#terr-si").onclick = () => setTerrestre(true);
+    $("#terr-no").onclick = () => setTerrestre(false);
+    ["retiro", "entrega"].forEach((et) => {
+      $(`#${et}-lugar`).addEventListener("change", () => { $(`#${et}-km`).value = ""; $(`#${et}-km`).classList.add("auto"); rutaCamion(et); });
+      $(`#${et}-lugar`).addEventListener("input", recalcular);
+      $(`#${et}-km`).addEventListener("input", (e) => { e.target.classList.remove("auto"); recalcular(); });
+      $(`#${et}-modo`).addEventListener("change", recalcular);
+    });
+    // Si cambia un puerto, se recalculan las distancias automáticas
+    $("#origen").addEventListener("change", () => terrestre && rutaCamion("retiro"));
+    $("#destino").addEventListener("change", () => terrestre && rutaCamion("entrega"));
+    $("#remito").addEventListener("change", async (e) => {
+      const f = e.target.files[0];
+      if (!f) return;
+      const m = $("#remito-estado");
+      m.hidden = false; m.className = "msg"; m.textContent = "Leyendo el remito…";
+      try {
+        const { legible, datos } = await LectorOC.leer(f, CAT.puertos);
+        const n = ponerLugares(datos);
+        m.className = `msg ${n ? "ok" : ""}`;
+        m.innerHTML = !legible ? "No pudimos leer el texto del remito. Completá las plantas a mano."
+          : n ? `Leímos ${n === 2 ? "la planta de fabricación y la de destino" : "una planta"} del remito (${esc(f.name)}). Revisalos.`
+          : "No encontramos plantas de fabricación o destino en el remito. Completalas a mano.";
+      } catch (err) { m.className = "msg err"; m.textContent = `No pudimos leer el remito (${err.message}).`; }
+    });
+  }
+
+  // Pone los lugares leídos de la OC o del remito y calcula sus distancias
+  function ponerLugares(d) {
+    let n = 0;
+    [["retiro", d.lugar_retiro], ["entrega", d.lugar_entrega]].forEach(([et, v]) => {
+      if (!v) return;
+      const el = $(`#${et}-lugar`);
+      el.value = v; el.classList.add("leido");
+      $(`#${et}-km`).value = ""; $(`#${et}-km`).classList.add("auto");
+      n++;
+      if (terrestre) rutaCamion(et);
+    });
+    recalcular();
+    return n;
   }
 
   function pintarOpciones() {
@@ -112,8 +227,11 @@
     ];
     if (d.unidad) poner("#unidad", d.unidad);
     const n = ok.filter(Boolean).length;
-    estadoOC(n ? `Leímos <b>${n} de 7 datos</b> de la orden. Revisá los campos marcados y completá el resto.`
-      : "No encontramos los datos en el archivo. Completalos a mano: el archivo queda adjunto igual.", n ? "ok" : "");
+    const lugares = ponerLugares(d);
+    const extra = !lugares ? "" : terrestre ? " También leímos las plantas para los tramos terrestres."
+      : " La orden trae la planta de fabricación o de destino: si querés sumar la huella terrestre, elegí “Sí” arriba.";
+    estadoOC((n ? `Leímos <b>${n} de 7 datos</b> de la orden. Revisá los campos marcados y completá el resto.`
+      : "No encontramos los datos en el archivo. Completalos a mano: el archivo queda adjunto igual.") + extra, n ? "ok" : "");
     recalcular();
   }
 
@@ -133,10 +251,15 @@
 
   function validar() {
     if (!$("#oc-numero").value.trim()) return "Falta el N° de orden de compra.";
-    const t = calc.t || {};
+    const t = calc.fl?.t || {};
     if (!t.desde || !t.hasta) return "Elegí el puerto de carga y el de descarga.";
     if (t.desde.puerto === t.hasta.puerto) return "El puerto de carga y el de descarga tienen que ser distintos.";
     if (!(calc.kg > 0)) return "Completá la cantidad transportada.";
+    const sinKm = (calc.camion || []).find((r) => !(r.t.dist > 0));
+    const nombre = (t) => (t.etapa === "retiro" ? "planta de fabricación → puerto" : "puerto → planta de destino");
+    if (sinKm) return `Falta la distancia del tramo ${nombre(sinKm.t)}. Cargala o dejá la planta vacía.`;
+    const sinModo = (calc.camion || []).find((r) => !r.modo);
+    if (sinModo) return `Elegí el medio de transporte del tramo ${nombre(sinModo.t)}.`;
     return "";
   }
 
@@ -164,7 +287,7 @@
     const ruta = await subirOC(s.user.id);
     const datos = {
       oc_numero: $("#oc-numero").value.trim(), empresa: $("#empresa").value.trim() || null, carga: $("#carga").value.trim(),
-      flete_usd: +$("#flete").value || null, oc_archivo: ruta, tramos: [calc.t], proyecto_id: proySel || null, estado: "enviado",
+      flete_usd: +$("#flete").value || null, oc_archivo: ruta, tramos: calc.tramos, proyecto_id: proySel || null, estado: "enviado",
     };
     const q = editId ? H.sb.from("envios").update(datos).eq("id", editId).select().single() : H.sb.from("envios").insert(datos).select().single();
     const { data, error } = await q;
@@ -182,7 +305,7 @@
     const flete = +e.flete_usd || 0;
     $("#ok").hidden = false;
     $("#ok").innerHTML = `<b>Presupuesto confirmado · OC ${esc(e.oc_numero || "")}</b>
-      <span>${esc(e.tramos[0]?.desde?.label)} → ${esc(e.tramos[0]?.hasta?.label)} · ${fmt(e.total_km, 0)} km · huella calculada en el servidor: <b>${kgTxt(+e.total_kg)}</b></span>
+      <span>${esc(e.tramos[0]?.desde?.label)} → ${esc(e.tramos[e.tramos.length - 1]?.hasta?.label)} · ${e.tramos.length} tramo${e.tramos.length === 1 ? "" : "s"} · ${fmt(e.total_km, 0)} km · huella calculada en el servidor: <b>${kgTxt(+e.total_kg)}</b></span>
       <span>${p ? `Con compensación: ${e.creditos} créditos de “${esc(p.nombre)}” (${usd(e.usd_estimado)})${flete ? ` · total ${usd(flete + +e.usd_estimado)}` : ""}` : `Sin compensación${flete ? ` · ${usd(flete)}` : ""}`}</span>
       <span class="hint">Te avisamos a ${esc(e.usuario_email)} cuando Coralia revise los datos y Sylvera valide el cálculo. Seguilo en <a href="panel.html">Mis cálculos</a>.</span>`;
     bloquear(e);
@@ -229,7 +352,14 @@
     const { data, error } = await H.sb.from("envios").select("*").eq("id", id).maybeSingle();
     if (error || !data) return false;
     editId = data.id; ocArchivo = data.oc_archivo || null;
-    const t = data.tramos[0] || {};
+    const t = data.tramos.find(esFluvial) || data.tramos[0] || {};
+    data.tramos.filter((x) => !esFluvial(x)).forEach((x) => {
+      if (!["retiro", "entrega"].includes(x.etapa)) return;
+      $(`#${x.etapa}-lugar`).value = (x.etapa === "retiro" ? x.desde : x.hasta)?.label || "";
+      $(`#${x.etapa}-km`).value = x.dist || "";
+      if (x.modo) $(`#${x.etapa}-modo`).value = x.modo;
+      terrestre = true;
+    });
     $("#oc-numero").value = data.oc_numero || ""; $("#empresa").value = data.empresa || ""; $("#carga").value = data.carga || "";
     $("#flete").value = data.flete_usd ?? "";
     $("#tipo-carga").value = t.unidad === "teu" ? "contenedor" : t.tipo_carga || "solido";
@@ -238,6 +368,7 @@
     $("#cantidad").value = t.cantidad || ""; $("#unidad").value = t.unidad || "t";
     if (ocArchivo) $(".drop-txt", $("#drop")).innerHTML = `<b>Orden de compra adjunta</b> · <u>reemplazar archivo</u>`;
     proySel = data.proyecto_id || "";
+    if (terrestre) { $("#terrestre").hidden = false; $("#terr-si").setAttribute("aria-checked", true); $("#terr-no").setAttribute("aria-checked", false); }
     pasos(H.pasoDe(data.estado));
     bloquear(data);
     return true;
@@ -266,8 +397,8 @@
     if (CAT.origen === "local") avisos.push("sin conexión con la base: se usan datos locales y no se puede confirmar");
     if (avisos.length) { $("#aviso-factores").hidden = false; $("#aviso-factores").innerHTML = `<b>Prototipo:</b> ${avisos.join("; ")}.`; }
 
-    pintarPuertos(); pintarUnidades();
-    initArchivo(); initEnvio();
+    pintarPuertos(); pintarUnidades(); pintarModosTerrestres();
+    initArchivo(); initEnvio(); initTerrestre();
     H.pintarCabecera();
     ["#origen", "#destino", "#cantidad", "#unidad"].forEach((s) => $(s).addEventListener("input", recalcular));
     $("#flete").addEventListener("input", pintarOpciones);
