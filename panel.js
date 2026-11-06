@@ -1,4 +1,5 @@
-/* Panel por perfil: cliente (sus cálculos), Coralia (todo) y Sylvera (enviados a validación). */
+/* Panel por perfil: cliente (sus cálculos), Coralia (todo), Sylvera (enviados a validación)
+ * y Bolsa Paraguaya de Carbono (validados con compensación, para registrar el retiro de créditos). */
 (() => {
   "use strict";
   const { sb, fmt, fmtFecha, esc, kgTxt, ESTADOS } = H;
@@ -10,12 +11,15 @@
     cliente: ["todos", "borrador", "enviado", "en_validacion", "validado", "retirado", "rechazado"],
     coralia: ["todos", "enviado", "en_validacion", "validado", "retirado", "rechazado", "borrador"],
     sylvera: ["todos", "en_validacion", "validado", "retirado", "rechazado"],
+    bolsa: ["todos", "validado", "retirado"],
   };
   const TITULOS = {
     cliente: ["Mis cálculos", "Tus cálculos y certificados."],
     coralia: ["Panel Coralia", "Todos los cálculos, datos cargados, estados y exportes."],
     sylvera: ["Panel Sylvera", "Cálculos enviados a validación."],
+    bolsa: ["Panel Bolsa Paraguaya de Carbono", "Presupuestos validados que eligieron compensar. Registrá el retiro de los créditos."],
   };
+  const ruta = (e) => { const t = e.tramos[0] || {}; return t.desde ? `${t.desde.label} → ${t.hasta?.label}` : ""; };
 
   function msg(sel, txt, tipo = "") { const m = $(sel); m.className = `msg ${tipo}`; m.innerHTML = txt; m.hidden = !txt; }
 
@@ -68,11 +72,11 @@
     pintarFiltros();
     const q = H.norm($("#buscar").value);
     const vis = envios.filter((e) => (filtro === "todos" || e.estado === filtro) &&
-      (!q || H.norm([e.empresa, e.carga, e.usuario_email, e.booking, e.certificado].join(" ")).includes(q)));
+      (!q || H.norm([e.empresa, e.carga, e.usuario_email, e.oc_numero, e.booking, e.certificado].join(" ")).includes(q)));
     $("#lista").innerHTML = vis.length ? vis.map((e) => `
       <tr data-id="${e.id}">
         <td>${fmtFecha(e.updated_at)}</td>
-        <td><b>${esc(e.empresa || e.usuario_email || "—")}</b><br><span class="hint">${esc(e.carga || "Sin descripción")} · ${e.tramos.length} tramo${e.tramos.length === 1 ? "" : "s"}${e.booking ? ` · ${esc(e.booking)}` : ""}</span></td>
+        <td><b>${esc(e.empresa || e.usuario_email || "—")}</b><br><span class="hint">${e.oc_numero ? `OC ${esc(e.oc_numero)} · ` : ""}${esc(e.carga || "Sin descripción")} · ${esc(ruta(e))}</span></td>
         <td class="num">${kgTxt(+e.total_kg)}${e.creditos ? `<br><span class="hint">${e.creditos} créditos</span>` : ""}</td>
         <td><span class="st ${ESTADOS[e.estado].cls}">${ESTADOS[e.estado].txt}</span></td>
       </tr>`).join("") : `<tr><td colspan="4" class="empty">${envios.length ? "No hay cálculos con este filtro." : ROL === "cliente" ? 'Todavía no tenés cálculos. <a href="index.html">Hacé el primero</a>.' : "No hay cálculos para mostrar."}</td></tr>`;
@@ -92,23 +96,26 @@
     }
     if (ROL === "coralia") {
       if (e.estado === "enviado") acts.push(`<button class="btn small" data-a="en_validacion">Aprobar y pasar a Sylvera</button>`, `<button class="btn small danger" data-a="rechazado">Observar</button>`);
-      if (e.estado === "validado" && e.proyecto_id) acts.push(`<button class="btn small" data-a="retirado">Registrar retiro de créditos</button>`);
       if (e.estado !== "borrador" && !propio) acts.push(`<button class="btn small danger" data-a="borrar">Borrar</button>`);
     }
+    const registraRetiro = ["coralia", "bolsa"].includes(ROL) && e.estado === "validado" && e.proyecto_id;
+    if (registraRetiro) acts.unshift(`<button class="btn small" data-a="retirado">Registrar retiro de créditos</button>`);
     if (ROL === "sylvera" && e.estado === "en_validacion") acts.push(`<button class="btn small" data-a="validado">Validar</button>`, `<button class="btn small danger" data-a="rechazado">Observar</button>`);
     if (e.certificado) acts.push(`<a class="btn small ghost" href="certificado.html?c=${encodeURIComponent(e.certificado)}" target="_blank" rel="noopener">Ver certificado</a>`);
 
     const revisor = ROL === "coralia" || (ROL === "sylvera" && e.estado === "en_validacion");
     $("#detalle").innerHTML = `<div class="detail">
       <div><span class="st ${ESTADOS[e.estado].cls}">${ESTADOS[e.estado].txt}</span></div>
-      <h2>${esc(e.carga || "Envío sin descripción")}</h2>
+      <h2>${e.oc_numero ? `OC ${esc(e.oc_numero)}` : esc(e.carga || "Envío sin descripción")}</h2>
       <div class="big" style="color:var(--green)">${kgTxt(+e.total_kg)}</div>
       <dl>
         <dt>Empresa</dt><dd>${esc(e.empresa || "—")}</dd>
         <dt>Cliente</dt><dd>${esc(e.usuario_email || "—")}</dd>
-        <dt>Booking</dt><dd>${esc(e.booking || "—")}</dd>
-        <dt>Distancia</dt><dd>${fmt(e.total_km, 0)} km · ${fmt(e.total_tkm, 0)} t·km</dd>
-        <dt>Compensación</dt><dd>${p ? `${e.creditos} créditos · ${esc(p.nombre)} · USD ${fmt(e.usd_estimado, 0)}` : "No compensa"}</dd>
+        <dt>Producto</dt><dd>${esc(e.carga || "—")}</dd>
+        <dt>Recorrido</dt><dd>${esc(ruta(e) || "—")} · ${fmt(e.total_km, 0)} km · ${fmt(e.total_tkm, 0)} t·km</dd>
+        <dt>Orden de compra</dt><dd>${esc(e.oc_numero || "—")}${e.oc_archivo ? ` · <a id="d-oc" href="#" target="_blank" rel="noopener">ver archivo</a>` : " · sin archivo"}</dd>
+        <dt>Flete</dt><dd>${e.flete_usd ? `USD ${fmt(e.flete_usd, 0)}` : "—"}</dd>
+        <dt>Compensación</dt><dd>${p ? `${e.creditos} créditos · ${esc(p.nombre)} · USD ${fmt(e.usd_estimado, 0)}${e.flete_usd ? ` · total con flete USD ${fmt(+e.flete_usd + +e.usd_estimado, 0)}` : ""}` : "No compensa"}</dd>
         <dt>Enviado</dt><dd>${fmtFecha(e.enviado_at)}</dd>
         <dt>Revisado</dt><dd>${e.revisado_at ? `${fmtFecha(e.revisado_at)} · ${esc(e.revisado_por || "")}` : "—"}</dd>
         ${e.certificado ? `<dt>Certificado</dt><dd><code>${esc(e.certificado)}</code></dd>` : ""}
@@ -122,11 +129,15 @@
           <td class="num">${fmt(t.factor, 4)}${t.ajuste && t.ajuste !== 1 ? `<br><span class="hint">× ${fmt(t.ajuste, 2)}</span>` : ""}</td><td class="num">${fmt(t.kg, 1)}</td></tr>`).join("")}</tbody>
       </table></div>
       ${revisor ? `<label class="field"><span>Observaciones / comentario</span><textarea id="d-com" rows="2" placeholder="Obligatorio para observar">${esc(e.comentario || "")}</textarea></label>` : ""}
-      ${ROL === "coralia" && e.estado === "validado" && e.proyecto_id ? `<label class="field"><span>Referencia del retiro en el registro</span><input id="d-ref" placeholder="N° de serie / link del registro" /></label>` : ""}
+      ${registraRetiro ? `<label class="field"><span>Referencia del retiro en el registro</span><input id="d-ref" placeholder="N° de serie / link del registro" /></label>` : ""}
       <div class="acts">${acts.join("")}</div>
       <p id="d-msg" class="msg" hidden></p>
     </div>`;
     document.querySelectorAll("#detalle [data-a]").forEach((b) => (b.onclick = () => accion(e, b.dataset.a)));
+    if (e.oc_archivo) sb.storage.from("ordenes").createSignedUrl(e.oc_archivo, 600).then(({ data }) => {
+      const a = document.getElementById("d-oc");
+      if (a && data) a.href = data.signedUrl; else if (a) a.replaceWith("archivo no disponible");
+    });
   }
 
   async function accion(e, a) {
@@ -153,7 +164,7 @@
 
   // ---------- Exportar ----------
   function exportarCSV() {
-    const cols = ["certificado", "estado", "empresa", "usuario_email", "booking", "carga", "total_kg", "total_km", "total_tkm", "proyecto_id", "creditos", "usd_estimado", "enviado_at", "revisado_at", "revisado_por", "retiro_ref", "created_at"];
+    const cols = ["certificado", "estado", "oc_numero", "empresa", "usuario_email", "carga", "flete_usd", "total_kg", "total_km", "total_tkm", "proyecto_id", "creditos", "usd_estimado", "enviado_at", "revisado_at", "revisado_por", "retiro_ref", "created_at"];
     const filas = [cols.join(";"), ...envios.map((e) => cols.map((c) => `"${String(e[c] ?? "").replace(/"/g, '""')}"`).join(";"))];
     const tramos = ["envio;tramo;modo;desde;hasta;km;toneladas;factor;ajuste;kg", ...envios.flatMap((e) => e.tramos.map((t, i) =>
       [e.id, i + 1, t.modo_nombre || t.modo, t.desde?.label, t.hasta?.label, t.dist, t.toneladas, t.factor, t.ajuste, t.kg].map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")))];
@@ -183,23 +194,29 @@
       tr.querySelector("button").textContent = error ? "Error" : "Guardado ✓";
       setTimeout(() => (tr.querySelector("button").textContent = "Guardar"), 1500);
     }));
-    await cargarSylvera();
-    $("#sy-add").onclick = async () => {
-      const email = $("#sy-email").value.trim().toLowerCase();
-      if (!email.includes("@")) return;
-      const { error } = await sb.from("sylvera_autorizados").insert({ email });
-      if (!error) { $("#sy-email").value = ""; cargarSylvera(); } else alert(error.message);
-    };
+    autorizados("sylvera_autorizados", "sy");
+    autorizados("bolsa_autorizados", "bo");
   }
-  async function cargarSylvera() {
-    const { data } = await sb.from("sylvera_autorizados").select("*").order("email");
-    $("#sy-lista").innerHTML = (data || []).length ? data.map((s) => `<tr><td>${esc(s.email)}</td><td class="num"><button class="btn small danger" data-e="${esc(s.email)}">Quitar</button></td></tr>`).join("")
-      : `<tr><td class="empty">Sin emails autorizados todavía.</td></tr>`;
-    document.querySelectorAll("#sy-lista [data-e]").forEach((b) => (b.onclick = async () => {
-      if (!confirm(`¿Quitar a ${b.dataset.e}?`)) return;
-      await sb.from("sylvera_autorizados").delete().eq("email", b.dataset.e);
-      cargarSylvera();
-    }));
+  // Listas de emails autorizados (Sylvera y Bolsa). pre = prefijo de los ids en panel.html
+  async function autorizados(tabla, pre) {
+    const pintar = async () => {
+      const { data, error } = await sb.from(tabla).select("*").order("email");
+      $(`#${pre}-lista`).innerHTML = error ? `<tr><td class="empty">Falta correr la migración de la base (${esc(error.message)}).</td></tr>`
+        : data.length ? data.map((s) => `<tr><td>${esc(s.email)}</td><td class="num"><button class="btn small danger" data-e="${esc(s.email)}">Quitar</button></td></tr>`).join("")
+        : `<tr><td class="empty">Sin emails autorizados todavía.</td></tr>`;
+      document.querySelectorAll(`#${pre}-lista [data-e]`).forEach((b) => (b.onclick = async () => {
+        if (!confirm(`¿Quitar a ${b.dataset.e}?`)) return;
+        await sb.from(tabla).delete().eq("email", b.dataset.e);
+        pintar();
+      }));
+    };
+    $(`#${pre}-add`).onclick = async () => {
+      const email = $(`#${pre}-email`).value.trim().toLowerCase();
+      if (!email.includes("@")) return;
+      const { error } = await sb.from(tabla).insert({ email });
+      if (!error) { $(`#${pre}-email`).value = ""; pintar(); } else alert(error.message);
+    };
+    pintar();
   }
 
   // ---------- Inicio ----------
@@ -212,7 +229,7 @@
     ROL = await H.rol();
     $("#v-panel").hidden = false;
     [$("#p-title").textContent, $("#p-sub").textContent] = TITULOS[ROL] || TITULOS.cliente;
-    if (ROL === "sylvera") $("#b-nuevo").hidden = true;
+    if (ROL === "sylvera" || ROL === "bolsa") $("#b-nuevo").hidden = true;
     if (ROL === "coralia") { $("#b-csv").hidden = false; $("#b-csv").onclick = exportarCSV; }
     $("#buscar").oninput = pintarLista;
     const { data: p } = await sb.from("proyectos").select("id,nombre");

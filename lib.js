@@ -20,13 +20,14 @@
     retirado:      { txt: "Créditos retirados", cls: "st-ok" },
     rechazado:     { txt: "Con observaciones", cls: "st-bad" },
   };
-  const PASOS = ["Verificá tu email", "Revisión Coralia", "Validación Sylvera", "Certificado"];
+  const PASOS = ["Confirmá tu email", "Revisión Coralia", "Validación Sylvera", "Certificado"];
+  const ROLES = { cliente: "Cliente", coralia: "Coralia", sylvera: "Sylvera", bolsa: "Bolsa Paraguaya de Carbono" };
   const pasoDe = (estado) => ({ borrador: 0, enviado: 1, en_validacion: 2, validado: 3, retirado: 4, rechazado: 1 }[estado] ?? 0);
 
   // ---------- Catálogos (Supabase, con respaldo local) ----------
   async function cargarCatalogos() {
     const get = (f) => fetch(f).then((r) => { if (!r.ok) throw new Error(f); return r.json(); });
-    const [puertos, ruta, local] = await Promise.all([get("data/puertos.json"), get("data/ruta.json"), get("data/modos.json")]);
+    const [puertos, local] = await Promise.all([get("data/puertos.json"), get("data/modos.json")]);
     let modos = local.modos, proyectos = local.proyectos, config = local.config, origen = "local";
     try {
       const [m, p, c] = await Promise.all([
@@ -35,14 +36,14 @@
         sb.from("config").select("clave,valor"),
       ]);
       if (m.error) throw m.error;
-      // Si la base todavía no tiene la columna 'via' (falta correr la v2), se queda con el respaldo local
-      if (m.data.length && m.data[0].via) {
+      // Si la base todavía no tiene el factor de la flota (falta correr la v3), se queda con el respaldo local
+      if (m.data.some((x) => x.id === "flota-interbarge")) {
         modos = m.data; origen = "supabase";
         if (!p.error && p.data.length) proyectos = p.data;
         if (!c.error) c.data.forEach((r) => (config[r.clave] = r.valor));
       }
     } catch (e) { console.warn("Usando catálogos locales:", e.message || e); }
-    return { puertos: puertos.puertos, ruta, modos, proyectos, config, origen };
+    return { puertos: puertos.puertos, modos, proyectos, config, origen };
   }
 
   // ---------- Cálculo (mismo criterio que la función calcular_tramos_v2 de la base) ----------
@@ -96,13 +97,13 @@
     const s = await sesion();
     if (!s) { zona.innerHTML = `<a class="nav-link" href="panel.html">Ingresar</a>`; return; }
     const r = await rol();
-    const etiqueta = { cliente: "Cliente", coralia: "Coralia", sylvera: "Sylvera" }[r] || r;
+    const etiqueta = ROLES[r] || r;
     zona.innerHTML = `<a class="nav-link" href="panel.html">${r === "cliente" ? "Mis cálculos" : "Panel"}</a>
       <span class="who" title="${esc(s.user.email)}">${esc(s.user.email)} · <b>${etiqueta}</b></span>
       <button class="nav-link as-btn" id="btn-salir" type="button">Salir</button>`;
     document.getElementById("btn-salir").onclick = salir;
   }
 
-  window.H = { sb, C, fmt, fmtFecha, esc, norm, kgTxt, ESTADOS, PASOS, pasoDe, cargarCatalogos, toneladas, calcularTramo,
+  window.H = { sb, C, fmt, fmtFecha, esc, norm, kgTxt, ESTADOS, PASOS, ROLES, pasoDe, cargarCatalogos, toneladas, calcularTramo,
     sesion, rol, enviarCodigo, verificarCodigo, entrarCon, salir, pintarCabecera };
 })();
