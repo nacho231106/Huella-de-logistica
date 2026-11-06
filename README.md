@@ -79,9 +79,9 @@ Flujo: enviado (revisión Coralia) → en validación (Sylvera) → validado (ce
 
 1. **Base:** supabase.com → proyecto `Huella Logística Interbarge` (organización Coralia Environmental) → SQL Editor → correr en orden las que falten: `02_v2_hidrovia_compensacion.sql`, `03_oc_flota_bolsa.sql` y `04_tramos_camion.sql`.
 2. **Emails con código:** Authentication → Email Templates → "Magic Link" y "Confirm signup": agregar `Tu código: {{ .Token }}`.
-3. **URLs:** Authentication → URL Configuration: la URL publicada (GitHub Pages o Vercel) como Site URL y `https://TU-URL/**` en Redirect URLs.
+3. **URLs:** Authentication → URL Configuration: Site URL `https://huella-de-logistica.vercel.app` y Redirect URL `https://huella-de-logistica.vercel.app/**` (ya configurado).
 4. **Google y Microsoft (Coralia):** Authentication → Providers.
-5. **Publicar en GitHub Pages:** GitHub → repo → **Settings → Pages** → Source: **Deploy from a branch** → Branch: **main** / **(root)** → Save. Queda en **https://nacho231106.github.io/Huella-de-logistica/** y cada push a `main` se publica solo. Agregar esa URL en Supabase (paso 3).
+5. **Publicación:** la app está en **Vercel** → https://huella-de-logistica.vercel.app. Cada push a `main` se publica solo (no se usa GitHub Pages).
    - Alternativa: Vercel (importar el repo, Framework: Other, sin build).
 6. **Sylvera y Bolsa:** cargar sus emails desde el panel de Coralia.
 
