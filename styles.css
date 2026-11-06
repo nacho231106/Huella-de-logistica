@@ -266,7 +266,7 @@ td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: now
 .intro { display: none; }
 body.intro-on .intro {
   display: grid; place-items: center; position: relative; overflow: hidden; min-height: 100vh; min-height: 100dvh;
-  background: radial-gradient(90% 70% at 90% 0%, #e4f2ef 0%, rgba(228,242,239,0) 60%), radial-gradient(70% 60% at 0% 100%, #e7edf5 0%, rgba(231,237,245,0) 60%), #ffffff; color: var(--fg);
+  background: radial-gradient(90% 70% at 90% 0%, #e4f2ef 0%, rgba(228,242,239,0) 60%), radial-gradient(70% 60% at 0% 100%, #e7edf5 0%, rgba(231,237,245,0) 60%), url("assets/lineas.svg") center / 1200px 800px repeat, #ffffff; color: var(--fg);
   padding: 48px max(16px, env(safe-area-inset-left, 0px));
 }
 body.intro-on > header, body.intro-on > main, body.intro-on > footer { display: none; }
@@ -326,3 +326,14 @@ body.intro-saliendo .intro { animation: salir .35s ease-in forwards; }
 .cert-logos { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
 .cert-logos img { height: 40px; width: auto; }
 @media (max-width: 520px) { .brand-ib { height: 36px; } .intro-logos img.ib { height: 52px; } .intro-logos img.co { height: 36px; } }
+
+/* ---------- Líneas de fondo (corrientes de río) ---------- */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url("assets/lineas.svg") center top / 1200px 800px repeat;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 45%, #000 100%);
+          mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.55) 45%, #000 100%);
+}
+body { position: relative; isolation: isolate; }
+body.intro-on::before { opacity: .9; }
+@media print { body::before { display: none; } }
