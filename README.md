@@ -1,6 +1,6 @@
-# Huella de logística · Interbarge
+# Huella de logística · InterBarge
 
-App web para que los clientes de Interbarge vean el costo de su envío por la hidrovía Paraná-Paraguay **con y sin compensación de su huella de carbono**, con metodología de Coralia Environmental.
+App web para que los clientes de InterBarge vean el costo de su envío por la hidrovía Paraná-Paraguay **con y sin compensación de su huella de carbono**, con metodología de Coralia Environmental.
 
 El cliente solo sube su **orden de compra**. La página lee los datos (puertos, producto, cantidad, flete), el cliente los revisa y ve el presupuesto:
 
@@ -59,6 +59,7 @@ Flujo: enviado (revisión Coralia) → en validación (Sylvera) → validado (ce
 | `config.js` | URL y clave pública de Supabase, nombre de la naviera |
 | `data/puertos.json` | Puertos de la hidrovía con su km de río desde Nueva Palmira y cómo pueden aparecer escritos en una OC |
 | `data/modos.json` | Respaldo local de factor y proyectos (solo sin conexión con la base) |
+| `assets/` | Logos de InterBarge y Coralia |
 | `data/ruta.json` | Geometría de las vías. Sin uso desde la v3 (ya no hay mapa) |
 | `supabase/*.sql` | Estructura de la base, en orden |
 
@@ -66,16 +67,17 @@ Flujo: enviado (revisión Coralia) → en validación (Sylvera) → validado (ce
 
 1. **Base:** supabase.com → proyecto `vergara-huella` → SQL Editor → correr `02_v2_hidrovia_compensacion.sql` (si no se corrió) y después `03_oc_flota_bolsa.sql`.
 2. **Emails con código:** Authentication → Email Templates → "Magic Link" y "Confirm signup": agregar `Tu código: {{ .Token }}`.
-3. **URLs:** Authentication → URL Configuration: la URL de Vercel como Site URL y `https://TU-URL/**` en Redirect URLs.
+3. **URLs:** Authentication → URL Configuration: la URL publicada (GitHub Pages o Vercel) como Site URL y `https://TU-URL/**` en Redirect URLs.
 4. **Google y Microsoft (Coralia):** Authentication → Providers.
-5. **Vercel:** importar el repo (Framework: Other, sin build). Cada push a `main` se publica solo.
+5. **Publicar en GitHub Pages:** GitHub → repo → **Settings → Pages** → Source: **Deploy from a branch** → Branch: **main** / **(root)** → Save. Queda en **https://nacho231106.github.io/Huella-de-logistica/** y cada push a `main` se publica solo. Agregar esa URL en Supabase (paso 3).
+   - Alternativa: Vercel (importar el repo, Framework: Other, sin build).
 6. **Sylvera y Bolsa:** cargar sus emails desde el panel de Coralia.
 
 Para probar en local: VS Code → **Go Live**. Con doble clic no anda.
 
 ## Pendiente
 
-- [ ] Logo de Interbarge (hoy dice `[Logo]`)
+- [ ] Confirmar con InterBarge el uso de su logo (hoy `assets/interbarge.png`, tomado de interbarge.com) y pedir versión en alta calidad (SVG)
 - [ ] Validar la distancia media de 1.500 km (o reemplazarla por t·km reales)
 - [ ] Ajustar los km de río de cada puerto en `data/puertos.json`
 - [ ] Proyectos y precios reales de Coralia

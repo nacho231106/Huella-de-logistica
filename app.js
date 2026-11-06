@@ -112,7 +112,7 @@
     ];
     if (d.unidad) poner("#unidad", d.unidad);
     const n = ok.filter(Boolean).length;
-    estadoOC(n ? `Leímos <b>${n} de 7 datos</b> de la orden. Revisá los marcados en verde y completá el resto.`
+    estadoOC(n ? `Leímos <b>${n} de 7 datos</b> de la orden. Revisá los campos marcados y completá el resto.`
       : "No encontramos los datos en el archivo. Completalos a mano: el archivo queda adjunto igual.", n ? "ok" : "");
     recalcular();
   }

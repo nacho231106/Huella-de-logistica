@@ -5,7 +5,7 @@
   <meta name="color-scheme" content="only light" />
   <meta name="theme-color" content="#ffffff" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Huella de carbono · Interbarge</title>
+  <title>Huella de carbono · InterBarge</title>
   <meta name="description" content="Subí tu orden de compra y mirá el costo de tu envío por la hidrovía con y sin compensación de su huella de carbono." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,9 +20,9 @@
       <circle cx="243" cy="255" r="6" /><circle cx="196" cy="400" r="6" /><circle cx="222" cy="522" r="6" /><circle cx="262" cy="640" r="6" />
     </svg>
     <div class="intro-in">
-      <span class="intro-brand"><span class="brand-logo" aria-hidden="true">[Logo]</span><span data-naviera>Interbarge</span> <span class="x">×</span> Coralia</span>
+      <span class="intro-logos"><img class="ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" /><span class="x" aria-hidden="true">×</span><img class="co" src="assets/coralia.png" alt="Coralia Environmental" width="369" height="211" /></span>
       <h1 id="intro-t">Huella<span class="dot">.</span></h1>
-      <p class="intro-lead">Subí tu orden de compra y mirá cuánto cuesta tu envío con <span data-naviera>Interbarge</span>, con y sin compensar su huella de carbono.</p>
+      <p class="intro-lead">Subí tu orden de compra y mirá cuánto cuesta tu envío con <span data-naviera>InterBarge</span>, con y sin compensar su huella de carbono.</p>
       <ol class="intro-steps">
         <li><b>1</b><span><strong>Subí tu orden de compra</strong> Leemos puertos, carga y flete por vos.</span></li>
         <li><b>2</b><span><strong>Mirá el presupuesto</strong> Costo sin compensación y con cada proyecto de carbono.</span></li>
@@ -37,10 +37,11 @@
 
   <header class="topbar">
     <a class="brand" href="index.html">
-      <span class="brand-logo" aria-hidden="true">[Logo]</span>
+      <img class="brand-ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" />
+      <span class="brand-sep" aria-hidden="true"></span>
       <span>
-        <span class="brand-name" data-naviera>Interbarge</span>
-        <span class="brand-sub">Huella de carbono del transporte</span>
+        <span class="brand-name">Huella de carbono</span>
+        <span class="brand-sub">Transporte por la hidrovía</span>
       </span>
     </a>
     <nav class="nav" id="cuenta"></nav>
@@ -130,7 +131,7 @@
       <summary>Cómo calculamos la huella</summary>
       <ul>
         <li><b>Fórmula:</b> huella = distancia por río (km) × carga (t) × factor de la flota (kg CO₂e/t·km). El cálculo que se guarda se rehace en el servidor con los factores vigentes.</li>
-        <li><b>Factor de la flota:</b> sale del inventario de gases de efecto invernadero 2025 de <span data-naviera>Interbarge</span>, hecho por Coralia con ISO 14064-1. Incluye los motores de los remolcadores, generadores, embarcaciones auxiliares, lubricantes, refrigerantes, remolcadores de puerto contratados y tratamiento de slop: 62.295 t CO₂e para 1.826.094 t transportadas (34,1 kg CO₂e por tonelada).</li>
+        <li><b>Factor de la flota:</b> sale del inventario de gases de efecto invernadero 2025 de <span data-naviera>InterBarge</span>, hecho por Coralia con ISO 14064-1. Incluye los motores de los remolcadores, generadores, embarcaciones auxiliares, lubricantes, refrigerantes, remolcadores de puerto contratados y tratamiento de slop: 62.295 t CO₂e para 1.826.094 t transportadas (34,1 kg CO₂e por tonelada).</li>
         <li><b>Distancia media:</b> el inventario no trae toneladas-km, así que el factor por t·km usa una distancia media de 1.500 km por tonelada (supuesto de Coralia). Resultado: 0,0227 kg CO₂e/t·km.</li>
         <li><b>Distancias por río:</b> aproximadas, según la posición de cada puerto desde Nueva Palmira.</li>
         <li><b>Alcance:</b> tramo fluvial puerto a puerto. Los fletes terrestres no están incluidos todavía.</li>
@@ -140,7 +141,7 @@
   </main>
 
   <footer class="foot">
-    Metodología y cálculo: <b>Coralia Environmental</b> · <a href="certificado.html">Verificar un certificado</a>
+    Metodología y cálculo: <img class="co-logo" src="assets/coralia.png" alt="Coralia Environmental" width="369" height="211" /> · <a href="certificado.html">Verificar un certificado</a>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
