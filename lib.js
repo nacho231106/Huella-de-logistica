@@ -20,7 +20,7 @@
     retirado:      { txt: "Créditos retirados", cls: "st-ok" },
     rechazado:     { txt: "Con observaciones", cls: "st-bad" },
   };
-  const PASOS = ["Confirmá tu email", "Revisión Coralia", "Validación Sylvera", "Certificado"];
+  const PASOS = ["Confirmá el presupuesto", "Revisión Coralia", "Validación Sylvera", "Certificado"];
   const ROLES = { cliente: "Cliente", coralia: "Coralia", sylvera: "Sylvera", bolsa: "Bolsa Paraguaya de Carbono" };
   const pasoDe = (estado) => ({ borrador: 0, enviado: 1, en_validacion: 2, validado: 3, retirado: 4, rechazado: 1 }[estado] ?? 0);
 

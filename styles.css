@@ -271,7 +271,7 @@ body.intro-saliendo .intro { animation: salir .35s ease-in forwards; }
 @keyframes salir { to { opacity: 0; transform: translateY(-20px); } }
 @keyframes subir { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
-.hero {
+.portada {
   position: relative; overflow: hidden; isolation: isolate; min-height: 100vh; min-height: 100dvh;
   display: grid; grid-template-rows: auto 1fr auto; gap: 24px;
   padding: 28px clamp(16px, 6vw, 96px) 22px; color: var(--fg);
@@ -280,7 +280,7 @@ body.intro-saliendo .intro { animation: salir .35s ease-in forwards; }
 .hero-foto { z-index: -2; }
 .hero-foto img { object-fit: cover; object-position: 50% 62%; }
 /* Degradé: claro arriba a la izquierda (textos oscuros) y azul abajo (íconos blancos) */
-.hero::before {
+.portada::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
   background:
     linear-gradient(180deg, rgba(0,29,66,0) 58%, rgba(0,29,66,.55) 80%, rgba(0,29,66,.86) 100%),
@@ -313,8 +313,8 @@ body.intro-saliendo .intro { animation: salir .35s ease-in forwards; }
   font-weight: 600; color: var(--fg); font-size: 15px; box-shadow: 0 4px 18px rgba(0,45,98,.06);
 }
 .hero-chip svg { width: 22px; height: 22px; fill: none; stroke: #3d9a4d; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.hero h1 { font-size: clamp(72px, 12vw, 156px); line-height: .88; letter-spacing: -.03em; color: var(--navy); margin: 6px 0 4px; }
-.hero h1 .dot { color: var(--red); }
+.portada h1 { font-size: clamp(72px, 12vw, 156px); line-height: .88; letter-spacing: -.03em; color: var(--navy); margin: 6px 0 4px; }
+.portada h1 .dot { color: var(--red); }
 .hero-lead { font-size: clamp(17px, 1.9vw, 24px); line-height: 1.45; max-width: 31ch; margin: 0; color: #2c3a4d; }
 
 .hero-card {
@@ -389,8 +389,8 @@ body.intro-saliendo .intro { animation: salir .35s ease-in forwards; }
 .land-foot a { color: var(--navy); font-weight: 600; }
 
 @media (min-width: 1001px) and (max-height: 860px) {
-  .hero { gap: 14px; padding-top: 20px; }
-  .hero h1 { font-size: clamp(64px, 9vw, 120px); }
+  .portada { gap: 14px; padding-top: 20px; }
+  .portada h1 { font-size: clamp(64px, 9vw, 120px); }
   .hero-logos .ib { height: 52px; } .hero-logos .co { height: 46px; }
   .hero-card { padding: 28px 36px; }
   .auth { gap: 11px; } .auth-t { font-size: 36px; } .auth-sub { margin-bottom: 4px; font-size: 16px; }
@@ -401,10 +401,10 @@ body.intro-saliendo .intro { animation: salir .35s ease-in forwards; }
   .hero-grid { grid-template-columns: 1fr; }
   .hero-card { max-width: 520px; width: 100%; }
   .land-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero::before { background: linear-gradient(180deg, rgba(246,249,252,.9) 0%, rgba(246,249,252,.7) 40%, rgba(0,29,66,.35) 75%, rgba(0,29,66,.85) 100%); }
+  .portada::before { background: linear-gradient(180deg, rgba(246,249,252,.9) 0%, rgba(246,249,252,.7) 40%, rgba(0,29,66,.35) 75%, rgba(0,29,66,.85) 100%); }
 }
 @media (max-width: 720px) {
-  .hero { padding-top: 18px; }
+  .portada { padding-top: 18px; }
   .hero-links { display: none; }
   .hero-logos .ib { height: 46px; } .hero-logos .co { height: 40px; }
   .land-pasos, .land-cards { grid-template-columns: 1fr; }
@@ -421,7 +421,7 @@ body.intro-saliendo .intro { animation: salir .35s ease-in forwards; }
 @media print { .intro { display: none !important; } }
 
 /* ---------- v3: orden de compra y presupuesto ---------- */
-.wrap.narrow { max-width: 960px; }
+.wrap.narrow { max-width: 1120px; }
 .paso {
   display: inline-grid; place-items: center; width: 28px; height: 28px; margin-right: 8px; vertical-align: 3px;
   border-radius: 50%; background: var(--green); color: var(--green-ink); font-family: var(--mono); font-size: 14px;
