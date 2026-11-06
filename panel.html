@@ -45,8 +45,8 @@
           </div>
         </div>
         <div class="login">
-          <b>Equipo Coralia y Sylvera</b>
-          <p class="hint">Con tu cuenta corporativa. Coralia: solo emails @coraliae.com. Sylvera: emails autorizados.</p>
+          <b>Coralia, Sylvera y Bolsa Paraguaya de Carbono</b>
+          <p class="hint">Con tu cuenta corporativa. Coralia: solo emails @coraliae.com. Sylvera y la Bolsa: emails autorizados por Coralia (también pueden entrar con el código por email).</p>
           <div class="sso">
             <button class="btn ghost" id="l-google" type="button">Ingresar con Google</button>
             <button class="btn ghost" id="l-ms" type="button">Ingresar con Microsoft</button>
@@ -67,11 +67,11 @@
           <div class="toolbar">
             <div class="filters" id="filtros"></div>
             <div class="sso">
-              <a class="btn small" href="index.html" id="b-nuevo">+ Nuevo cálculo</a>
+              <a class="btn small" href="index.html#calcular" id="b-nuevo">+ Subir orden de compra</a>
               <button class="btn small ghost" id="b-csv" type="button" hidden>Exportar CSV</button>
             </div>
           </div>
-          <input id="buscar" type="search" placeholder="Buscar por empresa, carga, email o booking" />
+          <input id="buscar" type="search" placeholder="Buscar por OC, empresa, producto o email" />
           <div class="table-wrap">
             <table>
               <thead><tr><th>Fecha</th><th>Envío</th><th class="num">Huella</th><th>Estado</th></tr></thead>
@@ -106,6 +106,15 @@
             <button class="btn" id="sy-add" type="button">Agregar</button>
           </div>
           <div class="table-wrap"><table class="mini"><tbody id="sy-lista"></tbody></table></div>
+          <div class="sec-head" style="margin-top:12px">
+            <h2>Bolsa Paraguaya de Carbono · emails autorizados</h2>
+            <p class="hint">Ven los presupuestos validados que eligieron compensar y registran el retiro de los créditos.</p>
+          </div>
+          <div class="otp">
+            <label class="field"><span>Email</span><input id="bo-email" type="email" placeholder="nombre@bolsa.com.py" /></label>
+            <button class="btn" id="bo-add" type="button">Agregar</button>
+          </div>
+          <div class="table-wrap"><table class="mini"><tbody id="bo-lista"></tbody></table></div>
         </section>
       </div>
     </section>

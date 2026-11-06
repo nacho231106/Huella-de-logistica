@@ -1,27 +1,176 @@
 {
-  "_ayuda": "Puertos por vía. via 'costero' = carril marítimo patagónico (usa 'acceso' = punto del carril en ruta.json). via 'hidrovia' = Paraná-Paraguay (usa 'km' = km de río desde Nueva Palmira hacia aguas arriba). Coordenadas y km APROXIMADOS: reemplazar por la tabla de distancias de Interbarge.",
-  "puertos": [
-    { "id": "np",  "via": "hidrovia", "nombre": "Nueva Palmira", "pais": "UY", "provincia": "Colonia", "km": 0,    "lat": -33.880, "lng": -58.420 },
-    { "id": "ros", "via": "hidrovia", "nombre": "Rosario", "pais": "AR", "provincia": "Santa Fe", "km": 300,  "lat": -32.950, "lng": -60.630 },
-    { "id": "slo", "via": "hidrovia", "nombre": "San Lorenzo", "pais": "AR", "provincia": "Santa Fe", "km": 325,  "lat": -32.750, "lng": -60.720 },
-    { "id": "sfe", "via": "hidrovia", "nombre": "Santa Fe", "pais": "AR", "provincia": "Santa Fe", "km": 470,  "lat": -31.650, "lng": -60.700 },
-    { "id": "bar", "via": "hidrovia", "nombre": "Barranqueras", "pais": "AR", "provincia": "Chaco", "km": 1070, "lat": -27.480, "lng": -58.930 },
-    { "id": "pil", "via": "hidrovia", "nombre": "Pilar", "pais": "PY", "provincia": "Ñeembucú", "km": 1230, "lat": -26.860, "lng": -58.300 },
-    { "id": "vil", "via": "hidrovia", "nombre": "Villeta", "pais": "PY", "provincia": "Central", "km": 1460, "lat": -25.500, "lng": -57.560 },
-    { "id": "asu", "via": "hidrovia", "nombre": "Asunción", "pais": "PY", "provincia": "Asunción", "km": 1500, "lat": -25.280, "lng": -57.640 },
-    { "id": "con", "via": "hidrovia", "nombre": "Concepción", "pais": "PY", "provincia": "Concepción", "km": 1810, "lat": -23.400, "lng": -57.430 },
-    { "id": "cor", "via": "hidrovia", "nombre": "Corumbá", "pais": "BR", "provincia": "Mato Grosso do Sul", "km": 2760, "lat": -19.000, "lng": -57.650 },
-
-    { "id": "bue", "via": "costero", "nombre": "Puerto de Buenos Aires", "pais": "AR", "provincia": "CABA", "lat": -34.600, "lng": -58.370, "acceso": "c0" },
-    { "id": "mdp", "via": "costero", "nombre": "Puerto de Mar del Plata", "pais": "AR", "provincia": "Buenos Aires", "lat": -38.040, "lng": -57.535, "acceso": "c3" },
-    { "id": "bbl", "via": "costero", "nombre": "Puerto de Bahía Blanca (Ing. White)", "pais": "AR", "provincia": "Buenos Aires", "lat": -38.790, "lng": -62.270, "acceso": "c5" },
-    { "id": "sae", "via": "costero", "nombre": "Puerto San Antonio Este", "pais": "AR", "provincia": "Río Negro", "lat": -40.800, "lng": -64.880, "acceso": "c6" },
-    { "id": "pmy", "via": "costero", "nombre": "Puerto Madryn", "pais": "AR", "provincia": "Chubut", "lat": -42.740, "lng": -65.035, "acceso": "c8" },
-    { "id": "crd", "via": "costero", "nombre": "Puerto de Comodoro Rivadavia", "pais": "AR", "provincia": "Chubut", "lat": -45.860, "lng": -67.465, "acceso": "c9" },
-    { "id": "pde", "via": "costero", "nombre": "Puerto Deseado", "pais": "AR", "provincia": "Santa Cruz", "lat": -47.750, "lng": -65.900, "acceso": "c10" },
-    { "id": "psj", "via": "costero", "nombre": "Puerto San Julián", "pais": "AR", "provincia": "Santa Cruz", "lat": -49.300, "lng": -67.720, "acceso": "c12" },
-    { "id": "pqu", "via": "costero", "nombre": "Punta Quilla", "pais": "AR", "provincia": "Santa Cruz", "lat": -50.120, "lng": -68.400, "acceso": "c13" },
-    { "id": "rgl", "via": "costero", "nombre": "Puerto de Río Gallegos", "pais": "AR", "provincia": "Santa Cruz", "lat": -51.620, "lng": -69.210, "acceso": "c14" },
-    { "id": "ush", "via": "costero", "nombre": "Puerto de Ushuaia", "pais": "AR", "provincia": "Tierra del Fuego", "lat": -54.810, "lng": -68.300, "acceso": "c19" }
-  ]
+ "_ayuda": "Puertos de la hidrovía Paraná-Paraguay donde opera la flota. 'km' = km de río desde Nueva Palmira hacia aguas arriba; la distancia de un envío es la diferencia entre los km de los dos puertos. 'alias' = cómo puede aparecer escrito el puerto en una orden de compra (sin tildes, en minúscula). Los km son APROXIMADOS: se pueden ajustar acá.",
+ "puertos": [
+  {
+   "id": "np",
+   "via": "hidrovia",
+   "nombre": "Nueva Palmira",
+   "pais": "UY",
+   "provincia": "Colonia",
+   "km": 0,
+   "lat": -33.88,
+   "lng": -58.42,
+   "alias": [
+    "nueva palmira",
+    "n. palmira",
+    "palmira"
+   ]
+  },
+  {
+   "id": "ibi",
+   "via": "hidrovia",
+   "nombre": "Ibicuy",
+   "pais": "AR",
+   "provincia": "Entre Ríos",
+   "km": 70,
+   "lat": -33.74,
+   "lng": -59.17,
+   "alias": [
+    "ibicuy"
+   ]
+  },
+  {
+   "id": "sni",
+   "via": "hidrovia",
+   "nombre": "San Nicolás",
+   "pais": "AR",
+   "provincia": "Buenos Aires",
+   "km": 230,
+   "lat": -33.33,
+   "lng": -60.21,
+   "alias": [
+    "san nicolas"
+   ]
+  },
+  {
+   "id": "ros",
+   "via": "hidrovia",
+   "nombre": "Rosario",
+   "pais": "AR",
+   "provincia": "Santa Fe",
+   "km": 300,
+   "lat": -32.95,
+   "lng": -60.63,
+   "alias": [
+    "rosario"
+   ]
+  },
+  {
+   "id": "slo",
+   "via": "hidrovia",
+   "nombre": "San Lorenzo",
+   "pais": "AR",
+   "provincia": "Santa Fe",
+   "km": 325,
+   "lat": -32.75,
+   "lng": -60.72,
+   "alias": [
+    "san lorenzo"
+   ]
+  },
+  {
+   "id": "sfe",
+   "via": "hidrovia",
+   "nombre": "Santa Fe",
+   "pais": "AR",
+   "provincia": "Santa Fe",
+   "km": 470,
+   "lat": -31.65,
+   "lng": -60.7,
+   "alias": [
+    "santa fe"
+   ]
+  },
+  {
+   "id": "bar",
+   "via": "hidrovia",
+   "nombre": "Barranqueras",
+   "pais": "AR",
+   "provincia": "Chaco",
+   "km": 1070,
+   "lat": -27.48,
+   "lng": -58.93,
+   "alias": [
+    "barranqueras"
+   ]
+  },
+  {
+   "id": "pil",
+   "via": "hidrovia",
+   "nombre": "Pilar",
+   "pais": "PY",
+   "provincia": "Ñeembucú",
+   "km": 1230,
+   "lat": -26.86,
+   "lng": -58.3,
+   "alias": [
+    "pilar"
+   ]
+  },
+  {
+   "id": "vil",
+   "via": "hidrovia",
+   "nombre": "Villeta",
+   "pais": "PY",
+   "provincia": "Central",
+   "km": 1460,
+   "lat": -25.5,
+   "lng": -57.56,
+   "alias": [
+    "villeta"
+   ]
+  },
+  {
+   "id": "asu",
+   "via": "hidrovia",
+   "nombre": "Asunción",
+   "pais": "PY",
+   "provincia": "Asunción",
+   "km": 1500,
+   "lat": -25.28,
+   "lng": -57.64,
+   "alias": [
+    "asuncion"
+   ]
+  },
+  {
+   "id": "con",
+   "via": "hidrovia",
+   "nombre": "Concepción",
+   "pais": "PY",
+   "provincia": "Concepción",
+   "km": 1810,
+   "lat": -23.4,
+   "lng": -57.43,
+   "alias": [
+    "concepcion"
+   ]
+  },
+  {
+   "id": "lad",
+   "via": "hidrovia",
+   "nombre": "Ladário",
+   "pais": "BR",
+   "provincia": "Mato Grosso do Sul",
+   "km": 2750,
+   "lat": -19.0,
+   "lng": -57.6,
+   "alias": [
+    "ladario"
+   ]
+  },
+  {
+   "id": "cor",
+   "via": "hidrovia",
+   "nombre": "Corumbá",
+   "pais": "BR",
+   "provincia": "Mato Grosso do Sul",
+   "km": 2760,
+   "lat": -19.0,
+   "lng": -57.65,
+   "alias": [
+    "corumba"
+   ]
+  }
+ ]
 }

@@ -1,22 +1,63 @@
 {
-  "_ayuda": "RESPALDO LOCAL. Los datos oficiales están en Supabase (tablas modos, proyectos y config) y son los que usa el cálculo guardado. Este archivo solo se usa si no hay conexión con Supabase (por ejemplo, probando con Go Live sin internet). Si cambiás un factor en Supabase, actualizalo también acá.",
-  "config": {
-    "densidades": { "solido": 0.75, "liquido": 0.88, "general": 1 },
-    "toneladas_por_teu": 10,
-    "ajuste_sentido": { "arriba": 1.25, "abajo": 0.85, "ilustrativo": true }
+ "_ayuda": "RESPALDO LOCAL. Los datos oficiales están en Supabase (tablas modos, proyectos y config). Este archivo solo se usa si no hay conexión con Supabase. Si cambiás un factor en Supabase, actualizalo también acá.",
+ "config": {
+  "densidades": {
+   "solido": 0.75,
+   "liquido": 0.88,
+   "general": 1
   },
-  "modos": [
-    { "id": "convoy-2",   "nombre": "Convoy · empujador + 2 barcazas",       "icono": "⛴️", "via": "hidrovia",  "factor": 0.017,  "fuente": "GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW", "verificar": true, "orden": 1 },
-    { "id": "convoy-4-5", "nombre": "Convoy · empujador + 4/5 barcazas",     "icono": "⛴️", "via": "hidrovia",  "factor": 0.010,  "fuente": "GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW", "verificar": true, "orden": 2 },
-    { "id": "convoy-6",   "nombre": "Convoy · empujador + 6 o más barcazas", "icono": "⛴️", "via": "hidrovia",  "factor": 0.0074, "fuente": "GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW", "verificar": true, "orden": 3 },
-    { "id": "buque-vergara", "nombre": "Buque Interbarge · carril costero", "icono": "🚢", "via": "costero", "factor": 0.016, "fuente": "[Completar: dato propio de Interbarge]", "verificar": true, "orden": 11 },
-    { "id": "camion-articulado", "nombre": "Camión articulado (semirremolque)", "icono": "🚚", "via": "terrestre", "factor": 0.08, "fuente": "[Completar fuente]", "verificar": true, "orden": 12 },
-    { "id": "camion-rigido", "nombre": "Camión rígido", "icono": "🚛", "via": "terrestre", "factor": 0.2, "fuente": "[Completar fuente]", "verificar": true, "orden": 13 },
-    { "id": "ferrocarril", "nombre": "Ferrocarril de carga", "icono": "🚆", "via": "terrestre", "factor": 0.03, "fuente": "[Completar fuente]", "verificar": true, "orden": 14 }
-  ],
-  "proyectos": [
-    { "id": "p1", "tag": "Forestación nativa", "nombre": "Restauración de bosque chaqueño", "lugar": "Chaco, Argentina", "estandar": "Verra VCS · 2024", "usd_por_t": 18, "ejemplo": true },
-    { "id": "p2", "tag": "Metano evitado", "nombre": "Biodigestores en tambos", "lugar": "Santa Fe, Argentina", "estandar": "Gold Standard · 2023", "usd_por_t": 12, "ejemplo": true },
-    { "id": "p3", "tag": "Conservación", "nombre": "Humedales del Delta del Paraná", "lugar": "Entre Ríos, Argentina", "estandar": "Verra VCS · 2024", "usd_por_t": 15, "ejemplo": true }
-  ]
+  "toneladas_por_teu": 10,
+  "ajuste_sentido": {
+   "arriba": 1,
+   "abajo": 1,
+   "ilustrativo": false
+  },
+  "factor_flota": {
+   "anio": 2025,
+   "emisiones_t": 62295,
+   "toneladas": 1826094,
+   "distancia_media_km": 1500
+  }
+ },
+ "modos": [
+  {
+   "id": "flota-interbarge",
+   "nombre": "Convoy InterBarge (flota propia)",
+   "icono": "⛴️",
+   "via": "hidrovia",
+   "factor": 0.0227,
+   "fuente": "Inventario GEI InterBarge 2025 (Coralia, ISO 14064-1): 62.295 t CO2e operativas ÷ (1.826.094 t × 1.500 km de distancia media supuesta)",
+   "verificar": true,
+   "orden": 0
+  }
+ ],
+ "proyectos": [
+  {
+   "id": "p1",
+   "tag": "Forestación nativa",
+   "nombre": "Restauración de bosque chaqueño",
+   "lugar": "Chaco, Argentina",
+   "estandar": "Verra VCS · 2024",
+   "usd_por_t": 18,
+   "ejemplo": true
+  },
+  {
+   "id": "p2",
+   "tag": "Metano evitado",
+   "nombre": "Biodigestores en tambos",
+   "lugar": "Santa Fe, Argentina",
+   "estandar": "Gold Standard · 2023",
+   "usd_por_t": 12,
+   "ejemplo": true
+  },
+  {
+   "id": "p3",
+   "tag": "Conservación",
+   "nombre": "Humedales del Delta del Paraná",
+   "lugar": "Entre Ríos, Argentina",
+   "estandar": "Verra VCS · 2024",
+   "usd_por_t": 15,
+   "ejemplo": true
+  }
+ ]
 }

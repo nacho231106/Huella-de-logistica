@@ -20,7 +20,7 @@
         <div>
           <span class="proto">Certificado de huella de carbono</span>
           <h1 style="margin-top:10px">${esc(c.empresa || "Envío")}</h1>
-          <p class="hint">${esc(c.carga || "")}</p>
+          <p class="hint">${c.oc_numero ? `Orden de compra ${esc(c.oc_numero)} · ` : ""}${esc(c.carga || "")}</p>
         </div>
         <div style="text-align:right">
           <div class="sello">${c.estado === "retirado" ? "Validado y compensado" : "Validado por Sylvera"}</div>
@@ -41,7 +41,7 @@
       ${c.creditos ? `<div class="cert"><b>Compensación</b>
         <span>${c.creditos} crédito${c.creditos === 1 ? "" : "s"} de carbono (1 crédito = 1 t CO₂e) · ${esc(c.proyecto || "")} · ${esc(c.proyecto_estandar || "")}</span>
         <span>${c.estado === "retirado" ? `Retirados el ${fmtFecha(c.retirado_at)} · Ref.: ${esc(c.retiro_ref || "")}` : "Retiro de créditos pendiente."}</span></div>` : ""}
-      <p class="hint">Metodología y cálculo: Coralia Environmental. Fórmula: distancia × toneladas × factor de emisión (kg CO₂e/t·km) × ajuste por sentido en hidrovía. Verificable en ${esc(location.origin + location.pathname)} con el código ${esc(c.certificado)}.</p>
+      <p class="hint">Metodología y cálculo: Coralia Environmental. Fórmula: distancia por río × toneladas × factor de emisión propio de la flota (kg CO₂e/t·km), calculado a partir del inventario de gases de efecto invernadero de la naviera. Verificable en ${esc(location.origin + location.pathname)} con el código ${esc(c.certificado)}.</p>
       <div class="no-print"><button class="btn" type="button" onclick="window.print()">Descargar PDF</button></div>`;
   }
 

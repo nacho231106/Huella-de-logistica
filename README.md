@@ -1,66 +1,84 @@
 # Huella de logística · Interbarge
 
-App web para calcular la huella de carbono del transporte de cargas de Interbarge, con metodología de Coralia Environmental. Junta dos versiones: la calculadora por tramos con mapa y el prototipo fluvial (`prototipos/huella-fluvial-naviera.html`).
+App web para que los clientes de Interbarge vean el costo de su envío por la hidrovía Paraná-Paraguay **con y sin compensación de su huella de carbono**, con metodología de Coralia Environmental.
 
-- **Vías:** hidrovía Paraná-Paraguay (convoyes de barcazas, con ajuste por sentido de la corriente), carril costero patagónico (buque) y terrestre (camión, tren). Un envío puede combinar varios tramos.
-- **Fórmula:** `huella del tramo = distancia (km) × carga (t) × factor (kg CO2e/t·km) × ajuste por sentido (solo hidrovía)`. El cálculo que se guarda se rehace en el servidor con los factores vigentes.
-- **Compensación** opcional con créditos de carbono (1 crédito = 1 t CO2e, se redondea hacia arriba).
-- **Flujo:** borrador → enviado (revisión Coralia) → en validación (Sylvera) → validado (certificado) → créditos retirados. Cualquier revisión puede dejar observaciones.
+El cliente solo sube su **orden de compra**. La página lee los datos (puertos, producto, cantidad, flete), el cliente los revisa y ve el presupuesto:
+
+- **Costo sin compensación de la huella de carbono:** el flete de la OC.
+- **Costo con compensación:** una opción por cada proyecto de carbono, con su precio.
+
+Elige una opción, confirma con su email y Coralia, Sylvera y la Bolsa Paraguaya de Carbono siguen el proceso desde el panel.
+
+## Cómo se calcula
+
+`huella = distancia por río (km) × carga (t) × factor de la flota (kg CO2e/t·km)`
+
+El factor sale del **inventario GEI 2025 de InterBarge** (Coralia, ISO 14064-1):
+
+| Dato | Valor |
+|---|---|
+| Emisiones operativas de la flota 2025 | 62.295 t CO2e |
+| Toneladas transportadas 2025 | 1.826.094 t |
+| Intensidad por tonelada | 34,1 kg CO2e/t |
+| Distancia media por tonelada (**supuesto**) | 1.500 km |
+| **Factor** | **0,0227 kg CO2e/t·km** |
+
+Las emisiones operativas son: motores principales (55.173,5), generadores (4.280,4), embarcaciones auxiliares (444,1), lubricantes (389,6), refrigerantes (1.191,5), remolcadores de terceros (259,7) y slop (556,5). Quedan afuera oficinas, electricidad, vuelos, autos y basura común porque no son parte del servicio de transporte.
+
+El inventario no trae toneladas-km, por eso se usa una distancia media supuesta. Si se ajusta, el factor se cambia en el panel de Coralia (Factores de emisión) y en `config.factor_flota`. Sin datos de consumo por sentido, no hay ajuste aguas arriba / aguas abajo.
+
+Créditos: 1 crédito = 1 t CO2e, se redondea hacia arriba.
 
 ## Páginas
 
 | Página | Para qué |
 |---|---|
-| `index.html` | Calculadora: tramos, mapa, compensación y envío con código por email |
-| `panel.html` | Ingreso y panel según perfil (ver abajo) |
-| `certificado.html?c=CODIGO` | Certificado público y verificable, imprimible a PDF |
+| `index.html` | Subir la OC, revisar datos, presupuesto con y sin compensación, confirmar con código por email |
+| `panel.html` | Ingreso y panel según perfil |
+| `certificado.html?c=CODIGO` | Certificado público y verificable |
 
 ## Perfiles
 
-| Perfil | Cómo entra | Qué ve |
+| Perfil | Cómo entra | Qué ve y hace |
 |---|---|---|
-| Cliente | Email + código de 6 dígitos o link mágico. N° de booking opcional | Solo sus cálculos y certificados |
-| Coralia | Google o Microsoft, solo emails `@coraliae.com` | Todo: cálculos, factores, estados, exportes CSV y lista de Sylvera |
-| Sylvera | Google o Microsoft, solo emails de la lista `sylvera_autorizados` | Solo los cálculos enviados a validación |
+| Cliente | Email + código de 6 dígitos | Sus presupuestos y certificados |
+| Coralia | Google/Microsoft o código, emails `@coraliae.com` | Todo. Revisa, edita factores, administra las listas de Sylvera y la Bolsa, exporta CSV |
+| Sylvera | Código por email, solo emails de `sylvera_autorizados` | Los enviados a validación: valida u observa |
+| Bolsa Paraguaya de Carbono | Código por email, solo emails de `bolsa_autorizados` | Los validados que eligieron compensar: registra el retiro de créditos |
 
-Los permisos los aplica la base (RLS en Supabase), no la página, así que nadie ve datos ajenos aunque modifique el código.
+Flujo: enviado (revisión Coralia) → en validación (Sylvera) → validado (certificado) → créditos retirados (Bolsa o Coralia). Los permisos los aplica la base (RLS en Supabase).
 
 ## Archivos
 
 | Archivo | Qué tiene |
 |---|---|
 | `index.html`, `panel.html`, `certificado.html`, `styles.css` | Diseño |
-| `app.js`, `panel.js`, `certificado.js`, `lib.js` | Lógica |
-| `config.js` | URL y clave pública de Supabase, nombre de la naviera. **Para mudar a otro Supabase se cambia solo esto.** |
-| `data/puertos.json` | Puertos de cada vía (coordenadas; km de río en la hidrovía) |
-| `data/ruta.json` | Geometría del carril costero y del río |
-| `data/modos.json` | Respaldo local de factores y proyectos (se usa solo sin conexión con la base) |
+| `app.js` | Presupuesto a partir de la OC |
+| `lector-oc.js` | Lee PDF, Excel o CSV en el navegador y busca N° de OC, empresa, puertos, producto, cantidad y flete. Sin IA: palabras clave y números |
+| `panel.js`, `certificado.js`, `lib.js` | Panel, certificado y funciones compartidas |
+| `config.js` | URL y clave pública de Supabase, nombre de la naviera |
+| `data/puertos.json` | Puertos de la hidrovía con su km de río desde Nueva Palmira y cómo pueden aparecer escritos en una OC |
+| `data/modos.json` | Respaldo local de factor y proyectos (solo sin conexión con la base) |
+| `data/ruta.json` | Geometría de las vías. Sin uso desde la v3 (ya no hay mapa) |
 | `supabase/*.sql` | Estructura de la base, en orden |
 
-## Datos que se editan en Supabase (proyecto `vergara-huella`)
+## Puesta en marcha
 
-- `modos`: factores de emisión. Coralia también los edita desde el panel.
-- `proyectos`: proyectos de compensación y precio por t.
-- `config`: densidades (m³ → t), toneladas por TEU y ajuste por sentido.
-- `sylvera_autorizados`: emails de Sylvera. También se edita desde el panel de Coralia.
-
-## Puesta en marcha (pendiente)
-
-1. **Correr `supabase/02_v2_hidrovia_compensacion.sql`:** supabase.com → proyecto `vergara-huella` → SQL Editor → pegar todo → Run. Hasta que se corra, la calculadora funciona con los datos locales pero no se puede guardar.
-2. **Emails con código:** en Authentication → Email Templates, en "Magic Link" y en "Confirm signup", agregar `Tu código: {{ .Token }}` para que el mail traiga el código además del link.
-3. **URLs:** en Authentication → URL Configuration, poner la URL de Vercel como Site URL y agregar `https://TU-URL/**` en Redirect URLs.
-4. **Google y Microsoft (Coralia/Sylvera):** en Authentication → Providers, activar Google y Azure con sus credenciales. En Azure conviene restringir al tenant de Coralia.
+1. **Base:** supabase.com → proyecto `vergara-huella` → SQL Editor → correr `02_v2_hidrovia_compensacion.sql` (si no se corrió) y después `03_oc_flota_bolsa.sql`.
+2. **Emails con código:** Authentication → Email Templates → "Magic Link" y "Confirm signup": agregar `Tu código: {{ .Token }}`.
+3. **URLs:** Authentication → URL Configuration: la URL de Vercel como Site URL y `https://TU-URL/**` en Redirect URLs.
+4. **Google y Microsoft (Coralia):** Authentication → Providers.
 5. **Vercel:** importar el repo (Framework: Other, sin build). Cada push a `main` se publica solo.
-
-## Pendiente de datos
-
-- [ ] Logo de Interbarge (hoy dice `[Logo]`)
-- [ ] Factor propio de la flota (hidrovía y buque costero) con su fuente
-- [ ] Tabla real de distancias entre puertos
-- [ ] Ajuste por sentido con datos de consumo (hoy es ilustrativo)
-- [ ] Proyectos y precios reales de Coralia
-- [ ] Factores terrestres con fuente
-- [ ] Validar el N° de booking contra datos de Interbarge (hoy es opcional y no se valida)
-- [ ] Pago de los créditos: hoy se registra la intención y Coralia gestiona el retiro
+6. **Sylvera y Bolsa:** cargar sus emails desde el panel de Coralia.
 
 Para probar en local: VS Code → **Go Live**. Con doble clic no anda.
+
+## Pendiente
+
+- [ ] Logo de Interbarge (hoy dice `[Logo]`)
+- [ ] Validar la distancia media de 1.500 km (o reemplazarla por t·km reales)
+- [ ] Ajustar los km de río de cada puerto en `data/puertos.json`
+- [ ] Proyectos y precios reales de Coralia
+- [ ] Probar el lector con OC reales y sumar los formatos que haga falta
+- [ ] Tramos terrestres (opcional)
+- [ ] Pago de los créditos: hoy se registra la elección y el retiro se carga a mano
