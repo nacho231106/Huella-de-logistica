@@ -11,8 +11,8 @@ grant execute on function public.app_rol() to anon;
 alter table public.modos add column if not exists via text not null default 'terrestre' check (via in ('costero','hidrovia','terrestre'));
 update public.modos set via = 'costero' where tipo = 'maritimo' and id = 'buque-vergara';
 update public.modos set orden = orden + 10,
-  nombre = replace(nombre, 'Buque Vergara', 'Buque Naviera Barge'),
-  fuente = replace(fuente, 'Vergara', 'Naviera Barge')
+  nombre = replace(nombre, 'Buque Vergara', 'Buque Interbarge'),
+  fuente = replace(fuente, 'Vergara', 'Interbarge')
   where id in ('buque-vergara','camion-articulado','camion-rigido','ferrocarril') and orden < 10;
 insert into public.modos (id, nombre, icono, tipo, via, factor, fuente, verificar, orden) values
   ('convoy-2',   'Convoy · empujador + 2 barcazas',       '⛴️', 'maritimo', 'hidrovia', 0.017,  'GLEC Framework v2.0 · vías navegables interiores, gasóleo, WTW. Reemplazar por factor propio de la flota.', true, 1),

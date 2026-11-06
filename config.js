@@ -3,7 +3,7 @@
 window.APP_CONFIG = {
   SUPABASE_URL: "https://flngomlqaidkmqxxkeys.supabase.co",
   SUPABASE_KEY: "sb_publishable_vOKi1wgZdg9UplMYgBc6ZA_3vlDvFG5",
-  NAVIERA: "Naviera Barge",
+  NAVIERA: "Interbarge",
   CONTACTO_CORALIA: "https://coraliae.com",
   DOMINIO_CORALIA: "coraliae.com",
 };

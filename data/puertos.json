@@ -1,5 +1,5 @@
 {
-  "_ayuda": "Puertos por vía. via 'costero' = carril marítimo patagónico (usa 'acceso' = punto del carril en ruta.json). via 'hidrovia' = Paraná-Paraguay (usa 'km' = km de río desde Nueva Palmira hacia aguas arriba). Coordenadas y km APROXIMADOS: reemplazar por la tabla de distancias de Naviera Barge.",
+  "_ayuda": "Puertos por vía. via 'costero' = carril marítimo patagónico (usa 'acceso' = punto del carril en ruta.json). via 'hidrovia' = Paraná-Paraguay (usa 'km' = km de río desde Nueva Palmira hacia aguas arriba). Coordenadas y km APROXIMADOS: reemplazar por la tabla de distancias de Interbarge.",
   "puertos": [
     { "id": "np",  "via": "hidrovia", "nombre": "Nueva Palmira", "pais": "UY", "provincia": "Colonia", "km": 0,    "lat": -33.880, "lng": -58.420 },
     { "id": "ros", "via": "hidrovia", "nombre": "Rosario", "pais": "AR", "provincia": "Santa Fe", "km": 300,  "lat": -32.950, "lng": -60.630 },
