@@ -13,6 +13,16 @@ Elige una opción, confirma con su email y Coralia, Sylvera y la Bolsa Paraguaya
 
 `huella = distancia por río (km) × carga (t) × factor de la flota (kg CO2e/t·km)`
 
+Si el cliente elige **incluir la huella terrestre**, se suman dos tramos opcionales: **planta de fabricación → puerto de carga** y **puerto de descarga → planta de destino**. En cada uno elige el medio de transporte: `distancia × carga × factor del medio`.
+
+| Medio | kg CO2e/t·km | Fuente |
+|---|---|---|
+| Camión articulado | 0,078 | DESNZ 2025, Freighting goods, fila 60 (HGV all diesel, All artics, average laden) |
+| Camión rígido | 0,19748 | DESNZ 2025, Freighting goods, fila 51 (HGV all diesel, All rigids, average laden) |
+| Tren de carga | 0,02779 | DESNZ 2025, Freighting goods, fila 106 (Rail, Freight train) |
+
+DESNZ: UK Government GHG Conversion Factors 2025, condensed set, Open Government Licence v3.0, GWP AR5 a 100 años. Son de combustión (tanque a rueda), igual que el factor de la flota. Las plantas se leen de la OC o de un remito, o se cargan a mano. La distancia sale de OpenStreetMap por ruta (para el tren es aproximada) y se puede corregir. La hoja de vehículos terrestres del inventario no sirve para esto: son los autos y camionetas de la empresa, no camiones de carga.
+
 El factor sale del **inventario GEI 2025 de InterBarge** (Coralia, ISO 14064-1):
 
 | Dato | Valor |
@@ -62,10 +72,12 @@ Flujo: enviado (revisión Coralia) → en validación (Sylvera) → validado (ce
 | `assets/` | Logos de InterBarge y Coralia |
 | `data/ruta.json` | Geometría de las vías. Sin uso desde la v3 (ya no hay mapa) |
 | `supabase/*.sql` | Estructura de la base, en orden |
+| `lib/ef/standard.js` | Estándar Coralia de metadatos de factores (copia del de la plataforma) |
+| `scripts/auditar-factores.mjs` | Verifica que los factores de `data/modos.json` cumplan el estándar: `node scripts/auditar-factores.mjs` |
 
 ## Puesta en marcha
 
-1. **Base:** supabase.com → proyecto `vergara-huella` → SQL Editor → correr `02_v2_hidrovia_compensacion.sql` (si no se corrió) y después `03_oc_flota_bolsa.sql`.
+1. **Base:** supabase.com → proyecto `vergara-huella` → SQL Editor → correr en orden las que falten: `02_v2_hidrovia_compensacion.sql`, `03_oc_flota_bolsa.sql` y `04_tramos_camion.sql`.
 2. **Emails con código:** Authentication → Email Templates → "Magic Link" y "Confirm signup": agregar `Tu código: {{ .Token }}`.
 3. **URLs:** Authentication → URL Configuration: la URL publicada (GitHub Pages o Vercel) como Site URL y `https://TU-URL/**` en Redirect URLs.
 4. **Google y Microsoft (Coralia):** Authentication → Providers.
@@ -82,5 +94,6 @@ Para probar en local: VS Code → **Go Live**. Con doble clic no anda.
 - [ ] Ajustar los km de río de cada puerto en `data/puertos.json`
 - [ ] Proyectos y precios reales de Coralia
 - [ ] Probar el lector con OC reales y sumar los formatos que haga falta
-- [ ] Tramos terrestres (opcional)
+- [ ] Probar la lectura de plantas con OC y remitos reales
+- [ ] Buscar factores terrestres con geografía sudamericana (hoy son del Reino Unido)
 - [ ] Pago de los créditos: hoy se registra la elección y el retiro se carga a mano

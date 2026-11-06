@@ -55,6 +55,17 @@
     <div id="aviso-factores" class="notice" hidden></div>
     <div id="aviso-edicion" class="notice notice-info" hidden></div>
 
+    <section class="card pad pregunta" aria-labelledby="t-terr">
+      <div class="sec-head">
+        <h2 id="t-terr">¿Querés incluir la huella terrestre?</h2>
+        <p class="hint">Suma el transporte en camión o tren desde la planta de fabricación hasta el puerto de carga, y desde el puerto de descarga hasta la planta de destino.</p>
+      </div>
+      <div class="segmento" role="radiogroup" aria-labelledby="t-terr">
+        <button type="button" role="radio" class="seg" id="terr-no" aria-checked="true">No, solo el tramo fluvial</button>
+        <button type="button" role="radio" class="seg" id="terr-si" aria-checked="false">Sí, incluir los tramos terrestres</button>
+      </div>
+    </section>
+
     <!-- 1. Orden de compra -->
     <section class="card pad" aria-labelledby="t-oc">
       <div class="sec-head">
@@ -90,6 +101,32 @@
           <label class="field"><span>Valor del flete (USD) <em>(si la OC lo trae)</em></span><input id="flete" type="number" min="0" step="any" inputmode="decimal" /></label>
         </div>
         <p class="hint conv" id="conv"></p>
+      </div>
+
+      <div class="terrestre" id="terrestre" hidden>
+        <div class="terr-head">
+          <h3>Tramos terrestres</h3>
+          <label class="btn small ghost subir-remito" for="remito">Subir remito<input id="remito" type="file" accept=".pdf,.xlsx,.xls,.csv,.png,.jpg,.jpeg" /></label>
+        </div>
+        <p class="hint">Leemos las plantas de la orden de compra o del remito si las traen. Si no, escribí la ciudad o dirección y calculamos la distancia por ruta. Dejá vacío el tramo que no exista.</p>
+        <p id="remito-estado" class="msg" hidden></p>
+        <div class="pierna">
+          <b>Planta de fabricación → puerto de carga</b>
+          <div class="grid-terr">
+            <label class="field"><span>Planta de fabricación</span><input id="retiro-lugar" placeholder="Ej.: Hernandarias, Paraguay" autocomplete="off" /></label>
+            <label class="field"><span>Medio de transporte</span><select id="retiro-modo" class="sel-modo"></select></label>
+            <label class="field"><span>Km por ruta</span><input id="retiro-km" type="number" min="0" step="any" inputmode="decimal" /></label>
+          </div>
+        </div>
+        <div class="pierna">
+          <b>Puerto de descarga → planta de destino</b>
+          <div class="grid-terr">
+            <label class="field"><span>Planta de destino</span><input id="entrega-lugar" placeholder="Ej.: Montevideo, Uruguay" autocomplete="off" /></label>
+            <label class="field"><span>Medio de transporte</span><select id="entrega-modo" class="sel-modo"></select></label>
+            <label class="field"><span>Km por ruta</span><input id="entrega-km" type="number" min="0" step="any" inputmode="decimal" /></label>
+          </div>
+        </div>
+        <p class="hint" id="terr-hint"></p>
       </div>
     </section>
 
@@ -134,7 +171,8 @@
         <li><b>Factor de la flota:</b> sale del inventario de gases de efecto invernadero 2025 de <span data-naviera>InterBarge</span>, hecho por Coralia con ISO 14064-1. Incluye los motores de los remolcadores, generadores, embarcaciones auxiliares, lubricantes, refrigerantes, remolcadores de puerto contratados y tratamiento de slop: 62.295 t CO₂e para 1.826.094 t transportadas (34,1 kg CO₂e por tonelada).</li>
         <li><b>Distancia media:</b> el inventario no trae toneladas-km, así que el factor por t·km usa una distancia media de 1.500 km por tonelada (supuesto de Coralia). Resultado: 0,0227 kg CO₂e/t·km.</li>
         <li><b>Distancias por río:</b> aproximadas, según la posición de cada puerto desde Nueva Palmira.</li>
-        <li><b>Alcance:</b> tramo fluvial puerto a puerto. Los fletes terrestres no están incluidos todavía.</li>
+        <li><b>Tramos terrestres (opcionales):</b> distancia por ruta (OpenStreetMap) × carga × factor del medio elegido. Factores oficiales DESNZ 2025 del Reino Unido, carga promedio, por t·km: camión articulado 0,078; camión rígido 0,19748; tren de carga 0,02779 kg CO₂e/t·km. Son de combustión (tanque a rueda), igual que el factor de la flota.</li>
+        <li><b>Alcance:</b> tramo fluvial puerto a puerto y, si se eligen, los fletes en camión antes y después.</li>
         <li><b>Conversiones:</b> m³ a toneladas con densidad típica (granel sólido 0,75 t/m³; líquido 0,88 t/m³; general 1 t/m³); 1 TEU = 10 t promedio.</li>
       </ul>
     </details>

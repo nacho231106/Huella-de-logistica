@@ -111,6 +111,18 @@
     return m ? m[1].replace(/\s{2,}.*/, "").trim() : null;
   }
 
+  // Lugares para los tramos en camión: retiro (antes del puerto) y entrega final (después del puerto)
+  function buscarLugares(raw) {
+    const lugar = (re) => {
+      const m = raw.match(re);
+      return m ? m[1].replace(/\s{2,}.*/, "").replace(/[.;]+$/, "").trim() : null;
+    };
+    return {
+      lugar_retiro: lugar(/(?:planta\s+de\s+fabricaci[oó]n|planta\s+productora|lugar\s+de\s+retiro|direcci[oó]n\s+de\s+retiro|retiro\s+en|domicilio\s+de\s+carga|punto\s+de\s+carga|planta\s+de\s+origen|origen\s+de\s+la\s+carga)\s*:\s*([^\n]{3,100})/i),
+      lugar_entrega: lugar(/(?:planta\s+de\s+destino|lugar\s+de\s+entrega|direcci[oó]n\s+de\s+entrega|domicilio\s+de\s+entrega|punto\s+de\s+entrega|entrega\s+en|destino\s+final)\s*:\s*([^\n]{3,100})/i),
+    };
+  }
+
   const PRODUCTOS = [
     ["solido", ["mineral de hierro", "hierro", "manganeso", "soja", "maiz", "trigo", "sorgo", "arroz", "girasol", "harina", "pellets", "clinker", "cemento", "fertilizante", "urea", "azucar", "granos"]],
     ["liquido", ["aceite", "gasoil", "diesel", "combustible", "nafta", "gasolina", "biodiesel", "etanol", "glp"]],
@@ -127,7 +139,7 @@
 
   function extraer(raw, puertos) {
     const t = norm(raw);
-    const d = { oc_numero: buscarOC(raw), empresa: buscarEmpresa(raw), ...buscarPuertos(t, puertos), ...buscarProducto(t), ...buscarCantidad(t), flete: buscarFlete(t) };
+    const d = { oc_numero: buscarOC(raw), empresa: buscarEmpresa(raw), ...buscarPuertos(t, puertos), ...buscarProducto(t), ...buscarCantidad(t), flete: buscarFlete(t), ...buscarLugares(raw) };
     if (d.unidad === "teu") d.tipo_carga = "contenedor";
     Object.keys(d).forEach((k) => (d[k] == null || d[k] === "") && delete d[k]);
     return d;

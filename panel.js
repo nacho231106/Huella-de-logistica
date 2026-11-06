@@ -19,7 +19,8 @@
     sylvera: ["Panel Sylvera", "Cálculos enviados a validación."],
     bolsa: ["Panel Bolsa Paraguaya de Carbono", "Presupuestos validados que eligieron compensar. Registrá el retiro de los créditos."],
   };
-  const ruta = (e) => { const t = e.tramos[0] || {}; return t.desde ? `${t.desde.label} → ${t.hasta?.label}` : ""; };
+  // Recorrido completo: del primer tramo (retiro en camión o puerto de carga) al último (entrega o puerto de descarga)
+  const ruta = (e) => { const a = e.tramos[0], b = e.tramos[e.tramos.length - 1]; return a?.desde ? `${a.desde.label} → ${b?.hasta?.label}` : ""; };
 
   function msg(sel, txt, tipo = "") { const m = $(sel); m.className = `msg ${tipo}`; m.innerHTML = txt; m.hidden = !txt; }
 
