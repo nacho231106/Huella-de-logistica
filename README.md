@@ -77,7 +77,7 @@ Flujo: enviado (revisión Coralia) → en validación (Sylvera) → validado (ce
 
 ## Puesta en marcha
 
-1. **Base:** supabase.com → proyecto `vergara-huella` → SQL Editor → correr en orden las que falten: `02_v2_hidrovia_compensacion.sql`, `03_oc_flota_bolsa.sql` y `04_tramos_camion.sql`.
+1. **Base:** supabase.com → proyecto `Huella Logística Interbarge` (organización Coralia Environmental) → SQL Editor → correr en orden las que falten: `02_v2_hidrovia_compensacion.sql`, `03_oc_flota_bolsa.sql` y `04_tramos_camion.sql`.
 2. **Emails con código:** Authentication → Email Templates → "Magic Link" y "Confirm signup": agregar `Tu código: {{ .Token }}`.
 3. **URLs:** Authentication → URL Configuration: la URL publicada (GitHub Pages o Vercel) como Site URL y `https://TU-URL/**` en Redirect URLs.
 4. **Google y Microsoft (Coralia):** Authentication → Providers.
