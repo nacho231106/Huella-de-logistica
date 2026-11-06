@@ -8,8 +8,10 @@
     const cert = $("#cert");
     cert.hidden = false;
     cert.innerHTML = `<p class="hint">Buscando…</p>`;
-    const { data, error } = await H.sb.rpc("verificar_envio", { codigo });
-    const c = data && data[0];
+    let c = null, error = null;
+    const d = H.DEMO ? H.demo.porCertificado(codigo) : null;
+    if (d) c = { ...d, proyecto: d.proyecto_nombre, proyecto_estandar: d.proyecto_estandar };
+    else { const r = await H.sb.rpc("verificar_envio", { codigo }); error = r.error; c = r.data && r.data[0]; }
     if (error || !c) {
       cert.innerHTML = `<h2>Certificado no encontrado</h2><p class="hint">Revisá el código. Solo se pueden verificar cálculos validados por Sylvera.</p>`;
       return;

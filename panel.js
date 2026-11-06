@@ -200,6 +200,7 @@
 
   // ---------- Inicio ----------
   async function init() {
+    if (H.DEMO) { location.replace("admin.html"); return; }
     document.querySelectorAll("[data-naviera]").forEach((n) => (n.textContent = H.C.NAVIERA));
     H.pintarCabecera();
     const s = await H.sesion();

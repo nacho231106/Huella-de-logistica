@@ -126,6 +126,12 @@
   async function pintarCabecera() {
     const zona = document.getElementById("cuenta");
     if (!zona) return;
+    if (DEMO) {
+      zona.innerHTML = `<span class="demo-chip" title="Versión de demostración: sin inicio de sesión, los datos quedan en este navegador">Demo</span>
+        <a class="nav-link" href="index.html#calcular">Calculadora</a>
+        <a class="btn small" href="admin.html">Parte administrativa</a>`;
+      return;
+    }
     const s = await sesion();
     if (!s) { zona.innerHTML = `<a class="nav-link" href="panel.html">Ingresar</a>`; return; }
     const r = await rol();
@@ -136,7 +142,66 @@
     document.getElementById("btn-salir").onclick = salir;
   }
 
+  // ---------- Modo demo (sin inicio de sesión, datos en el navegador) ----------
+  const DEMO = Boolean(C.MODO_DEMO);
+  const KEY_DEMO = "huella_demo_envios_v1";
+  const ROL_NOMBRE = { coralia: "Coralia", sylvera: "Sylvera", bolsa: "Bolsa Paraguaya de Carbono" };
+  const demo = {
+    listar() { try { return JSON.parse(localStorage.getItem(KEY_DEMO)) || []; } catch (e) { return []; } },
+    _guardar(l) { try { localStorage.setItem(KEY_DEMO, JSON.stringify(l)); } catch (e) {} },
+    get(id) { return demo.listar().find((e) => e.id === id) || null; },
+    porCertificado(c) { const k = String(c || "").trim().toUpperCase(); return demo.listar().find((e) => e.certificado === k && ["validado", "retirado"].includes(e.estado)) || null; },
+    // Mismo cálculo que la base (calcular_tramos_v2)
+    calcular(datos, cat) {
+      const tramos = (datos.tramos || []).map((t) => {
+        const r = calcularTramo(t, cat);
+        return { ...t, toneladas: +r.ton.toFixed(4), kg: +r.kg.toFixed(3), factor: r.modo?.factor ?? null, ajuste: r.ajuste,
+          fuente: r.modo?.fuente ?? null, modo_nombre: r.modo?.nombre ?? t.modo, via: r.modo?.via ?? null };
+      });
+      const total_kg = +tramos.reduce((a, t) => a + t.kg, 0).toFixed(3);
+      const total_km = +tramos.reduce((a, t) => a + (+t.dist || 0), 0).toFixed(1);
+      const total_tkm = +tramos.reduce((a, t) => a + (+t.dist || 0) * t.toneladas, 0).toFixed(1);
+      const p = (cat.proyectos || []).find((x) => x.id === datos.proyecto_id);
+      const creditos = p ? Math.ceil(total_kg / 1000) : null;
+      return { tramos, total_kg, total_km, total_tkm, creditos, usd_estimado: p ? creditos * (+p.usd_por_t || 0) : null,
+        proyecto_nombre: p?.nombre || null, proyecto_estandar: p?.estandar || null };
+    },
+    crear(datos, cat) {
+      const ahora = new Date().toISOString();
+      const e = { ...datos, ...demo.calcular(datos, cat), id: "demo-" + Math.random().toString(36).slice(2, 10),
+        usuario_email: datos.usuario_email || "cliente de la demo", estado: datos.estado || "enviado",
+        created_at: ahora, updated_at: ahora, enviado_at: ahora, comentario: null, revisado_at: null, revisado_por: null,
+        certificado: null, rechazo_rol: null, retirado_at: null, retiro_ref: null };
+      const l = demo.listar(); l.unshift(e); demo._guardar(l); return e;
+    },
+    // Mismas reglas de estados que la base (envios_guard)
+    actualizar(id, cambios, rol) {
+      const l = demo.listar(), e = l.find((x) => x.id === id);
+      if (!e) throw new Error("No se encontró el envío");
+      const de = e.estado, a = cambios.estado || de;
+      const permitido = { coralia: { enviado: ["en_validacion", "rechazado"] }, sylvera: { en_validacion: ["validado", "rechazado"] }, bolsa: { validado: ["retirado"] } };
+      if (a !== de && !(permitido[rol]?.[de] || []).includes(a)) throw new Error("Esta acción no corresponde a este perfil o a este estado");
+      if (a === "rechazado" && !String(cambios.comentario || "").trim()) throw new Error("Escribí las observaciones");
+      if (a === "retirado") {
+        if (!e.proyecto_id) throw new Error("El envío no tiene proyecto de compensación");
+        if (!String(cambios.retiro_ref || "").trim()) throw new Error("Falta la referencia del retiro");
+      }
+      const ahora = new Date().toISOString();
+      if ("comentario" in cambios) e.comentario = cambios.comentario || null;
+      if (a !== de) {
+        e.estado = a;
+        if (["en_validacion", "validado", "rechazado"].includes(a)) { e.revisado_at = ahora; e.revisado_por = ROL_NOMBRE[rol]; }
+        if (a === "rechazado") e.rechazo_rol = rol;
+        if (a === "retirado") { e.retiro_ref = cambios.retiro_ref.trim(); e.retirado_at = ahora; }
+        if (["validado", "retirado"].includes(a) && !e.certificado) e.certificado = "HC-DEMO-" + Math.random().toString(36).slice(2, 8).toUpperCase();
+      }
+      e.updated_at = ahora; demo._guardar(l); return e;
+    },
+    borrar(id) { demo._guardar(demo.listar().filter((e) => e.id !== id)); },
+    reiniciar() { demo._guardar([]); },
+  };
+
   window.H = { sb, C, fmt, fmtFecha, esc, norm, kgTxt, ESTADOS, PASOS, ROLES, pasoDe, cargarCatalogos, toneladas, calcularTramo,
     sesion, rol, enviarCodigo, verificarCodigo, entrarCon, salir, pintarCabecera,
-    entrar, registrar, recuperarClave, cambiarClave, errorAuth };
+    entrar, registrar, recuperarClave, cambiarClave, errorAuth, DEMO, demo, ROL_NOMBRE };
 })();

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="only light" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Parte administrativa · Huella</title>
+  <meta name="description" content="Revisión de Coralia, validación de Sylvera y retiro de créditos de la Bolsa Paraguaya de Carbono." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img class="brand-ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" />
+      <span class="brand-sep" aria-hidden="true"></span>
+      <span><span class="brand-name">Huella de carbono</span><span class="brand-sub">Transporte por la hidrovía</span></span>
+    </a>
+    <nav class="nav" id="cuenta"></nav>
+  </header>
+
+  <main class="wrap">
+    <section class="sec-head">
+      <h1>Parte administrativa</h1>
+      <p class="lead">Cada envío confirmado pasa por tres etapas: <b>Coralia</b> revisa los datos, <b>Sylvera</b> valida el cálculo y la <b>Bolsa Paraguaya de Carbono</b> registra el retiro de los créditos.</p>
+    </section>
+    <div id="aviso-demo" class="notice" hidden></div>
+
+    <div class="tabs" role="tablist" aria-label="Perfiles">
+      <button class="tab" role="tab" id="tab-coralia" data-rol="coralia" aria-selected="true"><img src="assets/coralia.png" alt="" />Coralia <span class="tab-n"></span></button>
+      <button class="tab" role="tab" id="tab-sylvera" data-rol="sylvera" aria-selected="false"><span class="tab-ico" aria-hidden="true">✓</span>Sylvera <span class="tab-n"></span></button>
+      <button class="tab" role="tab" id="tab-bolsa" data-rol="bolsa" aria-selected="false"><span class="tab-ico" aria-hidden="true">₲</span>Bolsa Paraguaya de Carbono <span class="tab-n"></span></button>
+    </div>
+
+    <section role="tabpanel" id="panel" class="admin-panel">
+      <p class="hint" id="rol-desc"></p>
+      <div class="two">
+        <div class="card pad">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Fecha</th><th>Envío</th><th class="num">Huella</th><th>Estado</th></tr></thead>
+              <tbody id="lista"></tbody>
+            </table>
+          </div>
+        </div>
+        <aside class="card pad" id="detalle"><p class="hint">Elegí un envío para ver el detalle.</p></aside>
+      </div>
+    </section>
+
+    <section class="card pad" id="factores" hidden>
+      <div class="sec-head">
+        <h2>Factores de emisión vigentes</h2>
+        <p class="hint">Los que usa la calculadora. En la versión con inicio de sesión, Coralia los puede editar desde acá.</p>
+      </div>
+      <div class="table-wrap"><table class="mini"><thead><tr><th>Medio</th><th class="num">kg CO₂e/t·km</th><th>Fuente</th></tr></thead><tbody id="factores-lista"></tbody></table></div>
+    </section>
+
+    <p class="hint demo-reset"><button class="btn small ghost" id="reiniciar" type="button">Reiniciar la demo</button> Borra los envíos de prueba de este navegador.</p>
+  </main>
+
+  <footer class="foot">Metodología y cálculo: <img class="co-logo" src="assets/coralia.png" alt="Coralia Environmental" width="369" height="211" /> · <a href="certificado.html">Verificar un certificado</a></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="lib.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -276,6 +276,16 @@
   async function guardar() {
     const err = validar();
     if (err) { aviso(err, "err"); return; }
+    if (H.DEMO) {
+      const e = H.demo.crear({
+        oc_numero: $("#oc-numero").value.trim(), empresa: $("#empresa").value.trim() || null, carga: $("#carga").value.trim(),
+        flete_usd: +$("#flete").value || null, oc_archivo: null, tramos: calc.tramos, proyecto_id: proySel || null, estado: "enviado",
+      }, CAT);
+      editId = e.id;
+      history.replaceState(null, "", `?id=${e.id}#calcular`);
+      mostrarOk(e, false);
+      return;
+    }
     const s = await H.sesion();
     if (!s) {
       $("#login").hidden = false; aviso("");
@@ -305,9 +315,11 @@
     const flete = +e.flete_usd || 0;
     $("#ok").hidden = false;
     $("#ok").innerHTML = `<b>Presupuesto confirmado · OC ${esc(e.oc_numero || "")}</b>
-      <span>${esc(e.tramos[0]?.desde?.label)} → ${esc(e.tramos[e.tramos.length - 1]?.hasta?.label)} · ${e.tramos.length} tramo${e.tramos.length === 1 ? "" : "s"} · ${fmt(e.total_km, 0)} km · huella calculada en el servidor: <b>${kgTxt(+e.total_kg)}</b></span>
+      <span>${esc(e.tramos[0]?.desde?.label)} → ${esc(e.tramos[e.tramos.length - 1]?.hasta?.label)} · ${e.tramos.length} tramo${e.tramos.length === 1 ? "" : "s"} · ${fmt(e.total_km, 0)} km · huella${H.DEMO ? "" : " calculada en el servidor"}: <b>${kgTxt(+e.total_kg)}</b></span>
       <span>${p ? `Con compensación: ${e.creditos} créditos de “${esc(p.nombre)}” (${usd(e.usd_estimado)})${flete ? ` · total ${usd(flete + +e.usd_estimado)}` : ""}` : `Sin compensación${flete ? ` · ${usd(flete)}` : ""}`}</span>
-      <span class="hint">Te avisamos a ${esc(e.usuario_email)} cuando Coralia revise los datos y Sylvera valide el cálculo. Seguilo en <a href="panel.html">Mis cálculos</a>.</span>`;
+      ${H.DEMO
+        ? `<span class="hint">Demo: seguilo en la <a href="admin.html">Parte administrativa</a>. Ahí Coralia lo revisa, Sylvera lo valida y la Bolsa registra el retiro de créditos.</span>`
+        : `<span class="hint">Te avisamos a ${esc(e.usuario_email)} cuando Coralia revise los datos y Sylvera valide el cálculo. Seguilo en <a href="panel.html">Mis cálculos</a>.</span>`}`;
     bloquear(e);
   }
 
@@ -330,7 +342,9 @@
 
   // ---------- Envío guardado (?id=) ----------
   async function cargarEnvio(id) {
-    const { data, error } = await H.sb.from("envios").select("*").eq("id", id).maybeSingle();
+    let data, error;
+    if (H.DEMO) data = H.demo.get(id);
+    else ({ data, error } = await H.sb.from("envios").select("*").eq("id", id).maybeSingle());
     if (error || !data) return false;
     editId = data.id; ocArchivo = data.oc_archivo || null;
     const t = data.tramos.find(esFluvial) || data.tramos[0] || {};
@@ -368,7 +382,19 @@
     setTimeout(fin, 340);
   }
   async function initIntro(saltar) {
-    if (saltar || (await H.sesion())) return entrarApp(false);
+    if (saltar) return entrarApp(false);
+    if (H.DEMO) {
+      $("#login-intro").innerHTML = `<div class="auth">
+        <h2 class="auth-t">Entrá a Huella</h2>
+        <p class="auth-sub">Versión de demostración, sin inicio de sesión.</p>
+        <button class="auth-btn" type="button" id="demo-entrar">Subir mi orden de compra <span aria-hidden="true">→</span></button>
+        <div class="auth-sep"><span>¿Sos de Coralia, Sylvera o la Bolsa?</span></div>
+        <a class="auth-btn ghost" href="admin.html">Parte administrativa</a>
+      </div>`;
+      $("#demo-entrar").onclick = () => entrarApp(true);
+      return;
+    }
+    if (await H.sesion()) return entrarApp(false);
     H.tarjetaLogin($("#login-intro"), { alEntrar: () => entrarApp(true) });
   }
 
@@ -377,6 +403,10 @@
     CAT = await H.cargarCatalogos();
     CAT.puertos = CAT.puertos.filter((p) => p.via === "hidrovia").sort((a, b) => a.km - b.km);
     document.querySelectorAll("[data-naviera]").forEach((n) => (n.textContent = H.C.NAVIERA));
+    if (H.DEMO) {
+      const h = document.querySelector("#sec-enviar .sec-head .hint");
+      if (h) h.textContent = "Versión de demostración: confirmá sin iniciar sesión. Después seguilo en la Parte administrativa (arriba a la derecha): Coralia revisa, Sylvera valida y la Bolsa registra el retiro de créditos.";
+    }
 
     const avisos = [];
     if (CAT.proyectos.some((p) => p.ejemplo)) avisos.push("los proyectos y precios de créditos son de ejemplo");
