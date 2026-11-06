@@ -278,8 +278,8 @@
     if (err) { aviso(err, "err"); return; }
     const s = await H.sesion();
     if (!s) {
-      $("#login").hidden = false; $("#stepEmail").hidden = false; $("#stepCode").hidden = true;
-      aviso(""); $("#email").focus();
+      $("#login").hidden = false; aviso("");
+      $("#login").scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
     aviso("Guardando…");
@@ -324,27 +324,8 @@
   function initEnvio() {
     pasos(0);
     $("#btn-enviar").onclick = guardar;
-    $("#sendCode").onclick = async () => {
-      const email = $("#email").value.trim();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { $("#email").focus(); aviso("Revisá el email.", "err"); return; }
-      $("#sendCode").disabled = true;
-      const { error } = await H.enviarCodigo(email, location.origin + location.pathname);
-      $("#sendCode").disabled = false;
-      if (error) { aviso(`No se pudo enviar el código: ${esc(error.message)}`, "err"); return; }
-      aviso(`Te mandamos un código a <b>${esc(email)}</b>. Revisá también el correo no deseado.`, "ok");
-      $("#stepCode").hidden = false; $("#code").focus();
-    };
-    $("#verify").onclick = async () => {
-      const token = ($("#code").value || "").replace(/\D/g, "");
-      if (token.length !== 6) { $("#code").focus(); return; }
-      $("#verify").disabled = true;
-      const { error } = await H.verificarCodigo($("#email").value.trim(), token);
-      $("#verify").disabled = false;
-      if (error) { aviso("El código no es válido o venció. Pedí uno nuevo.", "err"); return; }
-      pasos(1);
-      await H.pintarCabecera();
-      guardar();
-    };
+    // Si no hay sesión al confirmar, se muestra la tarjeta de ingreso y al entrar se guarda
+    H.tarjetaLogin($("#login-confirmar"), { alEntrar: () => { $("#login").hidden = true; pasos(1); guardar(); } });
   }
 
   // ---------- Envío guardado (?id=) ----------
@@ -374,16 +355,21 @@
     return true;
   }
 
-  // ---------- Intro ----------
-  function initIntro(saltar) {
-    const entrar = (animar) => {
-      const fin = () => { document.body.classList.remove("intro-on", "intro-saliendo"); window.scrollTo(0, 0); if (animar) $("#drop").focus({ preventScroll: true }); };
-      if (!animar || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return fin();
-      document.body.classList.add("intro-saliendo");
-      setTimeout(fin, 340);
+  // ---------- Intro (portada con inicio de sesión) ----------
+  function entrarApp(animar) {
+    const fin = () => {
+      document.body.classList.remove("intro-on", "intro-saliendo");
+      if (location.hash !== "#calcular") history.replaceState(null, "", location.pathname + location.search + "#calcular");
+      window.scrollTo(0, 0);
+      if (animar && $("#drop")) $("#drop").focus({ preventScroll: true });
     };
-    if (saltar) return entrar(false);
-    $("#btn-empezar").onclick = () => { history.replaceState(null, "", "#calcular"); entrar(true); };
+    if (!animar || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return fin();
+    document.body.classList.add("intro-saliendo");
+    setTimeout(fin, 340);
+  }
+  async function initIntro(saltar) {
+    if (saltar || (await H.sesion())) return entrarApp(false);
+    H.tarjetaLogin($("#login-intro"), { alEntrar: () => entrarApp(true) });
   }
 
   // ---------- Inicio ----------

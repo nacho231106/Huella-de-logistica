@@ -27,29 +27,7 @@
   // ---------- Ingreso ----------
   function initLogin() {
     $("#v-login").hidden = false;
-    $("#l-send").onclick = async () => {
-      const email = $("#l-email").value.trim();
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { msg("#l-msg", "Revisá el email.", "err"); return; }
-      $("#l-send").disabled = true;
-      const { error } = await H.enviarCodigo(email, location.origin + location.pathname);
-      $("#l-send").disabled = false;
-      if (error) { msg("#l-msg", `No se pudo enviar: ${esc(error.message)}`, "err"); return; }
-      msg("#l-msg", `Te mandamos un código a <b>${esc(email)}</b>. También podés tocar el link del mail.`, "ok");
-      $("#l-stepCode").hidden = false; $("#l-code").focus();
-    };
-    $("#l-verify").onclick = async () => {
-      const token = $("#l-code").value.replace(/\D/g, "");
-      if (token.length !== 6) return;
-      const { error } = await H.verificarCodigo($("#l-email").value.trim(), token);
-      if (error) { msg("#l-msg", "El código no es válido o venció.", "err"); return; }
-      location.reload();
-    };
-    const sso = async (prov) => {
-      const { error } = await H.entrarCon(prov, location.origin + location.pathname);
-      if (error) msg("#l-msg", `Este ingreso todavía no está configurado (${esc(error.message)}).`, "err");
-    };
-    $("#l-google").onclick = () => sso("google");
-    $("#l-ms").onclick = () => sso("azure");
+    H.tarjetaLogin($("#login-panel"), { alEntrar: () => location.reload() });
   }
 
   // ---------- Lista ----------

@@ -69,6 +69,7 @@
 
   // ---------- Sesión ----------
   async function sesion() {
+    await listo;
     const { data } = await sb.auth.getSession();
     return data.session;
   }
@@ -88,6 +89,37 @@
     if (proveedor === "azure") opts.scopes = "email";
     return sb.auth.signInWithOAuth({ provider: proveedor, options: opts });
   }
+  // ---------- Email y contraseña ----------
+  // "Recordarme": si no se tilda, la sesión se cierra al cerrar el navegador.
+  const RECORDAR = "huella_recordar", VIVA = "huella_sesion_viva";
+  const guardar = (k, v, ses) => { try { (ses ? sessionStorage : localStorage).setItem(k, v); } catch (e) {} };
+  const leer = (k, ses) => { try { return (ses ? sessionStorage : localStorage).getItem(k); } catch (e) { return null; } };
+  const sesionVencida = leer(RECORDAR) === "0" && !leer(VIVA, true);
+  const listo = sesionVencida ? sb.auth.signOut({ scope: "local" }) : Promise.resolve();
+
+  async function entrar(email, clave, recordar) {
+    const r = await sb.auth.signInWithPassword({ email, password: clave });
+    if (!r.error) { guardar(RECORDAR, recordar ? "1" : "0"); guardar(VIVA, "1", true); }
+    return r;
+  }
+  async function registrar(email, clave, volverA) {
+    return sb.auth.signUp({ email, password: clave, options: { emailRedirectTo: volverA || location.origin + location.pathname } });
+  }
+  async function recuperarClave(email) {
+    return sb.auth.resetPasswordForEmail(email, { redirectTo: new URL("clave.html", location.href).href });
+  }
+  async function cambiarClave(clave) { return sb.auth.updateUser({ password: clave }); }
+  function errorAuth(e) {
+    const m = (e && e.message) || String(e || "");
+    if (/invalid login credentials/i.test(m)) return "Email o contraseña incorrectos.";
+    if (/email not confirmed/i.test(m)) return "Todavía no confirmaste tu email. Buscá el mail que te mandamos y tocá el link.";
+    if (/already registered|already exists/i.test(m)) return "Ya hay una cuenta con ese email. Iniciá sesión o recuperá tu contraseña.";
+    if (/rate limit/i.test(m)) return "Se mandaron demasiados mails en poco tiempo. Probá de nuevo en un rato.";
+    if (/password.*(at least|characters|weak)/i.test(m)) return "La contraseña es muy corta o débil: usá al menos 8 caracteres.";
+    if (/same.*password/i.test(m)) return "La contraseña nueva tiene que ser distinta de la anterior.";
+    return m;
+  }
+
   async function salir() { await sb.auth.signOut(); location.href = "index.html"; }
 
   // Encabezado: muestra el usuario y el enlace al panel
@@ -105,5 +137,6 @@
   }
 
   window.H = { sb, C, fmt, fmtFecha, esc, norm, kgTxt, ESTADOS, PASOS, ROLES, pasoDe, cargarCatalogos, toneladas, calcularTramo,
-    sesion, rol, enviarCodigo, verificarCodigo, entrarCon, salir, pintarCabecera };
+    sesion, rol, enviarCodigo, verificarCodigo, entrarCon, salir, pintarCabecera,
+    entrar, registrar, recuperarClave, cambiarClave, errorAuth };
 })();

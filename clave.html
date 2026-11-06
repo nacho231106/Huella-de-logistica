@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="only light" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Nueva contraseña · Huella</title>
+  <meta name="description" content="Elegí una contraseña nueva para tu cuenta de Huella." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img class="brand-ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" />
+      <span class="brand-sep" aria-hidden="true"></span>
+      <span><span class="brand-name">Huella de carbono</span><span class="brand-sub">Transporte por la hidrovía</span></span>
+    </a>
+  </header>
+  <main class="wrap">
+    <section class="card pad login-panel">
+      <form class="auth" id="f" novalidate>
+        <h1 class="auth-t">Elegí una contraseña nueva</h1>
+        <p class="auth-sub" id="sub">Mínimo 8 caracteres.</p>
+        <label class="auth-field"><input id="c1" type="password" placeholder="Contraseña nueva" autocomplete="new-password" minlength="8" style="padding-left:18px" /></label>
+        <label class="auth-field"><input id="c2" type="password" placeholder="Repetí la contraseña" autocomplete="new-password" minlength="8" style="padding-left:18px" /></label>
+        <p class="auth-msg" id="msg" hidden></p>
+        <button class="auth-btn" type="submit">Guardar contraseña <span aria-hidden="true">→</span></button>
+      </form>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="lib.js"></script>
+  <script>
+    (async () => {
+      const $ = (s) => document.querySelector(s);
+      const msg = (t, tipo) => { $("#msg").className = "auth-msg " + tipo; $("#msg").innerHTML = t; $("#msg").hidden = !t; };
+      // El link del mail inicia una sesión temporal para poder cambiar la contraseña
+      await new Promise((r) => setTimeout(r, 400));
+      const s = await H.sesion();
+      if (!s) { msg('El link venció o ya se usó. Pedí uno nuevo desde <a href="index.html">¿Olvidaste tu contraseña?</a>', "err"); $("#f button").disabled = true; return; }
+      $("#sub").textContent = `Para ${s.user.email}. Mínimo 8 caracteres.`;
+      $("#f").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const c1 = $("#c1").value, c2 = $("#c2").value;
+        if (c1.length < 8) return msg("La contraseña tiene que tener al menos 8 caracteres.", "err");
+        if (c1 !== c2) return msg("Las contraseñas no coinciden.", "err");
+        const { error } = await H.cambiarClave(c1);
+        if (error) return msg(H.esc(H.errorAuth(error)), "err");
+        msg('¡Listo! Tu contraseña quedó guardada. <a href="panel.html">Ir a mis cálculos</a>', "ok");
+        $("#f button").disabled = true;
+      });
+    })();
+  </script>
+</body>
+</html>

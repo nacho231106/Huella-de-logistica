@@ -13,27 +13,92 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="intro-on">
-  <section class="intro" id="intro" aria-labelledby="intro-t">
-    <svg class="intro-bg" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <path class="intro-river" d="M250 -20 C 210 90, 300 160, 240 260 S 150 420, 220 520 S 300 690, 190 820" />
-      <path class="intro-route" d="M250 -20 C 210 90, 300 160, 240 260 S 150 420, 220 520 S 300 690, 190 820" />
-      <circle cx="243" cy="255" r="6" /><circle cx="196" cy="400" r="6" /><circle cx="222" cy="522" r="6" /><circle cx="262" cy="640" r="6" />
-    </svg>
-    <div class="intro-in">
-      <span class="intro-logos"><img class="ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" /><span class="x" aria-hidden="true">×</span><img class="co" src="assets/coralia.png" alt="Coralia Environmental" width="369" height="211" /></span>
-      <h1 id="intro-t">Huella<span class="dot">.</span></h1>
-      <p class="intro-lead">Subí tu orden de compra y mirá cuánto cuesta tu envío con <span data-naviera>InterBarge</span>, con y sin compensar su huella de carbono.</p>
-      <ol class="intro-steps">
-        <li><b>1</b><span><strong>Subí tu orden de compra</strong> Leemos puertos, carga y flete por vos.</span></li>
-        <li><b>2</b><span><strong>Mirá el presupuesto</strong> Costo sin compensación y con cada proyecto de carbono.</span></li>
-        <li><b>3</b><span><strong>Elegí y confirmá</strong> Con tu email, sin usuario ni contraseña.</span></li>
-      </ol>
-      <div class="intro-cta">
-        <button class="btn intro-btn" id="btn-empezar" type="button">Subir mi orden de compra <span aria-hidden="true">→</span></button>
-        <a class="intro-link" href="panel.html">Ya tengo cuenta · Ingresar</a>
+  <div class="intro" id="intro">
+    <section class="hero" aria-labelledby="intro-t">
+      <picture class="hero-foto" aria-hidden="true">
+        <source media="(max-width: 900px)" srcset="assets/fondo-parana-1100.jpg" />
+        <img src="assets/fondo-parana.jpg" alt="" />
+      </picture>
+      <svg class="hero-curva" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M1080 -20 C 900 160, 700 210, 690 330 S 650 640, 760 900" />
+        <circle cx="694" cy="300" r="10" />
+      </svg>
+
+      <nav class="hero-nav" aria-label="Principal">
+        <span class="hero-logos">
+          <img class="ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" />
+          <span class="x" aria-hidden="true">×</span>
+          <img class="co" src="assets/coralia.png" alt="Coralia Environmental" width="369" height="211" />
+        </span>
+        <span class="hero-links">
+          <a href="#como">Cómo funciona</a>
+          <a href="#beneficios">Beneficios</a>
+          <a href="#faq">Preguntas frecuentes</a>
+        </span>
+      </nav>
+
+      <div class="hero-grid">
+        <div class="hero-txt">
+          <span class="hero-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/></svg> Gestión de envíos sustentables</span>
+          <h1 id="intro-t">Huella<span class="dot">.</span></h1>
+          <p class="hero-lead">Subí tu orden de compra y mirá cuánto cuesta tu envío con <span data-naviera>InterBarge</span>, con y sin compensar su huella de carbono.</p>
+        </div>
+        <div class="hero-card" id="login-intro"></div>
       </div>
-    </div>
-  </section>
+
+      <ol class="hero-pasos">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a5 5 0 0 1-.9-9.9A6 6 0 0 1 17.7 7 4.5 4.5 0 0 1 17 18"/><path d="M12 12v8m-3-5 3-3 3 3"/></svg><span>Subí tu orden<br />de compra</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18h8"/></svg><span>Mirá el<br />presupuesto</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/></svg><span>Elegí y<br />confirmá</span></li>
+      </ol>
+      <p class="hero-credito">Foto: <a href="https://commons.wikimedia.org/wiki/File:Barcaza_en_el_r%C3%ADo_Paran%C3%A1.jpeg" target="_blank" rel="noopener">Carla Antonini</a>, convoy en el río Paraná frente a Corrientes · <a href="https://creativecommons.org/licenses/by-sa/2.5/ar/" target="_blank" rel="noopener">CC BY-SA 2.5 AR</a></p>
+    </section>
+
+    <section class="land" id="como" aria-labelledby="como-t">
+      <div class="land-in">
+        <span class="land-eyebrow">Cómo funciona</span>
+        <h2 id="como-t">Tu presupuesto con la huella incluida, en tres pasos</h2>
+        <ol class="land-pasos">
+          <li><b>1</b><strong>Subí tu orden de compra</strong><span>PDF, Excel o foto. Leemos puertos, carga y flete por vos, y podés corregir cualquier dato.</span></li>
+          <li><b>2</b><strong>Mirá el presupuesto</strong><span>El costo del envío sin compensación y con cada proyecto de carbono disponible, y la huella del viaje por la hidrovía.</span></li>
+          <li><b>3</b><strong>Elegí y confirmá</strong><span>Coralia revisa los datos, Sylvera valida el cálculo y recibís un certificado con código verificable.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="land alt" id="beneficios" aria-labelledby="ben-t">
+      <div class="land-in">
+        <span class="land-eyebrow">Beneficios</span>
+        <h2 id="ben-t">Medí, compensá y demostralo</h2>
+        <div class="land-cards">
+          <article><h3>Huella con datos de la flota</h3><p>El cálculo usa el factor propio de la flota de <span data-naviera>InterBarge</span>, del inventario de gases de efecto invernadero 2025 hecho por Coralia (ISO 14064-1).</p></article>
+          <article><h3>Compensación a tu medida</h3><p>Compará el costo de compensar con cada proyecto antes de decidir. Cada crédito equivale a 1 t CO₂e.</p></article>
+          <article><h3>Revisión y validación</h3><p>Coralia revisa los datos de cada envío y Sylvera valida el cálculo antes de emitir el certificado.</p></article>
+          <article><h3>Certificado verificable</h3><p>Cada certificado tiene un código que cualquiera puede verificar online, sin necesidad de una cuenta.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="land" id="faq" aria-labelledby="faq-t">
+      <div class="land-in narrow">
+        <span class="land-eyebrow">Preguntas frecuentes</span>
+        <h2 id="faq-t">Lo que más nos preguntan</h2>
+        <div class="faq">
+          <details><summary>¿Qué es la huella de carbono de un envío?</summary><p>Son los gases de efecto invernadero que emite el transporte de tu carga, expresados en toneladas de CO₂ equivalente (t CO₂e).</p></details>
+          <details><summary>¿Cómo se calcula?</summary><p>Distancia por río (km) × carga (t) × factor de emisión de la flota (kg CO₂e por tonelada-km). Si sumás tramos en camión o tren, se calculan igual con factores oficiales para cada medio.</p></details>
+          <details><summary>¿Qué incluye el cálculo?</summary><p>El tramo fluvial puerto a puerto que hace <span data-naviera>InterBarge</span> y, si los elegís, los fletes terrestres antes y después.</p></details>
+          <details><summary>¿Qué significa compensar?</summary><p>Comprar créditos de carbono de un proyecto que reduce o captura emisiones. Cada crédito es 1 t CO₂e y se retira en el registro a nombre de tu empresa.</p></details>
+          <details><summary>¿Qué pasa cuando confirmo?</summary><p>Coralia revisa los datos y los pasa a Sylvera para validar. Cuando está validado recibís el certificado y, si compensaste, se registra el retiro de los créditos.</p></details>
+          <details><summary>¿Quién ve mis datos?</summary><p>Solo vos ves tus envíos. Coralia los revisa, y Sylvera y la Bolsa ven únicamente los que llegan a su etapa.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="land-foot">
+      <span class="hero-logos small"><img class="ib" src="assets/interbarge.png" alt="InterBarge" /><span class="x" aria-hidden="true">×</span><img class="co" src="assets/coralia.png" alt="Coralia Environmental" /></span>
+      <a href="certificado.html">Verificar un certificado</a>
+    </footer>
+  </div>
 
   <header class="topbar">
     <a class="brand" href="index.html">
@@ -144,20 +209,14 @@
     <section class="card pad" aria-labelledby="t-env" id="sec-enviar">
       <div class="sec-head">
         <h2 id="t-env"><span class="paso">3</span> Confirmá</h2>
-        <p class="hint">Te mandamos un código a tu email para confirmar que sos vos. Después Coralia revisa los datos, Sylvera valida el cálculo y recibís el certificado.</p>
+        <p class="hint">Iniciá sesión con tu email y contraseña para confirmar. Después Coralia revisa los datos, Sylvera valida el cálculo y recibís el certificado.</p>
       </div>
       <ol class="steps" id="steps"></ol>
       <div class="actions"><button id="btn-enviar" class="btn" type="button">Confirmar presupuesto</button></div>
 
-      <div id="login" class="login" hidden>
-        <div class="otp" id="stepEmail">
-          <label class="field"><span>Email de tu empresa</span><input id="email" type="email" placeholder="logistica@tuempresa.com" autocomplete="email" /></label>
-          <button class="btn" id="sendCode" type="button">Enviarme el código</button>
-        </div>
-        <div class="otp" id="stepCode" hidden>
-          <label class="field"><span>Código de 6 dígitos</span><input id="code" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" /></label>
-          <button class="btn" id="verify" type="button">Confirmar</button>
-        </div>
+      <div id="login" class="login-confirmar" hidden>
+        <p class="hint"><b>Para confirmar, iniciá sesión o creá tu cuenta.</b> Tu presupuesto no se pierde.</p>
+        <div id="login-confirmar"></div>
       </div>
 
       <p id="msg" class="msg" hidden></p>
@@ -186,6 +245,7 @@
   <script src="config.js"></script>
   <script src="lib.js"></script>
   <script src="lector-oc.js"></script>
+  <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

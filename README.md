@@ -97,3 +97,9 @@ Para probar en local: VS Code → **Go Live**. Con doble clic no anda.
 - [ ] Probar la lectura de plantas con OC y remitos reales
 - [ ] Buscar factores terrestres con geografía sudamericana (hoy son del Reino Unido)
 - [ ] Pago de los créditos: hoy se registra la elección y el retiro se carga a mano
+
+## Ingreso
+
+Email y contraseña (Supabase Auth): **Iniciar sesión**, **Crear cuenta** (llega un mail para confirmar), **Recordarme** (si no se tilda, la sesión se cierra al cerrar el navegador) y **¿Olvidaste tu contraseña?** (mail con link a `clave.html`). La tarjeta está en `auth.js` y se usa en la portada, en el panel y al confirmar un presupuesto. El perfil (cliente, Coralia, Sylvera, Bolsa) sale del email, igual que antes.
+
+Foto de la portada: *Barcaza en el río Paraná*, Carla Antonini (2006), Wikimedia Commons, licencia CC BY-SA 2.5 AR (`assets/fondo-parana*.jpg`). El crédito se muestra en la portada.

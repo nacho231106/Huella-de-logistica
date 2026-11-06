@@ -1,6 +1,11 @@
 # Plantillas de mail (Supabase → Authentication → Emails)
 
-Pegar el HTML en **Magic Link** (`magic-link.html`) y en **Confirm signup** (`confirm-signup.html`).
-Asunto sugerido: `Tu código para Huella · InterBarge`.
+El ingreso es con **email y contraseña**. Pegar cada HTML en su plantilla:
 
-`{{ .Token }}` es el código de 6 dígitos que pide la app; `{{ .ConfirmationURL }}` es el link mágico.
+| Plantilla en Supabase | Archivo | Asunto sugerido |
+|---|---|---|
+| Confirm signup | `confirm-signup.html` | Confirmá tu cuenta de Huella |
+| Reset Password | `reset-password.html` | Elegí una contraseña nueva · Huella |
+| Magic Link | `magic-link.html` | (ya no se usa en la app; se deja por si se vuelve al código) |
+
+El link de "Reset Password" lleva a `clave.html`, donde se elige la contraseña nueva (cubierto por la Redirect URL `https://huella-de-logistica.vercel.app/**`).

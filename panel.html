@@ -27,34 +27,9 @@
 
   <main class="wrap">
     <!-- Ingreso -->
-    <section id="v-login" class="card pad" hidden>
-      <div class="sec-head">
-        <h1>Ingresar</h1>
-        <p class="hint">Sin usuario ni contraseña.</p>
-      </div>
-      <div class="two">
-        <div class="login">
-          <b>Clientes de <span data-naviera>InterBarge</span></b>
-          <p class="hint">Te mandamos un código de 6 dígitos (o un link) a tu email.</p>
-          <div class="otp" id="l-stepEmail">
-            <label class="field"><span>Email</span><input id="l-email" type="email" placeholder="logistica@tuempresa.com" autocomplete="email" /></label>
-            <button class="btn" id="l-send" type="button">Enviarme el código</button>
-          </div>
-          <div class="otp" id="l-stepCode" hidden>
-            <label class="field"><span>Código de 6 dígitos</span><input id="l-code" inputmode="numeric" maxlength="6" placeholder="123456" autocomplete="one-time-code" /></label>
-            <button class="btn" id="l-verify" type="button">Ingresar</button>
-          </div>
-        </div>
-        <div class="login">
-          <b>Coralia, Sylvera y Bolsa Paraguaya de Carbono</b>
-          <p class="hint">Con tu cuenta corporativa. Coralia: solo emails @coraliae.com. Sylvera y la Bolsa: emails autorizados por Coralia (también pueden entrar con el código por email).</p>
-          <div class="sso">
-            <button class="btn ghost" id="l-google" type="button">Ingresar con Google</button>
-            <button class="btn ghost" id="l-ms" type="button">Ingresar con Microsoft</button>
-          </div>
-        </div>
-      </div>
-      <p id="l-msg" class="msg" hidden></p>
+    <section id="v-login" class="card pad login-panel" hidden>
+      <div id="login-panel"></div>
+      <p class="hint">Clientes, Coralia, Sylvera y la Bolsa Paraguaya de Carbono entran igual, con su email y contraseña. El perfil sale del email.</p>
     </section>
 
     <!-- Panel -->
@@ -126,6 +101,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="config.js"></script>
   <script src="lib.js"></script>
+  <script src="auth.js"></script>
   <script src="panel.js"></script>
 </body>
 </html>
