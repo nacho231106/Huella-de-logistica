@@ -50,7 +50,8 @@ Los permisos los aplica la base (RLS en Supabase), no la página, así que nadie
 2. **Emails con código:** en Authentication → Email Templates, en "Magic Link" y en "Confirm signup", agregar `Tu código: {{ .Token }}` para que el mail traiga el código además del link.
 3. **URLs:** en Authentication → URL Configuration, poner la URL de Vercel como Site URL y agregar `https://TU-URL/**` en Redirect URLs.
 4. **Google y Microsoft (Coralia/Sylvera):** en Authentication → Providers, activar Google y Azure con sus credenciales. En Azure conviene restringir al tenant de Coralia.
-5. **Vercel:** importar el repo (Framework: Other, sin build). Cada push a `main` se publica solo.
+5. **Publicar en GitHub Pages:** en GitHub → repo → **Settings → Pages** → Source: **Deploy from a branch** → Branch: **main** / **(root)** → Save. Al minuto queda en **https://nacho231106.github.io/Huella-de-logistica/** y cada push a `main` se publica solo. Agregar esa URL en Supabase (paso 3).
+   - Alternativa: Vercel (importar el repo, Framework: Other, sin build).
 
 ## Pendiente de datos
 
