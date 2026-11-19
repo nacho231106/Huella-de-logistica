@@ -805,3 +805,7 @@ body.intro-on .intro { background: var(--slide-bg, #120a2e); }
 .dlg-clave .modal-cerrar { position: absolute; top: 14px; right: 14px; }
 .dlg-msg { margin: 0; min-height: 1.2em; font-size: 14px; color: var(--muted); }
 .dlg-msg.err { color: #b42318; } .dlg-msg.ok { color: #067647; font-weight: 600; }
+.powered { font-weight: 600; letter-spacing: .04em; }
+.slide-coralia img { height: clamp(28px, 4.6vh, 40px); }
+.land-powered { display: inline-flex; align-items: center; gap: 10px; }
+.land-powered img { height: 32px; width: auto; background: #fff; border-radius: 8px; padding: 4px 10px; }
