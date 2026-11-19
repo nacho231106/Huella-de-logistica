@@ -777,3 +777,7 @@ body.intro-on .intro { background: var(--slide-bg, #120a2e); }
 .intro .land-foot { background: #0d0722; border-top: 1px solid rgba(167,139,250,.2); color: #a99bd8; font-size: 14px; }
 .intro .land-foot a { color: #34d399; }
 @media (min-width: 901px) { .slide-sello { justify-self: end; margin-right: clamp(40px, 7vw, 130px); } }
+@media (min-width: 901px) {
+  .slide-sello img { height: min(58vh, 500px); }
+  .slide-hex { height: min(80vh, 680px); }
+}
