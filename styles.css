@@ -697,3 +697,23 @@ table.envios tr.det td { background: var(--field); cursor: default; }
 }
 .slide { grid-template-columns: minmax(0, 1fr); }
 @media (max-width: 520px) { .slide-socios { flex-wrap: wrap; justify-content: center; gap: 14px 22px; } .slide-socios img { height: 30px; } .slide-socios img.lockton { height: 36px; } }
+
+/* Portada: que entre todo en una pantalla (en compu); los tamaños siguen el alto de la ventana */
+@media (min-width: 901px) {
+  .slide { height: 100vh; height: 100dvh; min-height: 520px; gap: 1.2vh; padding-top: 2.4vh; padding-bottom: 2.2vh; }
+  .slide-nav .slide-logo img { height: clamp(34px, 6.5vh, 54px); }
+  .slide-btn { height: clamp(36px, 6vh, 46px); font-size: clamp(13px, 2vh, 15px); }
+  .slide-links a { font-size: clamp(13px, 2vh, 15px); }
+  .slide-grid { min-height: 0; align-items: center; }
+  .slide-txt { gap: clamp(8px, 1.8vh, 22px); }
+  .slide-eyebrow { font-size: clamp(11px, min(1.1vw, 1.9vh), 15px); margin: 0; }
+  .slide h1 { font-size: clamp(34px, min(5.6vw, 10vh), 84px); }
+  .slide-lead { margin-top: clamp(4px, 2.2vh, 40px); font-size: clamp(14px, min(1.45vw, 2.5vh), 20px); }
+  .slide-sello { margin-top: clamp(8px, 3vh, 48px); align-self: center; }
+  .slide-sello img { width: auto; height: min(66vh, 520px); max-width: 100%; }
+  .slide-hex { width: auto; height: min(92vh, 720px); }
+  .slide-pie .slide-socios { padding: clamp(6px, 1.2vh, 12px) clamp(16px, 2vw, 26px); }
+  .slide-socios img { height: clamp(24px, 4.2vh, 46px); }
+  .slide-socios img.lockton { height: clamp(28px, 5vh, 56px); }
+  .slide-coralia img { height: clamp(20px, 3.4vh, 26px); }
+}
