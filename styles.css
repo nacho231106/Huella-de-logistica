@@ -776,3 +776,4 @@ body.intro-on .intro { background: var(--slide-bg, #120a2e); }
 .intro .faq details { background: rgba(255,255,255,.04); border-color: rgba(167,139,250,.25); }
 .intro .land-foot { background: #0d0722; border-top: 1px solid rgba(167,139,250,.2); color: #a99bd8; font-size: 14px; }
 .intro .land-foot a { color: #34d399; }
+@media (min-width: 901px) { .slide-sello { justify-self: end; margin-right: clamp(40px, 7vw, 130px); } }
