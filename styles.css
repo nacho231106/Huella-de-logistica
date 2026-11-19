@@ -579,7 +579,7 @@ body { position: relative; isolation: isolate; }
   padding: 22px clamp(18px, 5.5vw, 90px) 18px;
   font-family: "Helvetica Neue", Arial, var(--body);
 }
-.slide-nav { display: flex; justify-content: flex-end; align-items: center; gap: clamp(16px, 3vw, 40px); flex-wrap: wrap; animation: subir .5s ease-out both; }
+.slide-nav { position: relative; z-index: 3; display: flex; justify-content: flex-end; align-items: center; gap: clamp(16px, 3vw, 40px); flex-wrap: wrap; animation: subir .5s ease-out both; }
 .slide-links { display: flex; gap: clamp(14px, 2.4vw, 32px); flex-wrap: wrap; }
 .slide-links a { color: rgba(255,255,255,.78); text-decoration: none; font-size: 15px; font-weight: 600; }
 .slide-links a:hover { color: #fff; }
@@ -607,12 +607,12 @@ body { position: relative; isolation: isolate; }
 .slide-socios { background: #fff; border-radius: 12px; padding: 12px 26px; display: inline-flex; align-items: center; gap: clamp(28px, 5vw, 70px); margin-top: 8px; }
 .slide-socios img { height: clamp(34px, 4.4vh, 46px); width: auto; display: block; }
 
-.slide-sello { position: relative; display: grid; place-items: center; animation: subir .7s ease-out .15s both; }
+.slide-sello { position: relative; display: grid; place-items: center; align-self: start; justify-self: end; margin-top: clamp(28px, 6vh, 56px); animation: subir .7s ease-out .15s both; }
 .slide-hex { position: absolute; width: min(118%, 640px); height: auto; overflow: visible; }
 .slide-hex .hex-a { fill: none; stroke: #5a1fcf; stroke-width: 3; }
 .slide-hex .hex-b { fill: none; stroke: #1f5752; stroke-width: 1.6; }
-.slide-sello img { position: relative; width: min(100%, 360px); height: auto; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
-.slide-coralia { margin: 0; justify-self: end; display: flex; align-items: center; gap: 10px; font-size: 13px; color: rgba(255,255,255,.65); }
+.slide-sello img { position: relative; width: min(100%, 340px, 52vh); height: auto; box-shadow: 0 30px 80px rgba(0,0,0,.45); }
+.slide-coralia { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 13px; color: rgba(255,255,255,.65); }
 .slide-coralia img { height: 26px; width: auto; background: #fff; border-radius: 6px; padding: 3px 8px; }
 
 /* Ventana de ingreso */
@@ -635,3 +635,8 @@ body { position: relative; isolation: isolate; }
   .slide-socios { padding: 10px 16px; gap: 22px; }
 }
 @media (prefers-reduced-motion: reduce) { .slide-nav, .slide-txt > *, .slide-sello { animation: none; } }
+
+.slide-pie { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; animation: subir .6s ease-out .3s both; }
+.slide-pie .slide-socios { margin-top: 0; }
+.slide-socios img.lockton { height: clamp(40px, 5.4vh, 56px); }
+@media (max-width: 900px) { .slide-sello { justify-self: center; align-self: center; margin-top: 0; } }
