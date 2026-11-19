@@ -138,7 +138,7 @@
     if (DEMO) {
       zona.innerHTML = `<span class="demo-chip" title="Versión de demostración: sin inicio de sesión, los datos quedan en este navegador">Demo</span>
         <a class="nav-link" href="index.html#calcular">Calculadora</a>
-        <a class="btn small" href="admin.html">Parte administrativa</a>`;
+        <a class="btn small" href="admin.html">Panel del equipo</a>`;
       return;
     }
     const s = await sesion();
@@ -147,8 +147,8 @@
     const etiqueta = ROLES[r] || r;
     if (r) {
       const links = r === "interbarge"
-        ? `<a class="nav-link" href="index.html#calcular">Cargar orden</a><a class="nav-link" href="admin.html">Parte administrativa</a>`
-        : PERSONAL.includes(r) ? `<a class="nav-link" href="admin.html">Parte administrativa</a>` : `<a class="nav-link" href="cliente.html">Mi huella</a>`;
+        ? `<a class="nav-link" href="index.html#calcular">Cargar orden</a><a class="nav-link" href="admin.html">Panel del equipo</a>`
+        : PERSONAL.includes(r) ? `<a class="nav-link" href="admin.html">Panel del equipo</a>` : `<a class="nav-link" href="cliente.html">Mi huella</a>`;
       zona.innerHTML = `${links}<span class="who" title="${esc(s.user.email)}">${esc(s.user.email)} · <b>${etiqueta}</b></span>
         <button class="nav-link as-btn" id="btn-salir" type="button">Salir</button>`;
       document.getElementById("btn-salir").onclick = salir;

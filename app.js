@@ -330,7 +330,7 @@
       ${ROL === "interbarge"
         ? `<span class="hint">Orden guardada para <b>${esc(e.usuario_email)}</b>${e.fecha ? ` · envío del ${esc(e.fecha.split("-").reverse().join("/"))}` : ""}. El cliente ya la ve en su cuenta con su huella, y Coralia la revisa. <a href="index.html#calcular" onclick="location.reload()">Cargar otra orden</a> · <a href="admin.html">Ver órdenes</a></span>`
         : H.DEMO
-        ? `<span class="hint">Demo: seguilo en la <a href="admin.html">Parte administrativa</a>. Ahí Coralia lo revisa, Sylvera lo valida y la Bolsa registra el retiro de créditos.</span>`
+        ? `<span class="hint">Demo: seguilo en el <a href="admin.html">Panel del equipo</a>. Ahí Coralia lo revisa, Sylvera lo valida y la Bolsa registra el retiro de créditos.</span>`
         : `<span class="hint">Te avisamos a ${esc(e.usuario_email)} cuando Coralia revise los datos y Sylvera valide el cálculo. Seguilo en <a href="panel.html">Mis cálculos</a>.</span>`}`;
     bloquear(e);
   }
@@ -423,7 +423,7 @@
         <p class="auth-sub">Versión de demostración, sin inicio de sesión.</p>
         <button class="auth-btn" type="button" id="demo-entrar">Subir mi orden de compra <span aria-hidden="true">→</span></button>
         <div class="auth-sep"><span>¿Sos de Coralia, Sylvera o la Bolsa?</span></div>
-        <a class="auth-btn ghost" href="admin.html">Parte administrativa</a>
+        <a class="auth-btn ghost" href="admin.html">Ingreso equipo</a>
       </div>`;
       $("#demo-entrar").onclick = () => entrarApp(true);
       return;
@@ -452,7 +452,7 @@
     document.querySelectorAll("[data-naviera]").forEach((n) => (n.textContent = H.C.NAVIERA));
     if (H.DEMO) {
       const h = document.querySelector("#sec-enviar .sec-head .hint");
-      if (h) h.textContent = "Versión de demostración: confirmá sin iniciar sesión. Después seguilo en la Parte administrativa (arriba a la derecha): Coralia revisa, Sylvera valida y la Bolsa registra el retiro de créditos.";
+      if (h) h.textContent = "Versión de demostración: confirmá sin iniciar sesión. Después seguilo en el Panel del equipo (arriba a la derecha): Coralia revisa, Sylvera valida y la Bolsa registra el retiro de créditos.";
     }
 
     const avisos = [];

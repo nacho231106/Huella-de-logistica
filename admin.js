@@ -1,4 +1,4 @@
-/* Parte administrativa con usuario y contraseña.
+/* Ingreso y panel del equipo con usuario y contraseña.
  * InterBarge: solicitudes de clientes y órdenes · Coralia: revisión y accesos · Sylvera: validación · Bolsa: retiro de créditos.
  * Lo que ve y puede hacer cada perfil lo aplica la base (RLS y reglas de estados); acá solo se muestra.
  */
