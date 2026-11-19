@@ -786,3 +786,9 @@ body.intro-on .intro { background: var(--slide-bg, #120a2e); }
   .slide-lead { font-size: clamp(15px, min(1.7vw, 3.1vh), 24px); max-width: 50ch; }
   .slide-eyebrow { font-size: clamp(12px, min(1.2vw, 2.2vh), 17px); }
 }
+@media (min-width: 521px) {
+  .slide-marca { gap: 14px; }
+  .slide-marca-ico { width: clamp(54px, 10vh, 80px); border-radius: 15px; }
+  .slide-marca-txt { font-size: clamp(26px, 4.8vh, 40px); }
+}
+@media (max-width: 520px) { .slide-marca-ico { width: 50px; } .slide-marca-txt { font-size: 23px; } }
