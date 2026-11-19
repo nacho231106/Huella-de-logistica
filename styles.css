@@ -781,3 +781,8 @@ body.intro-on .intro { background: var(--slide-bg, #120a2e); }
   .slide-sello img { height: min(58vh, 500px); }
   .slide-hex { height: min(80vh, 680px); }
 }
+@media (min-width: 901px) {
+  .slide h1 { font-size: clamp(38px, min(6.6vw, 12.5vh), 100px); }
+  .slide-lead { font-size: clamp(15px, min(1.7vw, 3.1vh), 24px); max-width: 50ch; }
+  .slide-eyebrow { font-size: clamp(12px, min(1.2vw, 2.2vh), 17px); }
+}
