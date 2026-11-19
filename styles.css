@@ -761,3 +761,18 @@ table.envios tr.det td { background: var(--field); cursor: default; }
 @media (max-width: 520px) { .slide-marca-txt { font-size: 20px; } .slide-marca-ico { width: 42px; } }
 .slide-lead { max-width: 47ch; }
 .slide-coralia img { height: clamp(24px, 4vh, 34px); padding: 4px 10px; }
+
+/* Secciones debajo de la portada (tema violeta) */
+body.intro-on .intro { background: var(--slide-bg, #120a2e); }
+.intro .land { background: #120a2e; color: #e9e4ff; font-family: "Plus Jakarta Sans", var(--sans, sans-serif); }
+.intro .land.alt { background: #1a0f3f; }
+.intro .land h2 { color: #fff; font-family: inherit; font-weight: 800; letter-spacing: -.01em; }
+.intro .land-eyebrow { color: #34d399; font-family: inherit; font-weight: 700; letter-spacing: .2em; font-size: 12px; }
+.intro .land-pasos li { border-color: rgba(167,139,250,.28); background: rgba(124,58,237,.10); }
+.intro .land-pasos b { background: linear-gradient(135deg, #34d399, #10b981); color: #0b2a1f; font-family: inherit; font-weight: 800; }
+.intro .land-pasos strong, .intro .land-cards h3, .intro .faq summary { color: #fff; }
+.intro .land-pasos span, .intro .land-cards p, .intro .faq p { color: #c4b9ec; }
+.intro .land-cards article { background: rgba(255,255,255,.04); border: 1px solid rgba(167,139,250,.22); border-top: 4px solid #8b5cf6; box-shadow: 0 10px 40px rgba(124,58,237,.15); }
+.intro .faq details { background: rgba(255,255,255,.04); border-color: rgba(167,139,250,.25); }
+.intro .land-foot { background: #0d0722; border-top: 1px solid rgba(167,139,250,.2); color: #a99bd8; font-size: 14px; }
+.intro .land-foot a { color: #34d399; }
