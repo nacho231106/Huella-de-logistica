@@ -682,3 +682,18 @@ table.envios tr.det td { background: var(--field); cursor: default; }
 .doc .ref { font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .ok-msg { background: var(--teal-soft); border-radius: 10px; padding: 14px 16px; }
 @media (max-width: 760px) { .kpis, .proys, .docs { grid-template-columns: 1fr; } }
+
+/* Logo de InterBarge chico, arriba a la izquierda */
+.slide-nav .slide-logo { margin-right: auto; padding: 6px 9px; border-radius: 10px; display: inline-grid; }
+.slide-nav .slide-logo img { height: clamp(40px, 6vh, 54px); width: auto; }
+.slide h1 { max-width: 16ch; }
+@media (max-width: 900px) { .slide-nav { justify-content: flex-start; } .slide-nav .slide-logo img { height: 40px; } }
+@media (max-width: 520px) { .slide-nav .slide-logo { order: -1; } }
+@media (max-width: 520px) {
+  .slide-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+  .slide-btn { min-width: 0; white-space: normal; text-align: center; line-height: 1.15; height: auto; min-height: 46px; padding: 6px 10px; }
+  .slide-grid, .slide-txt { min-width: 0; }
+  .slide-eyebrow { letter-spacing: .18em; }
+}
+.slide { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 520px) { .slide-socios { flex-wrap: wrap; justify-content: center; gap: 14px 22px; } .slide-socios img { height: 30px; } .slide-socios img.lockton { height: 36px; } }
