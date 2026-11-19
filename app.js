@@ -423,8 +423,14 @@
       if (ROL === "interbarge") return entrarApp(false);
       location.replace(H.destino(ROL)); return;
     }
+    const modal = $("#login-modal");
+    $("#abrir-login").onclick = () => { modal.showModal(); setTimeout(() => modal.querySelector("input")?.focus(), 50); };
+    $("#cerrar-login").onclick = () => modal.close();
+    modal.addEventListener("click", (ev) => { if (ev.target === modal) modal.close(); });
+    if (location.hash === "#ingresar") $("#abrir-login").click();
     H.tarjetaLogin($("#login-intro"), {
-      subtitulo: "Entrá para saber tu huella",
+      titulo: "Ingresá a tu huella",
+      subtitulo: "Con el email y la contraseña de tu empresa",
       alEntrar: async () => { ROL = await H.rol(); if (ROL === "interbarge") { await prepararInterBarge(); entrarApp(true); } else location.href = H.destino(ROL); },
     });
   }

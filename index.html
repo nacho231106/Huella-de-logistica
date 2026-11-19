@@ -14,45 +14,45 @@
 </head>
 <body class="intro-on">
   <div class="intro" id="intro">
-    <section class="portada" aria-labelledby="intro-t">
-      <picture class="hero-foto" aria-hidden="true">
-        <source media="(max-width: 900px)" srcset="assets/fondo-parana-1100.jpg" />
-        <img src="assets/fondo-parana.jpg" alt="" />
-      </picture>
-      <svg class="hero-curva" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M1080 -20 C 900 160, 700 210, 690 330 S 650 640, 760 900" />
-        <circle cx="694" cy="300" r="10" />
-      </svg>
-
-      <nav class="hero-nav" aria-label="Principal">
-        <span class="hero-logos">
-          <img class="ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" />
-          <span class="x" aria-hidden="true">×</span>
-          <img class="co" src="assets/coralia.png" alt="Coralia Environmental" width="369" height="211" />
-        </span>
-        <span class="hero-links">
+    <section class="slide" aria-labelledby="intro-t">
+      <nav class="slide-nav" aria-label="Principal">
+        <span class="slide-links">
           <a href="#como">Cómo funciona</a>
           <a href="#beneficios">Beneficios</a>
           <a href="#faq">Preguntas frecuentes</a>
         </span>
+        <span class="slide-acciones">
+          <button type="button" class="slide-btn" id="abrir-login">Ingresá a tu huella <span aria-hidden="true">→</span></button>
+          <a class="slide-btn ghost" href="admin.html">Parte administrativa</a>
+        </span>
       </nav>
 
-      <div class="hero-grid">
-        <div class="hero-txt">
-          <span class="hero-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/></svg> Gestión de envíos sustentables</span>
-          <h1 id="intro-t">Huella<span class="dot">.</span></h1>
-          <p class="hero-lead">Conocé la huella de carbono de tus envíos con <span data-naviera>InterBarge</span> por la hidrovía Paraná-Paraguay.</p>
+      <div class="slide-grid">
+        <div class="slide-txt">
+          <span class="slide-logo"><img src="assets/interbarge.png" alt="InterBarge" width="235" height="227" /></span>
+          <p class="slide-eyebrow"><span data-naviera>InterBarge</span> · La primera de la industria naviera</p>
+          <h1 id="intro-t">Certificación Carbono Neutral</h1>
+          <p class="slide-lead">Reportar crea la obligación de compensar. Tratada de forma reactiva, es un costo permanente. Estructurada correctamente, es un servicio integrado a sus propios clientes.</p>
+          <span class="slide-socios">
+            <img src="assets/bpcx.png" alt="BPCX · Bolsa Paraguaya de Carbono" />
+            <img src="assets/sylvera.png" alt="Sylvera" />
+          </span>
         </div>
-        <div class="hero-card" id="login-intro"></div>
+        <div class="slide-sello">
+          <svg class="slide-hex" viewBox="0 0 500 560" aria-hidden="true">
+            <polygon class="hex-a" points="250,10 490,145 490,415 250,550 10,415 10,145" />
+            <polygon class="hex-b" points="250,70 438,178 438,382 250,490 62,382 62,178" />
+          </svg>
+          <img src="assets/sello-carbono-neutral.png" alt="Sello Carbon Neutral Certified 2026" width="669" height="988" />
+        </div>
       </div>
-
-      <ol class="hero-pasos">
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18a5 5 0 0 1-.9-9.9A6 6 0 0 1 17.7 7 4.5 4.5 0 0 1 17 18"/><path d="M12 12v8m-3-5 3-3 3 3"/></svg><span>Creá tu<br />cuenta</span></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18h8"/></svg><span>InterBarge<br />te acepta</span></li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14Z"/><path d="M5 19 13 11"/></svg><span>Sabé tu<br />huella</span></li>
-      </ol>
-      <p class="hero-credito">Foto: <a href="https://commons.wikimedia.org/wiki/File:Barcaza_en_el_r%C3%ADo_Paran%C3%A1.jpeg" target="_blank" rel="noopener">Carla Antonini</a>, convoy en el río Paraná frente a Corrientes · <a href="https://creativecommons.org/licenses/by-sa/2.5/ar/" target="_blank" rel="noopener">CC BY-SA 2.5 AR</a></p>
+      <p class="slide-coralia">Metodología y cálculo de la huella: <img src="assets/coralia.png" alt="Coralia Environmental" /></p>
     </section>
+
+    <dialog class="login-modal" id="login-modal" aria-label="Ingresá a tu huella">
+      <button type="button" class="modal-cerrar" id="cerrar-login" aria-label="Cerrar">✕</button>
+      <div id="login-intro"></div>
+    </dialog>
 
     <section class="land" id="como" aria-labelledby="como-t">
       <div class="land-in">
