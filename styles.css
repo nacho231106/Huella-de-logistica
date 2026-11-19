@@ -717,3 +717,47 @@ table.envios tr.det td { background: var(--field); cursor: default; }
   .slide-socios img.lockton { height: clamp(28px, 5vh, 56px); }
   .slide-coralia img { height: clamp(20px, 3.4vh, 26px); }
 }
+
+/* ---------- Portada v3 (según la imagen de referencia) ---------- */
+.slide {
+  --slide-verde: #2ee6a0;
+  font-family: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
+  background:
+    radial-gradient(55% 60% at 80% 40%, rgba(124, 58, 237, .28) 0%, rgba(124, 58, 237, 0) 70%),
+    radial-gradient(60% 55% at 10% 100%, rgba(109, 40, 217, .35) 0%, rgba(109, 40, 217, 0) 70%),
+    linear-gradient(160deg, #150a33 0%, #120829 55%, #0d061f 100%);
+}
+.slide > *:not(.slide-onda) { position: relative; z-index: 1; }
+.slide-onda { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.onda-halo { fill: rgba(124, 58, 237, .10); }
+.onda-luz-ancha { fill: none; stroke: url(#onda-g); stroke-width: 26; opacity: .55; }
+.onda-luz { fill: none; stroke: url(#onda-g); stroke-width: 2.5; }
+.slide h1, .slide-txt, .slide-btn { font-family: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif; }
+.slide h1 { font-weight: 800; letter-spacing: -.02em; }
+.slide-eyebrow { color: var(--slide-verde); font-weight: 800; }
+.slide-lead { color: rgba(255, 255, 255, .86); font-weight: 500; }
+
+/* Marca: ícono IB en cuadrado blanco + "InterBarge" */
+.slide-marca { margin-right: auto; display: inline-flex; align-items: center; gap: 12px; text-decoration: none; color: #fff; }
+.slide-marca-ico { background: #fff; border-radius: 12px; display: grid; place-items: center; width: clamp(42px, 7.5vh, 62px); aspect-ratio: 1; box-shadow: 0 6px 20px rgba(0, 0, 0, .25); }
+.slide-marca-ico img { width: 74%; height: auto; display: block; }
+.slide-marca-txt { font-weight: 800; font-size: clamp(20px, 3.6vh, 30px); letter-spacing: -.02em; }
+
+/* Botones */
+.slide-btn { background: linear-gradient(180deg, #3cf0ae, #22d391); border-color: transparent; color: #0d1f18; box-shadow: 0 8px 28px rgba(46, 230, 160, .35); font-weight: 800; }
+.slide-btn:hover { box-shadow: 0 10px 34px rgba(46, 230, 160, .5); }
+.slide-btn.ghost { background: transparent; color: #fff; border: 1.5px solid rgba(255, 255, 255, .6); box-shadow: none; font-weight: 700; }
+
+/* Sello con brillo y hexágonos con luz */
+.slide-sello img { border-radius: 16px; box-shadow: 0 0 0 1.5px rgba(196, 167, 255, .6), 0 0 60px rgba(124, 58, 237, .55), 0 30px 80px rgba(0, 0, 0, .45); }
+.slide-hex .hex-a { stroke: #7c3aed; stroke-width: 3; filter: drop-shadow(0 0 10px rgba(139, 92, 246, .9)); }
+.slide-hex .hex-b { stroke: #1fbf8a; stroke-width: 2; opacity: .75; filter: drop-shadow(0 0 8px rgba(46, 230, 160, .6)); }
+
+/* Logos de abajo */
+.slide-pie .slide-socios { border-radius: 22px; box-shadow: 0 10px 30px rgba(0, 0, 0, .25); }
+.slide-coralia { color: rgba(255, 255, 255, .85); font-size: clamp(13px, 2.1vh, 16px); font-weight: 500; }
+.slide-coralia img { border-radius: 8px; padding: 4px 9px; }
+
+@media (max-width: 520px) { .slide-marca-txt { font-size: 20px; } .slide-marca-ico { width: 42px; } }
+.slide-lead { max-width: 47ch; }
+.slide-coralia img { height: clamp(24px, 4vh, 34px); padding: 4px 10px; }

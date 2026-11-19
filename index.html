@@ -10,13 +10,28 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="intro-on">
   <div class="intro" id="intro">
     <section class="slide" aria-labelledby="intro-t">
+      <svg class="slide-onda" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="onda-g" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#7c3aed" stop-opacity="0" />
+            <stop offset=".25" stop-color="#8b5cf6" stop-opacity=".9" />
+            <stop offset=".6" stop-color="#a78bfa" stop-opacity="1" />
+            <stop offset="1" stop-color="#7c3aed" stop-opacity=".2" />
+          </linearGradient>
+          <filter id="onda-b" x="-10%" y="-50%" width="120%" height="200%"><feGaussianBlur stdDeviation="14" /></filter>
+        </defs>
+        <path class="onda-halo" d="M-40 730 C 260 650, 560 690, 860 770 S 1320 905, 1640 885 L 1640 900 L -40 900 Z" />
+        <path class="onda-luz-ancha" d="M-40 730 C 260 650, 560 690, 860 770 S 1320 905, 1640 885" filter="url(#onda-b)" />
+        <path class="onda-luz" d="M-40 730 C 260 650, 560 690, 860 770 S 1320 905, 1640 885" />
+      </svg>
       <nav class="slide-nav" aria-label="Principal">
-        <a class="slide-logo" href="index.html" aria-label="InterBarge"><img src="assets/interbarge.png" alt="InterBarge" width="235" height="227" /></a>
+        <a class="slide-marca" href="index.html" aria-label="InterBarge"><span class="slide-marca-ico"><img src="assets/interbarge-marca.png" alt="" width="184" height="157" /></span><span class="slide-marca-txt">InterBarge</span></a>
         <span class="slide-acciones">
           <button type="button" class="slide-btn" id="abrir-login">Ingresá a tu huella <span aria-hidden="true">→</span></button>
           <a class="slide-btn ghost" href="admin.html">Ingreso equipo</a>
