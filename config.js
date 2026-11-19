@@ -7,7 +7,7 @@ window.APP_CONFIG = {
   // MODO_DEMO: true = sin inicio de sesión. Los envíos de la demo se guardan solo en el navegador
   // y la "Parte administrativa" (Coralia, Sylvera, Bolsa) se abre con un clic.
   // Para volver al login real con la base de Supabase, poner false.
-  MODO_DEMO: true,
+  MODO_DEMO: false,
   CONTACTO_CORALIA: "https://coraliae.com",
   DOMINIO_CORALIA: "coraliae.com",
 };

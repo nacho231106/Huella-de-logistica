@@ -7,6 +7,8 @@
   const ICON = {
     mail: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
     lock: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="16" r="1.2"/></svg>',
+    empresa: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16M15 9h4a1 1 0 0 1 1 1v11M3 21h18M8 8h3M8 12h3M8 16h3"/></svg>',
+    persona: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
     ojo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
     ojoNo: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7c1.8 0 3.4-.5 4.8-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
   };
@@ -27,8 +29,8 @@
       const m = msg ? `<p class="auth-msg ${tipo}" role="status">${msg}</p>` : "";
       if (modo === "entrar") {
         el.innerHTML = `<form class="auth" novalidate>
-          <h2 class="auth-t">Iniciá sesión</h2>
-          <p class="auth-sub">Accedé a tu cuenta de Huella</p>
+          <h2 class="auth-t">${opts.titulo || "Iniciá sesión"}</h2>
+          <p class="auth-sub">${opts.subtitulo || "Accedé a tu cuenta de Huella"}</p>
           ${campo("email", p + "-email", "Email", "mail", "email")}
           ${campo("password", p + "-clave", "Contraseña", "lock", "current-password")}
           <div class="auth-row">
@@ -37,13 +39,15 @@
           </div>
           ${m}
           <button class="auth-btn" type="submit">Ingresar <span aria-hidden="true">→</span></button>
-          <div class="auth-sep"><span>¿No tenés cuenta?</span></div>
-          <button class="auth-btn ghost" type="button" data-modo="crear">Crear cuenta</button>
+          ${opts.sinRegistro ? "" : `<div class="auth-sep"><span>¿No tenés cuenta?</span></div>
+          <button class="auth-btn ghost" type="button" data-modo="crear">Crear cuenta</button>`}
         </form>`;
       } else if (modo === "crear") {
         el.innerHTML = `<form class="auth" novalidate>
           <h2 class="auth-t">Creá tu cuenta</h2>
-          <p class="auth-sub">Con el email de tu empresa</p>
+          <p class="auth-sub">InterBarge revisa tu solicitud y te habilita</p>
+          ${campo("text", p + "-empresa", "Empresa", "empresa", "organization")}
+          ${campo("text", p + "-nombre", "Tu nombre y apellido", "persona", "name")}
           ${campo("email", p + "-email", "Email", "mail", "email")}
           ${campo("password", p + "-clave", "Contraseña (mínimo 8 caracteres)", "lock", "new-password")}
           ${campo("password", p + "-clave2", "Repetí la contraseña", "lock", "new-password")}
@@ -96,11 +100,12 @@
         } else if (modo === "crear") {
           if (v("clave").length < 8) return pintarConEmail("La contraseña tiene que tener al menos 8 caracteres.", "err", email);
           if (v("clave") !== v("clave2")) return pintarConEmail("Las contraseñas no coinciden.", "err", email);
-          const { data, error } = await H.registrar(email, v("clave"));
+          if (!v("empresa").trim() || !v("nombre").trim()) return pintarConEmail("Completá tu empresa y tu nombre.", "err", email);
+          const { data, error } = await H.registrar(email, v("clave"), { empresa: v("empresa").trim(), nombre: v("nombre").trim() });
           if (error) return pintarConEmail(esc(H.errorAuth(error)), "err", email);
           if (data.session) { await H.pintarCabecera(); if (opts.alEntrar) opts.alEntrar(data.session); return; }
           modo = "entrar";
-          pintarConEmail(`¡Listo! Te mandamos un mail a <b>${esc(email)}</b>. Tocá el link para confirmar tu cuenta y después iniciá sesión. Revisá también el correo no deseado.`, "ok", email);
+          pintarConEmail(`<b>¡Solicitud enviada!</b> InterBarge va a revisar tu solicitud y te avisa si la acepta. Mientras, confirmá tu email con el link que te mandamos a <b>${esc(email)}</b> (revisá también el correo no deseado).`, "ok", email);
         } else {
           const { error } = await H.recuperarClave(email);
           if (error) return pintarConEmail(esc(H.errorAuth(error)), "err", email);

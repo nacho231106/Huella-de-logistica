@@ -13,6 +13,7 @@
   let archivo = null;      // File de la OC elegido por el cliente
   let ocArchivo = null;    // ruta ya subida (al editar un envío guardado)
   let proySel = "";        // "" = sin compensación
+  let ROL = null;          // perfil de quien usa la calculadora (InterBarge carga órdenes)
   let editId = null;
   let calc = { kg: 0 };    // último cálculo
   let terrestre = false;   // ¿incluye tramos en camión?
@@ -199,6 +200,11 @@
         flete ? `+${fmt((comp / flete) * 100, 1)} % sobre el flete` : "por compensar");
     });
     cont.innerHTML = html;
+    if (ROL === "interbarge") {
+      cont.classList.add("solo-ver");
+      cont.insertAdjacentHTML("beforeend", `<p class="hint">La compensación la elige el cliente cuando entra a ver su huella.</p>`);
+      return;
+    }
     cont.querySelectorAll(".opcion").forEach((b) => (b.onclick = () => { proySel = b.dataset.id; pintarOpciones(); }));
   }
 
@@ -287,11 +293,8 @@
       return;
     }
     const s = await H.sesion();
-    if (!s) {
-      $("#login").hidden = false; aviso("");
-      $("#login").scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
-    }
+    if (!s) { location.href = "index.html"; return; }
+    if (ROL === "interbarge" && !$("#cliente-sel").value) { aviso("Elegí el cliente al que le cargás la orden.", "err"); $("#cliente-sel").focus(); return; }
     aviso("Guardando…");
     const conArchivo = Boolean(archivo);
     const ruta = await subirOC(s.user.id);
@@ -299,6 +302,7 @@
       oc_numero: $("#oc-numero").value.trim(), empresa: $("#empresa").value.trim() || null, carga: $("#carga").value.trim(),
       flete_usd: +$("#flete").value || null, oc_archivo: ruta, tramos: calc.tramos, proyecto_id: proySel || null, estado: "enviado",
     };
+    if (ROL === "interbarge") { datos.usuario_id = $("#cliente-sel").value; if (!editId) datos.proyecto_id = null; else delete datos.proyecto_id; }
     const q = editId ? H.sb.from("envios").update(datos).eq("id", editId).select().single() : H.sb.from("envios").insert(datos).select().single();
     const { data, error } = await q;
     if (error) { aviso(`No se pudo guardar: ${esc(error.message)}`, "err"); return; }
@@ -314,10 +318,12 @@
     const p = CAT.proyectos.find((x) => x.id === e.proyecto_id);
     const flete = +e.flete_usd || 0;
     $("#ok").hidden = false;
-    $("#ok").innerHTML = `<b>Presupuesto confirmado · OC ${esc(e.oc_numero || "")}</b>
+    $("#ok").innerHTML = `<b>${ROL === "interbarge" ? "Orden guardada" : "Presupuesto confirmado"} · OC ${esc(e.oc_numero || "")}</b>
       <span>${esc(e.tramos[0]?.desde?.label)} → ${esc(e.tramos[e.tramos.length - 1]?.hasta?.label)} · ${e.tramos.length} tramo${e.tramos.length === 1 ? "" : "s"} · ${fmt(e.total_km, 0)} km · huella${H.DEMO ? "" : " calculada en el servidor"}: <b>${kgTxt(+e.total_kg)}</b></span>
       <span>${p ? `Con compensación: ${e.creditos} créditos de “${esc(p.nombre)}” (${usd(e.usd_estimado)})${flete ? ` · total ${usd(flete + +e.usd_estimado)}` : ""}` : `Sin compensación${flete ? ` · ${usd(flete)}` : ""}`}</span>
-      ${H.DEMO
+      ${ROL === "interbarge"
+        ? `<span class="hint">Orden guardada para <b>${esc(e.usuario_email)}</b>. El cliente ya la ve en su cuenta con su huella, y Coralia la revisa. <a href="index.html#calcular" onclick="location.reload()">Cargar otra orden</a> · <a href="admin.html">Ver órdenes</a></span>`
+        : H.DEMO
         ? `<span class="hint">Demo: seguilo en la <a href="admin.html">Parte administrativa</a>. Ahí Coralia lo revisa, Sylvera lo valida y la Bolsa registra el retiro de créditos.</span>`
         : `<span class="hint">Te avisamos a ${esc(e.usuario_email)} cuando Coralia revise los datos y Sylvera valide el cálculo. Seguilo en <a href="panel.html">Mis cálculos</a>.</span>`}`;
     bloquear(e);
@@ -355,6 +361,7 @@
       if (x.modo) $(`#${x.etapa}-modo`).value = x.modo;
       terrestre = true;
     });
+    if ($("#cliente-sel")) $("#cliente-sel").value = data.usuario_id || "";
     $("#oc-numero").value = data.oc_numero || ""; $("#empresa").value = data.empresa || ""; $("#carga").value = data.carga || "";
     $("#flete").value = data.flete_usd ?? "";
     $("#tipo-carga").value = t.unidad === "teu" ? "contenedor" : t.tipo_carga || "solido";
@@ -367,6 +374,23 @@
     pasos(H.pasoDe(data.estado));
     bloquear(data);
     return true;
+  }
+
+  // ---------- InterBarge: carga órdenes para sus clientes aceptados ----------
+  async function prepararInterBarge() {
+    const { data } = await H.sb.from("clientes").select("id,email,empresa,nombre").eq("estado", "aceptado").order("empresa");
+    const sel = $("#cliente-sel");
+    sel.innerHTML = `<option value="">${(data || []).length ? "Elegí un cliente aceptado" : "Todavía no hay clientes aceptados"}</option>` +
+      (data || []).map((c) => `<option value="${esc(c.id)}">${esc(c.empresa || "(sin empresa)")} · ${esc(c.nombre || "")} · ${esc(c.email)}</option>`).join("");
+    if (editId && window.__clienteEdit) sel.value = window.__clienteEdit;
+    $("#campo-cliente").hidden = false;
+    const h1 = document.querySelector("main .hero h1"); if (h1) h1.textContent = "Cargar orden de un cliente";
+    const lead = document.querySelector("main .hero .lead"); if (lead) lead.textContent = "Elegí el cliente, subí o completá su orden de compra y guardala. El cliente la ve en su cuenta con su huella, y Coralia la revisa.";
+    $("#t-oc").innerHTML = '<span class="paso">1</span> Orden de compra del cliente';
+    $("#btn-enviar").textContent = "Guardar orden y enviar a Coralia";
+    const hint = document.querySelector("#sec-enviar .sec-head .hint");
+    if (hint) hint.textContent = "Al guardar, la orden queda en la cuenta del cliente y pasa a revisión de Coralia. Después Sylvera la valida y sale el certificado.";
+    pintarOpciones();
   }
 
   // ---------- Intro (portada con inicio de sesión) ----------
@@ -382,7 +406,7 @@
     setTimeout(fin, 340);
   }
   async function initIntro(saltar) {
-    if (saltar) return entrarApp(false);
+    if (H.DEMO && saltar) return entrarApp(false);
     if (H.DEMO) {
       $("#login-intro").innerHTML = `<div class="auth">
         <h2 class="auth-t">Entrá a Huella</h2>
@@ -394,8 +418,15 @@
       $("#demo-entrar").onclick = () => entrarApp(true);
       return;
     }
-    if (await H.sesion()) return entrarApp(false);
-    H.tarjetaLogin($("#login-intro"), { alEntrar: () => entrarApp(true) });
+    // Con sesión: InterBarge usa la calculadora para cargar órdenes; el resto va a su lugar
+    if (await H.sesion()) {
+      if (ROL === "interbarge") return entrarApp(false);
+      location.replace(H.destino(ROL)); return;
+    }
+    H.tarjetaLogin($("#login-intro"), {
+      subtitulo: "Entrá para saber tu huella",
+      alEntrar: async () => { ROL = await H.rol(); if (ROL === "interbarge") { await prepararInterBarge(); entrarApp(true); } else location.href = H.destino(ROL); },
+    });
   }
 
   // ---------- Inicio ----------
@@ -420,6 +451,7 @@
     $("#flete").addEventListener("input", pintarOpciones);
     $("#tipo-carga").addEventListener("change", () => { pintarUnidades(); recalcular(); });
 
+    if (!H.DEMO && (await H.sesion())) { ROL = await H.rol(); if (ROL === "interbarge") await prepararInterBarge(); }
     const id = new URLSearchParams(location.search).get("id");
     const cargado = id && (await cargarEnvio(id));
     recalcular();

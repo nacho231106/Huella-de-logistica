@@ -529,3 +529,44 @@ body { position: relative; isolation: isolate; }
 .pend { font-size: 11px; font-weight: 600; color: var(--red); }
 .demo-reset { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 @media (max-width: 720px) { .tab { padding: 10px 10px; font-size: 14px; } }
+
+/* ---------- Cliente: Mi huella ---------- */
+.estado-cuenta { max-width: 640px; margin: 40px auto; text-align: center; display: grid; gap: 12px; justify-items: center; }
+.ec-icono { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-size: 32px; background: var(--navy-soft); color: var(--navy); }
+.estado-cuenta h1 { color: var(--navy); font-size: clamp(26px, 3vw, 34px); }
+.vacio { text-align: center; display: grid; gap: 8px; justify-items: center; }
+.orden { display: grid; gap: 18px; }
+.orden-head { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; align-items: flex-start; }
+.orden-head h2 { margin-top: 8px; color: var(--navy); }
+.orden-huella { text-align: right; display: grid; gap: 2px; }
+.orden-huella .eyebrow { color: var(--muted); }
+.orden-huella b { font-family: var(--display); font-size: clamp(30px, 4vw, 42px); color: var(--teal); line-height: 1; }
+.orden-grid { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 24px; align-items: start; }
+.orden-mapa { background: linear-gradient(180deg, #eef5f8, #e4eef3); border-radius: 16px; padding: 8px; }
+.mapa-rio { width: 100%; height: auto; display: block; }
+.mapa-rio .rio { fill: none; stroke: #9fc2d3; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.mapa-rio .ruta { fill: none; stroke: var(--teal); stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+.mapa-rio .pto { fill: #fff; stroke: #7fa7ba; stroke-width: 1.5; }
+.mapa-rio .pto.fin { fill: var(--navy); stroke: #fff; stroke-width: 2; }
+.mapa-rio .pto-txt { font-size: 11px; font-weight: 600; fill: var(--navy); paint-order: stroke; stroke: #eef5f8; stroke-width: 3px; }
+.ruta-txt { margin: 4px 0 12px; }
+.orden h3 { font-size: 17px; color: var(--navy); margin: 0; }
+.oc-datos { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 12px 0 0; font-size: 14px; }
+.oc-datos dt { color: var(--muted); } .oc-datos dd { margin: 0; }
+.comp { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
+.comp p { margin: 0; }
+@media (max-width: 720px) { .orden-grid { grid-template-columns: 1fr; } .orden-mapa { max-width: 260px; } .orden-huella { text-align: left; } }
+
+/* ---------- Parte administrativa ---------- */
+.admin-login { display: grid; gap: 18px; justify-items: center; }
+.admin-login .sec-head { text-align: center; }
+.perfiles-admin { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; width: min(100%, 980px); }
+.perfiles-admin li { background: #fff; border: 1px solid var(--line); border-top: 4px solid var(--navy); border-radius: 14px; padding: 14px; display: grid; gap: 4px; font-size: 14px; }
+.perfiles-admin li b { color: var(--navy); }
+.perfiles-admin li span { color: var(--muted); }
+.acc-t { font-size: 15px; color: var(--navy); margin: 14px 0 6px; }
+.acc-lista { list-style: none; padding: 0; margin: 0 0 6px; display: grid; gap: 6px; }
+.acc-lista li { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; }
+.opciones.solo-ver .opcion { cursor: default; pointer-events: none; }
+.campo-cliente select { font-weight: 600; }
+@media (max-width: 860px) { .perfiles-admin { grid-template-columns: 1fr 1fr; } }

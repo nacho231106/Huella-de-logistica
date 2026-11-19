@@ -21,7 +21,7 @@
     rechazado:     { txt: "Con observaciones", cls: "st-bad" },
   };
   const PASOS = ["Confirmá el presupuesto", "Revisión Coralia", "Validación Sylvera", "Certificado"];
-  const ROLES = { cliente: "Cliente", coralia: "Coralia", sylvera: "Sylvera", bolsa: "Bolsa Paraguaya de Carbono" };
+  const ROLES = { cliente: "Cliente", coralia: "Coralia", sylvera: "Sylvera", bolsa: "Bolsa Paraguaya de Carbono", interbarge: "InterBarge" };
   const pasoDe = (estado) => ({ borrador: 0, enviado: 1, en_validacion: 2, validado: 3, retirado: 4, rechazado: 1 }[estado] ?? 0);
 
   // ---------- Catálogos (Supabase, con respaldo local) ----------
@@ -102,9 +102,18 @@
     if (!r.error) { guardar(RECORDAR, recordar ? "1" : "0"); guardar(VIVA, "1", true); }
     return r;
   }
-  async function registrar(email, clave, volverA) {
-    return sb.auth.signUp({ email, password: clave, options: { emailRedirectTo: volverA || location.origin + location.pathname } });
+  async function registrar(email, clave, datos = {}, volverA) {
+    return sb.auth.signUp({ email, password: clave, options: { data: datos, emailRedirectTo: volverA || new URL("index.html", location.href).href } });
   }
+  // Datos del cliente (pendiente / aceptado / rechazado por InterBarge)
+  async function miCliente() {
+    const s = await sesion(); if (!s) return null;
+    const { data } = await sb.from("clientes").select("*").eq("id", s.user.id).maybeSingle();
+    return data;
+  }
+  const PERSONAL = ["coralia", "sylvera", "bolsa", "interbarge"];
+  // Adónde va cada perfil después de entrar
+  function destino(r) { return PERSONAL.includes(r) ? "admin.html" : "cliente.html"; }
   async function recuperarClave(email) {
     return sb.auth.resetPasswordForEmail(email, { redirectTo: new URL("clave.html", location.href).href });
   }
@@ -136,6 +145,15 @@
     if (!s) { zona.innerHTML = `<a class="nav-link" href="panel.html">Ingresar</a>`; return; }
     const r = await rol();
     const etiqueta = ROLES[r] || r;
+    if (r) {
+      const links = r === "interbarge"
+        ? `<a class="nav-link" href="index.html#calcular">Cargar orden</a><a class="nav-link" href="admin.html">Parte administrativa</a>`
+        : PERSONAL.includes(r) ? `<a class="nav-link" href="admin.html">Parte administrativa</a>` : `<a class="nav-link" href="cliente.html">Mi huella</a>`;
+      zona.innerHTML = `${links}<span class="who" title="${esc(s.user.email)}">${esc(s.user.email)} · <b>${etiqueta}</b></span>
+        <button class="nav-link as-btn" id="btn-salir" type="button">Salir</button>`;
+      document.getElementById("btn-salir").onclick = salir;
+      return;
+    }
     zona.innerHTML = `<a class="nav-link" href="panel.html">${r === "cliente" ? "Mis cálculos" : "Panel"}</a>
       <span class="who" title="${esc(s.user.email)}">${esc(s.user.email)} · <b>${etiqueta}</b></span>
       <button class="nav-link as-btn" id="btn-salir" type="button">Salir</button>`;
@@ -203,5 +221,5 @@
 
   window.H = { sb, C, fmt, fmtFecha, esc, norm, kgTxt, ESTADOS, PASOS, ROLES, pasoDe, cargarCatalogos, toneladas, calcularTramo,
     sesion, rol, enviarCodigo, verificarCodigo, entrarCon, salir, pintarCabecera,
-    entrar, registrar, recuperarClave, cambiarClave, errorAuth, DEMO, demo, ROL_NOMBRE };
+    entrar, registrar, recuperarClave, cambiarClave, errorAuth, DEMO, demo, ROL_NOMBRE, miCliente, destino, PERSONAL };
 })();

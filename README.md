@@ -103,3 +103,12 @@ Para probar en local: VS Code → **Go Live**. Con doble clic no anda.
 Email y contraseña (Supabase Auth): **Iniciar sesión**, **Crear cuenta** (llega un mail para confirmar), **Recordarme** (si no se tilda, la sesión se cierra al cerrar el navegador) y **¿Olvidaste tu contraseña?** (mail con link a `clave.html`). La tarjeta está en `auth.js` y se usa en la portada, en el panel y al confirmar un presupuesto. El perfil (cliente, Coralia, Sylvera, Bolsa) sale del email, igual que antes.
 
 Foto de la portada: *Barcaza en el río Paraná*, Carla Antonini (2006), Wikimedia Commons, licencia CC BY-SA 2.5 AR (`assets/fondo-parana*.jpg`). El crédito se muestra en la portada.
+
+## Recorrido (desde el 19/11/2026)
+
+1. **Cliente** → portada → *Crear cuenta* (empresa, nombre, email, contraseña). Queda **pendiente**: ve "Tu solicitud está en revisión".
+2. **InterBarge** → `admin.html` → *Solicitudes de clientes*: acepta o rechaza. A los aceptados les **carga la orden** desde la calculadora (`index.html#calcular`, eligiendo el cliente).
+3. **Cliente aceptado** → `cliente.html` (*Mi huella*): ve el recorrido en el mapa del río, la orden de compra, la huella y en qué etapa está. Puede elegir si **compensa** mientras está en revisión.
+4. **Coralia** revisa → **Sylvera** valida (sale el certificado) → **Bolsa Paraguaya de Carbono** registra el retiro si compensó. Cada uno entra por `admin.html` con su usuario y ve solo lo suyo.
+
+Accesos del equipo: Coralia = cualquier email `@coraliae.com`; InterBarge, Sylvera y Bolsa = listas que Coralia administra desde su parte administrativa. `MODO_DEMO` en `config.js` está en `false`.

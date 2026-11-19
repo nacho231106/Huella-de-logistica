@@ -200,7 +200,9 @@
 
   // ---------- Inicio ----------
   async function init() {
+    // El panel viejo ya no se usa: cada perfil tiene su página
     if (H.DEMO) { location.replace("admin.html"); return; }
+    { const s0 = await H.sesion(); if (!s0) { location.replace("index.html"); return; } location.replace(H.destino(await H.rol())); return; }
     document.querySelectorAll("[data-naviera]").forEach((n) => (n.textContent = H.C.NAVIERA));
     H.pintarCabecera();
     const s = await H.sesion();

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="only light" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Mi huella · InterBarge</title>
+  <meta name="description" content="La huella de carbono de tus envíos con InterBarge por la hidrovía." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <img class="brand-ib" src="assets/interbarge.png" alt="InterBarge" width="235" height="227" />
+      <span class="brand-sep" aria-hidden="true"></span>
+      <span><span class="brand-name">Huella de carbono</span><span class="brand-sub">Transporte por la hidrovía</span></span>
+    </a>
+    <nav class="nav" id="cuenta"></nav>
+  </header>
+
+  <main class="wrap narrow" id="contenido">
+    <p class="hint">Cargando…</p>
+  </main>
+
+  <footer class="foot">Metodología y cálculo: <img class="co-logo" src="assets/coralia.png" alt="Coralia Environmental" width="369" height="211" /> · <a href="certificado.html">Verificar un certificado</a></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="lib.js"></script>
+  <script src="cliente.js"></script>
+</body>
+</html>
