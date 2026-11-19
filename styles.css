@@ -793,3 +793,15 @@ body.intro-on .intro { background: var(--slide-bg, #120a2e); }
 }
 @media (max-width: 520px) { .slide-marca-ico { width: 50px; } .slide-marca-txt { font-size: 23px; } }
 @media (min-width: 901px) { .slide-sello img { height: min(68vh, 600px); } }
+
+/* Cambiar contraseña */
+.dlg-clave { border: 0; padding: 0; border-radius: 20px; width: min(420px, calc(100vw - 24px)); box-shadow: 0 30px 90px rgba(0,0,0,.35); }
+.dlg-clave::backdrop { background: rgba(10, 20, 40, .5); backdrop-filter: blur(3px); }
+.dlg-clave-in { position: relative; display: grid; gap: 14px; padding: 28px; }
+.dlg-clave-in h2 { margin: 0 0 4px; font-size: 24px; color: var(--navy); }
+.dlg-clave-in label { display: grid; gap: 6px; font-weight: 600; font-size: 14px; color: var(--ink, #1c2b3a); }
+.dlg-clave-in input { font: inherit; font-weight: 400; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; }
+.dlg-clave-in input:focus { outline: 2px solid var(--navy); outline-offset: 1px; }
+.dlg-clave .modal-cerrar { position: absolute; top: 14px; right: 14px; }
+.dlg-msg { margin: 0; min-height: 1.2em; font-size: 14px; color: var(--muted); }
+.dlg-msg.err { color: #b42318; } .dlg-msg.ok { color: #067647; font-weight: 600; }

@@ -150,14 +150,59 @@
         ? `<a class="nav-link" href="index.html#calcular">Cargar orden</a><a class="nav-link" href="admin.html">Panel del equipo</a>`
         : PERSONAL.includes(r) ? `<a class="nav-link" href="admin.html">Panel del equipo</a>` : `<a class="nav-link" href="cliente.html">Mi huella</a>`;
       zona.innerHTML = `${links}<span class="who" title="${esc(s.user.email)}">${esc(s.user.email)} · <b>${etiqueta}</b></span>
+        <button class="nav-link as-btn" id="btn-clave" type="button">Cambiar contraseña</button>
         <button class="nav-link as-btn" id="btn-salir" type="button">Salir</button>`;
       document.getElementById("btn-salir").onclick = salir;
+      document.getElementById("btn-clave").onclick = () => dialogoClave(s.user.email);
       return;
     }
     zona.innerHTML = `<a class="nav-link" href="panel.html">${r === "cliente" ? "Mis cálculos" : "Panel"}</a>
       <span class="who" title="${esc(s.user.email)}">${esc(s.user.email)} · <b>${etiqueta}</b></span>
       <button class="nav-link as-btn" id="btn-salir" type="button">Salir</button>`;
     document.getElementById("btn-salir").onclick = salir;
+  }
+
+
+  // ---------- Cambiar contraseña desde adentro ----------
+  function dialogoClave(email) {
+    let d = document.getElementById("dlg-clave");
+    if (!d) {
+      d = document.createElement("dialog");
+      d.id = "dlg-clave"; d.className = "dlg-clave";
+      d.innerHTML = `<form method="dialog" class="dlg-clave-in">
+        <button type="button" class="modal-cerrar" data-cerrar aria-label="Cerrar">✕</button>
+        <h2>Cambiar contraseña</h2>
+        <label>Contraseña actual<input type="password" name="actual" autocomplete="current-password" required /></label>
+        <label>Contraseña nueva<input type="password" name="c1" autocomplete="new-password" minlength="8" required /></label>
+        <label>Repetí la contraseña nueva<input type="password" name="c2" autocomplete="new-password" minlength="8" required /></label>
+        <p class="dlg-msg" role="status"></p>
+        <button type="submit" class="btn">Guardar contraseña</button>
+      </form>`;
+      document.body.appendChild(d);
+      d.querySelector("[data-cerrar]").onclick = () => d.close();
+      d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
+      const f = d.querySelector("form"), msg = d.querySelector(".dlg-msg"), btn = f.querySelector("[type=submit]");
+      const decir = (t, c) => { msg.textContent = t; msg.className = "dlg-msg " + (c || ""); };
+      f.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const actual = f.actual.value, c1 = f.c1.value, c2 = f.c2.value;
+        if (c1.length < 8) return decir("La contraseña nueva tiene que tener al menos 8 caracteres.", "err");
+        if (c1 !== c2) return decir("Las contraseñas nuevas no coinciden.", "err");
+        if (c1 === actual) return decir("La contraseña nueva tiene que ser distinta de la actual.", "err");
+        btn.disabled = true; decir("Guardando…");
+        try {
+          const chk = await sb.auth.signInWithPassword({ email: d.dataset.email, password: actual });
+          if (chk.error) { btn.disabled = false; return decir("La contraseña actual no es correcta.", "err"); }
+          const { error } = await cambiarClave(c1);
+          if (error) { btn.disabled = false; return decir(errorAuth(error), "err"); }
+          f.reset(); decir("¡Listo! Tu contraseña quedó cambiada.", "ok");
+          setTimeout(() => { d.close(); btn.disabled = false; decir(""); }, 1800);
+        } catch (err) { btn.disabled = false; decir("No se pudo guardar. Probá de nuevo.", "err"); }
+      });
+    }
+    d.dataset.email = email;
+    d.querySelector("form").reset(); d.querySelector(".dlg-msg").textContent = "";
+    d.showModal();
   }
 
   // ---------- Modo demo (sin inicio de sesión, datos en el navegador) ----------
