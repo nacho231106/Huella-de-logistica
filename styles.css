@@ -792,3 +792,4 @@ body.intro-on .intro { background: var(--slide-bg, #120a2e); }
   .slide-marca-txt { font-size: clamp(26px, 4.8vh, 40px); }
 }
 @media (max-width: 520px) { .slide-marca-ico { width: 50px; } .slide-marca-txt { font-size: 23px; } }
+@media (min-width: 901px) { .slide-sello img { height: min(68vh, 600px); } }
