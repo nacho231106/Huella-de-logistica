@@ -199,12 +199,18 @@
         flete ? usd(flete + comp) : `+ ${usd(comp)}`,
         flete ? `+${fmt((comp / flete) * 100, 1)} % sobre el flete` : "por compensar");
     });
-    cont.innerHTML = html;
     if (ROL === "interbarge") {
-      cont.classList.add("solo-ver");
-      cont.insertAdjacentHTML("beforeend", `<p class="hint">La compensación la elige el cliente cuando entra a ver su huella.</p>`);
+      const t = calc.fl.t;
+      cont.classList.remove("solo-ver");
+      cont.innerHTML = `<div class="huella-res">
+        <span class="eyebrow">Huella de carbono del envío</span>
+        <b>${kgTxt(calc.kg)}</b>
+        <span class="hint">${esc(t.desde?.label || "")} → ${esc(t.hasta?.label || "")} · ${fmt(calc.fl.dist, 0)} km por río · ${fmt(calc.fl.ton, 1)} t${calc.camion.length ? " · con tramos terrestres" : ""}</span>
+        <span class="hint">Factor propio de la flota: ${fmt(calc.fl.modo?.factor ?? 0, 4)} kg CO₂e/t·km. El cliente la ve en su cuenta y elige si la compensa.</span>
+      </div>`;
       return;
     }
+    cont.innerHTML = html;
     cont.querySelectorAll(".opcion").forEach((b) => (b.onclick = () => { proySel = b.dataset.id; pintarOpciones(); }));
   }
 
@@ -302,7 +308,7 @@
       oc_numero: $("#oc-numero").value.trim(), empresa: $("#empresa").value.trim() || null, carga: $("#carga").value.trim(),
       flete_usd: +$("#flete").value || null, oc_archivo: ruta, tramos: calc.tramos, proyecto_id: proySel || null, estado: "enviado",
     };
-    if (ROL === "interbarge") { datos.usuario_id = $("#cliente-sel").value; if (!editId) datos.proyecto_id = null; else delete datos.proyecto_id; }
+    if (ROL === "interbarge") { datos.fecha = $("#fecha-envio").value || null; delete datos.flete_usd; datos.usuario_id = $("#cliente-sel").value; if (!editId) datos.proyecto_id = null; else delete datos.proyecto_id; }
     const q = editId ? H.sb.from("envios").update(datos).eq("id", editId).select().single() : H.sb.from("envios").insert(datos).select().single();
     const { data, error } = await q;
     if (error) { aviso(`No se pudo guardar: ${esc(error.message)}`, "err"); return; }
@@ -319,10 +325,10 @@
     const flete = +e.flete_usd || 0;
     $("#ok").hidden = false;
     $("#ok").innerHTML = `<b>${ROL === "interbarge" ? "Orden guardada" : "Presupuesto confirmado"} · OC ${esc(e.oc_numero || "")}</b>
-      <span>${esc(e.tramos[0]?.desde?.label)} → ${esc(e.tramos[e.tramos.length - 1]?.hasta?.label)} · ${e.tramos.length} tramo${e.tramos.length === 1 ? "" : "s"} · ${fmt(e.total_km, 0)} km · huella${H.DEMO ? "" : " calculada en el servidor"}: <b>${kgTxt(+e.total_kg)}</b></span>
-      <span>${p ? `Con compensación: ${e.creditos} créditos de “${esc(p.nombre)}” (${usd(e.usd_estimado)})${flete ? ` · total ${usd(flete + +e.usd_estimado)}` : ""}` : `Sin compensación${flete ? ` · ${usd(flete)}` : ""}`}</span>
+      <span>${esc(e.tramos[0]?.desde?.label)} → ${esc(e.tramos[e.tramos.length - 1]?.hasta?.label)} · ${e.tramos.length} tramo${e.tramos.length === 1 ? "" : "s"} · ${fmt(e.total_km, 0)} km · huella de carbono: <b>${kgTxt(+e.total_kg)}</b></span>
+      ${ROL === "interbarge" ? "" : `<span>${p ? `Con compensación: ${e.creditos} créditos de “${esc(p.nombre)}” (${usd(e.usd_estimado)})${flete ? ` · total ${usd(flete + +e.usd_estimado)}` : ""}` : `Sin compensación${flete ? ` · ${usd(flete)}` : ""}`}</span>`}
       ${ROL === "interbarge"
-        ? `<span class="hint">Orden guardada para <b>${esc(e.usuario_email)}</b>. El cliente ya la ve en su cuenta con su huella, y Coralia la revisa. <a href="index.html#calcular" onclick="location.reload()">Cargar otra orden</a> · <a href="admin.html">Ver órdenes</a></span>`
+        ? `<span class="hint">Orden guardada para <b>${esc(e.usuario_email)}</b>${e.fecha ? ` · envío del ${esc(e.fecha.split("-").reverse().join("/"))}` : ""}. El cliente ya la ve en su cuenta con su huella, y Coralia la revisa. <a href="index.html#calcular" onclick="location.reload()">Cargar otra orden</a> · <a href="admin.html">Ver órdenes</a></span>`
         : H.DEMO
         ? `<span class="hint">Demo: seguilo en la <a href="admin.html">Parte administrativa</a>. Ahí Coralia lo revisa, Sylvera lo valida y la Bolsa registra el retiro de créditos.</span>`
         : `<span class="hint">Te avisamos a ${esc(e.usuario_email)} cuando Coralia revise los datos y Sylvera valide el cálculo. Seguilo en <a href="panel.html">Mis cálculos</a>.</span>`}`;
@@ -362,6 +368,7 @@
       terrestre = true;
     });
     if ($("#cliente-sel")) $("#cliente-sel").value = data.usuario_id || "";
+    if ($("#fecha-envio") && data.fecha) $("#fecha-envio").value = data.fecha;
     $("#oc-numero").value = data.oc_numero || ""; $("#empresa").value = data.empresa || ""; $("#carga").value = data.carga || "";
     $("#flete").value = data.flete_usd ?? "";
     $("#tipo-carga").value = t.unidad === "teu" ? "contenedor" : t.tipo_carga || "solido";
@@ -387,7 +394,10 @@
     const h1 = document.querySelector("main .hero h1"); if (h1) h1.textContent = "Cargar orden de un cliente";
     const lead = document.querySelector("main .hero .lead"); if (lead) lead.textContent = "Elegí el cliente, subí o completá su orden de compra y guardala. El cliente la ve en su cuenta con su huella, y Coralia la revisa.";
     $("#t-oc").innerHTML = '<span class="paso">1</span> Orden de compra del cliente';
-    $("#btn-enviar").textContent = "Guardar orden y enviar a Coralia";
+    $("#btn-enviar").textContent = "Guardar orden y ver la huella";
+    $("#t-pres-txt").textContent = "Huella del envío";
+    $("#pres-nota").hidden = true; $("#campo-flete").hidden = true; $("#campo-fecha").hidden = false;
+    if (!$("#fecha-envio").value) $("#fecha-envio").value = new Date().toLocaleDateString("en-CA");
     const hint = document.querySelector("#sec-enviar .sec-head .hint");
     if (hint) hint.textContent = "Al guardar, la orden queda en la cuenta del cliente y pasa a revisión de Coralia. Después Sylvera la valida y sale el certificado.";
     pintarOpciones();

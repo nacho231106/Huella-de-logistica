@@ -156,6 +156,7 @@
         <p class="hint" id="oc-hint">Revisá los datos de la orden. Los que leímos del archivo aparecen marcados.</p>
         <div class="grid-3">
           <label class="field"><span>N° de orden de compra</span><input id="oc-numero" placeholder="Ej.: OC-2026-0458" /></label>
+          <label class="field campo-fecha" id="campo-fecha" hidden><span>Fecha del envío</span><input id="fecha-envio" type="date" /></label>
           <label class="field span-2"><span>Empresa</span><input id="empresa" placeholder="Razón social" autocomplete="organization" /></label>
           <label class="field"><span>Puerto de carga</span><select id="origen"></select></label>
           <label class="field"><span>Puerto de descarga</span><select id="destino"></select></label>
@@ -171,7 +172,7 @@
           <label class="field"><span>Cantidad</span>
             <span class="qty"><input id="cantidad" type="number" min="0" step="any" inputmode="decimal" /><select id="unidad" aria-label="Unidad"></select></span>
           </label>
-          <label class="field"><span>Valor del flete (USD) <em>(si la OC lo trae)</em></span><input id="flete" type="number" min="0" step="any" inputmode="decimal" /></label>
+          <label class="field" id="campo-flete"><span>Valor del flete (USD) <em>(si la OC lo trae)</em></span><input id="flete" type="number" min="0" step="any" inputmode="decimal" /></label>
         </div>
         <p class="hint conv" id="conv"></p>
       </div>
@@ -206,11 +207,11 @@
     <!-- 2. Presupuesto -->
     <section class="card pad" aria-labelledby="t-pres">
       <div class="sec-head">
-        <h2 id="t-pres"><span class="paso">2</span> Presupuesto</h2>
+        <h2 id="t-pres"><span class="paso">2</span> <span id="t-pres-txt">Presupuesto</span></h2>
         <p class="hint" id="huella-txt">Completá los puertos y la cantidad para ver el presupuesto.</p>
       </div>
       <div class="opciones" id="opciones" role="radiogroup" aria-label="Opciones de presupuesto"></div>
-      <p class="hint">Cada crédito de carbono equivale a 1 t CO₂e, por eso se redondea hacia arriba. Los créditos se retiran en el registro a nombre de tu empresa, después de que Coralia revise y Sylvera valide el cálculo.</p>
+      <p class="hint" id="pres-nota">Cada crédito de carbono equivale a 1 t CO₂e, por eso se redondea hacia arriba. Los créditos se retiran en el registro a nombre de tu empresa, después de que Coralia revise y Sylvera valide el cálculo.</p>
     </section>
 
     <!-- 3. Confirmar -->
